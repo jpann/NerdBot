@@ -1,0 +1,102 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using NerdBot.Extensions;
+using NerdBot.Messengers;
+using NerdBot.Mtg;
+using NerdBot.Plugin;
+using Ninject.Extensions.Logging;
+
+namespace NerdBot
+{
+    public class PluginManager
+    {
+        private readonly ILogger mLogger;
+        private readonly IMtgContext mContext;
+        private string mPluginDirectory;
+        private List<IPlugin> mPlugins = new List<IPlugin>();
+
+        #region Properties
+        public string PluginDirectory
+        {
+            get { return this.mPluginDirectory; }
+            set
+            {
+                if (!Directory.Exists(value))
+                    throw new DirectoryNotFoundException(value);
+
+                this.mPluginDirectory = value;
+            }
+        }
+
+        public List<IPlugin> Plugins
+        {
+            get { return this.mPlugins; }
+        }
+        #endregion
+
+        public PluginManager(ILogger logger, IMtgContext context)
+        {
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            this.mLogger = logger;
+            this.mContext = context;
+        }
+
+        public PluginManager(
+            string pluginDirectory,
+            ILogger logger,
+            IMtgContext context)
+        {
+            if (string.IsNullOrEmpty(pluginDirectory))
+                throw new ArgumentException("pluginDirectory");
+
+            if (!Directory.Exists(pluginDirectory))
+                throw new DirectoryNotFoundException(pluginDirectory);
+
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            this.mPluginDirectory = pluginDirectory;
+            this.mLogger = logger;
+            this.mContext = context;
+        }
+
+        public void LoadPlugins()
+        {
+            DirectoryInfo info = new DirectoryInfo(this.mPluginDirectory);
+
+            foreach (FileInfo fileInfo in info.GetFiles("*.dll"))
+            {
+                Assembly currentAssembly = Assembly.LoadFile(fileInfo.FullName);
+
+                foreach (Type type in currentAssembly.GetTypes())
+                {
+                    if (!type.ImplementsInterface(typeof(IPlugin)))
+                        continue;
+
+                    IPlugin plugin = (IPlugin) Activator.CreateInstance(type);
+
+                    plugin.Load(this.mContext);
+
+                    this.mPlugins.Add(plugin);
+                }
+            }
+        }
+
+        public void SendMessage(IMessage message, IMessenger messenger)
+        {
+            foreach (IPlugin plugin in this.mPlugins)
+            {
+                bool handled = plugin.OnMessage(message, messenger);
+            }
+        }
+    }
+}

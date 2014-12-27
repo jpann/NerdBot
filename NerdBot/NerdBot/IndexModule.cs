@@ -9,10 +9,12 @@ namespace NerdBot
 
     public class IndexModule : NancyModule
     {
-        public IndexModule(IMtgContext context, IMessenger messenger)
+        public IndexModule(IMtgContext context, IMessenger messenger, PluginManager pluginManager)
         {
             Get["/"] = parameters =>
             {
+                string v = pluginManager.PluginDirectory;
+
                 return HttpStatusCode.NotAcceptable;
             };
 
@@ -25,6 +27,9 @@ namespace NerdBot
 
                 if (!ModelValidationResult.IsValid)
                     return HttpStatusCode.NotAcceptable;
+
+                // Send to all plugins
+                pluginManager.SendMessage(message, messenger);
 
                 return HttpStatusCode.NotImplemented;
             };
