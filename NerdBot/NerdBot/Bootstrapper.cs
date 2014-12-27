@@ -32,13 +32,12 @@ namespace NerdBot
             existingContainer.Bind<IHttpClient>()
                 .To<SimpleHttpClient>();
 
-            //TODO Fill out arguments from app.config
             existingContainer.Bind<IMessenger>()
                 .To<GroupMeMessenger>()
-                .WithConstructorArgument("botId", "")
-                .WithConstructorArgument("botName", "")
+                .WithConstructorArgument("botId", Properties.Settings.Default.BotId)
+                .WithConstructorArgument("botName", Properties.Settings.Default.BotName)
                 .WithConstructorArgument("ignoreNames", new string[] {})
-                .WithConstructorArgument("endPointUrl", "");
+                .WithConstructorArgument("endPointUrl", Properties.Settings.Default.EndPointUrl);
         }
 
         protected override void ConfigureRequestContainer(IKernel container, NancyContext context)
