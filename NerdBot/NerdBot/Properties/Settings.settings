@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="NerdBot.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="test" Type="System.String" Scope="User">
+      <Value Profile="(Default)">test</Value>
+    </Setting>
+    <Setting Name="BotId" Type="System.String" Scope="User">
+      <Value Profile="(Default)">BOT_ID</Value>
+    </Setting>
+    <Setting Name="BotName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">BOT_NAME</Value>
+    </Setting>
+    <Setting Name="EndPointUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://api.groupme.com/v3/bots/post</Value>
+    </Setting>
+    <Setting Name="RouteKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">TOKEN</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
