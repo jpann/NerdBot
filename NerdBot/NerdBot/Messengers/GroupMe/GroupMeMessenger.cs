@@ -4,17 +4,20 @@ using System.Linq;
 using System.Text;
 using Nancy.Json;
 using NerdBot.Http;
+using Ninject.Extensions.Logging;
 
 namespace NerdBot.Messengers.GroupMe
 {
     public class GroupMeMessenger : IMessenger
     {
         private readonly IHttpClient mHttpClient;
+        private readonly ILogger mLogger;
         private readonly string mBotId;
         private readonly string mBotName;
         private readonly string mEndpointUrl;
         private readonly string[] mIgnoreNames;
 
+        #region Properties
         public string BotId
         {
             get { return this.mBotId; }
@@ -29,13 +32,15 @@ namespace NerdBot.Messengers.GroupMe
         {
             get { return this.mIgnoreNames; }
         }
+        #endregion
 
         public GroupMeMessenger(
             string botId,
             string botName,
             string[] ignoreNames,
             string endPointUrl,
-            IHttpClient httpClient)
+            IHttpClient httpClient,
+            ILogger logger)
         {
             if (string.IsNullOrEmpty(botId))
                 throw new ArgumentException("botId");
@@ -49,11 +54,15 @@ namespace NerdBot.Messengers.GroupMe
             if (httpClient == null)
                 throw new ArgumentNullException("httpClient");
 
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+
             this.mBotId = botId;
             this.mBotName = botName;
             this.mIgnoreNames = ignoreNames;
             this.mEndpointUrl = endPointUrl;
             this.mHttpClient = httpClient;
+            this.mLogger = logger;
         }
 
         public bool SendMessage(string message)
@@ -75,7 +84,7 @@ namespace NerdBot.Messengers.GroupMe
             }
             catch (Exception er)
             {
-                //TODO Logging
+                this.mLogger.Error(er, "Error sending groupme message: {0}", message);
 
                 return false;
             }
