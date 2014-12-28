@@ -37,7 +37,7 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            return this.mContext.Cards.Where(c => c.Name.ToLower().Contains(name));
+            return this.mContext.Cards.Where(c => c.Name.ToLower().StartsWith(name.ToLower()));
         }
 
         public IEnumerable<Card> GetCards(string name, string set)
