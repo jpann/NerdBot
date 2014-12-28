@@ -1,4 +1,5 @@
-﻿using Nancy.ModelBinding;
+﻿using Nancy.Json;
+using Nancy.ModelBinding;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
@@ -13,8 +14,6 @@ namespace NerdBot
         {
             Get["/"] = parameters =>
             {
-                string v = pluginManager.PluginDirectory;
-
                 return HttpStatusCode.NotAcceptable;
             };
 
