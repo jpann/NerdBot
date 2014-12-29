@@ -12,7 +12,6 @@ namespace NerdBot.Mtg
 
         IEnumerable<Card> GetCards();
         IEnumerable<Card> GetCards(string name);
-        IEnumerable<Card> GetCards(string name, string set);
 
         IEnumerable<Set> GetCardOtherSets(string name);
 

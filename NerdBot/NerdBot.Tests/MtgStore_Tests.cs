@@ -13,10 +13,11 @@ namespace NerdBot.Tests
     [TestFixture]
     class MtgStore_Tests
     {
+        private Mock<DbSet<Card>> cardDbSetMock;
+        private Mock<IMtgContext> contextMock ;
         private List<Card> cardData = new List<Card>();
 
-        [SetUp]
-        public void SetUp()
+        private void SetUp_CardData()
         {
             cardData = new List<Card>()
             {
@@ -127,17 +128,34 @@ namespace NerdBot.Tests
                 },
             };
         }
-        
+
+        [SetUp]
+        public void SetUp()
+        {
+            SetUp_CardData();
+
+            // Create a mock set and context
+            cardDbSetMock = new Mock<DbSet<Card>>()
+                .SetupData(cardData);
+
+            contextMock = new Mock<IMtgContext>();
+            contextMock.Setup(c => c.Cards).Returns(cardDbSetMock.Object);
+        }
+
+        #region GetCards
+        [Test]
+        public void Get_Cards()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            var cards = mtgStore.GetCards();
+
+            Assert.AreEqual(cardData.Count, cards.Count());
+        }
+
         [Test]
         public void Get_Cards_StartingWith_Boros_C()
         {
-            // Create a mock set and context
-            var cardDbSetMock = new Mock<DbSet<Card>>()
-                .SetupData(cardData);
-
-            var contextMock = new Mock<IMtgContext>();
-            contextMock.Setup(c => c.Cards).Returns(cardDbSetMock.Object);
-
             var mtgStore = new MtgStore(contextMock.Object);
 
             var cards = mtgStore.GetCards("Boros C");
@@ -148,18 +166,79 @@ namespace NerdBot.Tests
         [Test]
         public void Get_Cards_StartingWith_Coros()
         {
-            // Create a mock set and context
-            var cardDbSetMock = new Mock<DbSet<Card>>()
-                .SetupData(cardData);
-
-            var contextMock = new Mock<IMtgContext>();
-            contextMock.Setup(c => c.Cards).Returns(cardDbSetMock.Object);
-
             var mtgStore = new MtgStore(contextMock.Object);
 
             var cards = mtgStore.GetCards("Coros");
 
             Assert.AreEqual(0, cards.Count());
         }
+        #endregion
+
+        #region GetCard
+        [Test]
+        public void Get_Card()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            var card = mtgStore.GetCard("Boros Charm");
+
+            Assert.NotNull(card);
+            Assert.AreEqual("Boros Charm", card.Name);
+        }
+
+        [Test]
+        public void Get_Card_DoesntExist()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            var card = mtgStore.GetCard("Cluestone");
+
+            Assert.Null(card);
+        }
+
+        [Test]
+        public void Get_Card_Using_SetName()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            var card = mtgStore.GetCard("Boros", "Commander 2013 Edition");
+
+            Assert.NotNull(card);
+            Assert.AreEqual("Boros Charm", card.Name);
+            Assert.AreEqual("Commander 2013 Edition", card.SetName);
+        }
+
+        [Test]
+        public void Get_Card_Using_SetName_DoesntExist()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            var card = mtgStore.GetCard("Boros", "xCommander 2013");
+
+            Assert.Null(card);
+        }
+
+        [Test]
+        public void Get_Card_Using_SetId()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            var card = mtgStore.GetCard("Boros", "C13");
+
+            Assert.NotNull(card);
+            Assert.AreEqual("Boros Charm", card.Name);
+            Assert.AreEqual("Commander 2013 Edition", card.SetName);
+        }
+
+        [Test]
+        public void Get_Card_Using_SetId_DoesntExist()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            var card = mtgStore.GetCard("Boros", "xC13");
+
+            Assert.Null(card);
+        }
+        #endregion
     }
 }

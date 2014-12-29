@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Ninject.Infrastructure.Language;
 
 namespace NerdBot.Mtg
 {
@@ -19,17 +20,30 @@ namespace NerdBot.Mtg
 
         public Card GetCard(string name)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
+            return this.mContext.Cards.Where(c => c.Name.ToLower().StartsWith(name.ToLower())).FirstOrDefault();
         }
 
         public Card GetCard(string name, string set)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
+            if (string.IsNullOrEmpty(set))
+                throw new ArgumentException("set");
+
+            return
+                this.mContext.Cards.Where(
+                    c => c.Name.ToLower().StartsWith(name.ToLower()) && 
+                        (c.SetName.ToLower().StartsWith(set.ToLower())) || c.SetId.ToLower().StartsWith(set.ToLower()))
+                    .FirstOrDefault();
         }
 
         public IEnumerable<Card> GetCards()
         {
-            throw new NotImplementedException();
+            return this.mContext.Cards.ToEnumerable();
         }
 
         public IEnumerable<Card> GetCards(string name)
@@ -38,11 +52,6 @@ namespace NerdBot.Mtg
                 throw new ArgumentException("name");
 
             return this.mContext.Cards.Where(c => c.Name.ToLower().StartsWith(name.ToLower()));
-        }
-
-        public IEnumerable<Card> GetCards(string name, string set)
-        {
-            throw new NotImplementedException();
         }
 
         public IEnumerable<Set> GetCardOtherSets(string name)
