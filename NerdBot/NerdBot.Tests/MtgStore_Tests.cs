@@ -14,10 +14,12 @@ namespace NerdBot.Tests
     class MtgStore_Tests
     {
         private Mock<DbSet<Card>> cardDbSetMock;
+        private Mock<DbSet<Set>> setDbSetMock;
         private Mock<IMtgContext> contextMock ;
         private List<Card> cardData = new List<Card>();
+        private List<Set> setData = new List<Set>(); 
 
-        private void SetUp_CardData()
+        private void SetUp_Data()
         {
             cardData = new List<Card>()
             {
@@ -127,19 +129,59 @@ namespace NerdBot.Tests
                     MultiverseId = 1922
                 },
             };
+
+            setData = new List<Set>()
+            {
+                new Set()
+                {
+                    Id = 116,
+                    Name = "Gatecrash",
+                    Code = "GTC",
+                    Block = "Return to Ravnica",
+                    Type = "Expansion",
+                    Desc = "Gatecrash is a Magic: The Gathering expansion set released February 1, 2013. It is the second set of the Return to Ravnica block. The tagline for the set is 'Fight For Your Guild' and it contains 249 cards (101 commons, 80 uncommons, 53 rares, 15 mythic rares). Gatecrash focuses on five of the returning guilds; the Boros Legion, House Dimir, The Orzhov Syndicate, The Gruul Clans, and The Simic Combine. As in the original Ravnica block, Gatecrash focuses on multicolor cards. The storyline told deals with the rise of another faction that does not ally with any of the Guilds. This group is referred to as the 'Gateless'. The Gateless was referred to in the first set in certain cards as well. Another storyline has the tension between the guilds rise, and their attempts to thwart one another.",
+                    CommonQty = 101,
+                    UncommonQty = 80,
+                    RareQty = 53,
+                    MythicQty = 15,
+                    BasicLandQty = 0,
+                    TotalQty = 249,
+                    ReleasedOn = new DateTime(2013,2,1)
+                },
+                new Set()
+                {
+                    Id = 124,
+                    Name = "Commander",
+                    Code = "C13",
+                    Block = "Commander",
+                    Type = "Non-standard Legal",
+                    Desc = "Commander is a series of five 100-card, three color Magic: the Gathering decks, meant as a supplement to the variant format initially known as 'Elder Dragon Highlander (EDH)'. Each deck is based around a legendary creature, called a 'Commander' or 'General'. No card other than basic lands appear more than once in each deck, and each deck contains three foil oversized legendary creature cards. This set is notable in that it is the first set printed outside of the normal booster pack expansions to have functionally new cards. There are 51 new cards, made specifically for multi-player games, featured in Commander.",
+                    CommonQty = 28,
+                    UncommonQty = 0,
+                    RareQty = 0,
+                    MythicQty = 0,
+                    BasicLandQty = 0,
+                    TotalQty = 28,
+                    ReleasedOn = new DateTime(2013,11,1)
+                },
+            };
         }
 
         [SetUp]
         public void SetUp()
         {
-            SetUp_CardData();
+            SetUp_Data();
 
             // Create a mock set and context
             cardDbSetMock = new Mock<DbSet<Card>>()
                 .SetupData(cardData);
 
+            setDbSetMock = new Mock<DbSet<Set>>()
+                .SetupData(setData);
+
             contextMock = new Mock<IMtgContext>();
             contextMock.Setup(c => c.Cards).Returns(cardDbSetMock.Object);
+            contextMock.Setup(c => c.Sets).Returns(setDbSetMock.Object);
         }
 
         #region GetCards
@@ -238,6 +280,20 @@ namespace NerdBot.Tests
             var card = mtgStore.GetCard("Boros", "xC13");
 
             Assert.Null(card);
+        }
+        #endregion
+
+        #region GetCardOtherSets
+
+        [Test]
+        public void Get_CardsOtherSets()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            int multiverseId = 376270;
+            var otherSets = mtgStore.GetCardOtherSets(multiverseId);
+
+            Assert.AreEqual(1, otherSets.Count());
         }
         #endregion
     }

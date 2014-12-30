@@ -13,7 +13,7 @@ namespace NerdBot.Mtg
         IEnumerable<Card> GetCards();
         IEnumerable<Card> GetCards(string name);
 
-        IEnumerable<Set> GetCardOtherSets(string name);
+        IEnumerable<Set> GetCardOtherSets(int multiverseId);
 
         IEnumerable<Card> GetCardsBySet(string set);
 

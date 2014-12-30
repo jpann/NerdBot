@@ -54,8 +54,20 @@ namespace NerdBot.Mtg
             return this.mContext.Cards.Where(c => c.Name.ToLower().StartsWith(name.ToLower()));
         }
 
-        public IEnumerable<Set> GetCardOtherSets(string name)
+        public IEnumerable<Set> GetCardOtherSets(int multiverseId)
         {
+            var card = this.mContext.Cards.Where(c => c.MultiverseId == multiverseId).FirstOrDefault();
+            if (card == null)
+                throw new Exception(string.Format("No card exists using multiverse id of '{0}'.", multiverseId));
+
+            //TODO Query for all sets that the other cards are in
+            //var otherSets = this.mContext.Cards
+            //    .Where(c =>
+            //        c.MultiverseId != multiverseId &&
+            //        c.Name == card.Name)
+            //    .Select(c => c.SetName)
+            //    .ToEnumerable();
+
             throw new NotImplementedException();
         }
 
