@@ -184,6 +184,82 @@ namespace NerdBot.Tests
             contextMock.Setup(c => c.Sets).Returns(setDbSetMock.Object);
         }
 
+        #region CardExists
+        [Test]
+        public void CardExists_MultiverseId_True()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            int multiverseId = 376270;
+
+            bool exists = mtgStore.CardExists(multiverseId);
+
+            Assert.True(exists);
+        }
+
+        [Test]
+        public void CardExists_MultiverseId_False()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            int multiverseId = 0;
+
+            bool exists = mtgStore.CardExists(multiverseId);
+
+            Assert.False(exists); 
+        }
+
+        [Test]
+        public void CardExists_Name_True()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            string name = "Boros Charm";
+
+            bool exists = mtgStore.CardExists(name);
+
+            Assert.True(exists);
+        }
+
+        [Test]
+        public void CardExists_Name_False()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            string name = "Some Random Card";
+
+            bool exists = mtgStore.CardExists(name);
+
+            Assert.False(exists);
+        }
+
+        [Test]
+        public void CardExists_NameSet_True()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            string name = "Boros Charm";
+            string set = "Gatecrash";
+
+            bool exists = mtgStore.CardExists(name, set);
+
+            Assert.True(exists);
+        }
+
+        [Test]
+        public void CardExists_NameSet_False()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            string name = "Boros Charm";
+            string set = "Random Set";
+
+            bool exists = mtgStore.CardExists(name, set);
+
+            Assert.False(exists);
+        }
+        #endregion
+
         #region GetCards
         [Test]
         public void Get_Cards()
@@ -261,18 +337,6 @@ namespace NerdBot.Tests
         }
 
         [Test]
-        public void Get_Card_Using_SetId()
-        {
-            var mtgStore = new MtgStore(contextMock.Object);
-
-            var card = mtgStore.GetCard("Boros", "C13");
-
-            Assert.NotNull(card);
-            Assert.AreEqual("Boros Charm", card.Name);
-            Assert.AreEqual("Commander 2013 Edition", card.SetName);
-        }
-
-        [Test]
         public void Get_Card_Using_SetId_DoesntExist()
         {
             var mtgStore = new MtgStore(contextMock.Object);
@@ -284,7 +348,6 @@ namespace NerdBot.Tests
         #endregion
 
         #region GetCardOtherSets
-
         [Test]
         public void Get_CardsOtherSets()
         {
