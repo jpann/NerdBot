@@ -109,11 +109,9 @@ namespace NerdBot.Mtg
 
         public IEnumerable<Set> GetCardOtherSets(int multiverseId)
         {
-            bool exists = this.CardExists(multiverseId);
-            if (!exists)
-                throw new Exception(string.Format("No card exists using multiverse id of '{0}'.", multiverseId));
-
             var card = this.mContext.Cards.Where(c => c.MultiverseId == multiverseId).FirstOrDefault();
+            if (card == null)
+                throw new Exception(string.Format("No card exists using multiverse id of '{0}'.", multiverseId));
 
             var otherSets =
                 (
