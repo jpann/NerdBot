@@ -361,6 +361,33 @@ namespace NerdBot.Tests
             Assert.AreEqual(1, otherSets.Count());
             Assert.AreEqual("Gatecrash", otherSet.Name);
         }
+
+        [Test]
+        public void Get_CardsOtherSets_NoOtherSets()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            int multiverseId = 368997;
+            var otherSets = mtgStore.GetCardOtherSets(multiverseId);
+
+            Assert.AreEqual(0, otherSets.Count());
+        }
+
+        [Test]
+        public void Get_CardsOtherSets_CardDoesntExist()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            int multiverseId = 0;
+            
+            Exception ex = Assert.Throws<Exception>(
+            delegate
+            {
+                var otherSets = mtgStore.GetCardOtherSets(multiverseId);
+            });
+
+            Assert.That(ex.Message, Is.EqualTo(string.Format("No card exists using multiverse id of '{0}'.", multiverseId)));
+        }
         #endregion
     }
 }
