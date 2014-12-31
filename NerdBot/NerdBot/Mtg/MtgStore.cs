@@ -131,6 +131,16 @@ namespace NerdBot.Mtg
             throw new NotImplementedException();
         }
 
+        public bool SetExists(string name)
+        {
+            throw new NotFiniteNumberException();
+        }
+
+        public bool SetExistsByCode(string code)
+        {
+            throw new NotFiniteNumberException();
+        }
+
         public Set GetSet(string name)
         {
             throw new NotImplementedException();

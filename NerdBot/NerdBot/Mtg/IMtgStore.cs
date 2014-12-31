@@ -21,6 +21,9 @@ namespace NerdBot.Mtg
 
         IEnumerable<Card> GetCardsBySet(string setName);
 
+        bool SetExists(string name);
+        bool SetExistsByCode(string code);
+
         Set GetSet(string name);
         Set GetSetByCode(string code);
     }
