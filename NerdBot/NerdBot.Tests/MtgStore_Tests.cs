@@ -446,5 +446,56 @@ namespace NerdBot.Tests
         }
         #endregion
 
+        #region SetExists
+        [Test]
+        public void SetExists_True()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            string set = "Gatecrash";
+
+            bool exists = mtgStore.SetExists(set);
+
+            Assert.True(exists);
+        }
+
+        [Test]
+        public void SetExists_False()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            string set = "SET";
+
+            bool exists = mtgStore.SetExists(set);
+
+            Assert.False(exists);
+        }
+        #endregion
+
+        #region SetExistsByCode
+        [Test]
+        public void SetExistsByCode_True()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            string set = "GTC";
+
+            bool exists = mtgStore.SetExistsByCode(set);
+
+            Assert.True(exists);
+        }
+
+        [Test]
+        public void SetExistsByCode_False()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            string set = "CODE";
+
+            bool exists = mtgStore.SetExistsByCode(set);
+
+            Assert.False(exists);
+        }
+        #endregion
     }
 }

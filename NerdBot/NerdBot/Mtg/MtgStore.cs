@@ -142,12 +142,32 @@ namespace NerdBot.Mtg
 
         public bool SetExists(string name)
         {
-            throw new NotFiniteNumberException();
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
+            name = name.ToLower();
+
+            var qty = this.mContext.Sets.Where(s => s.Name.ToLower() == name).Count();
+
+            if (qty <= 0)
+                return false;
+            else
+                return true;
         }
 
         public bool SetExistsByCode(string code)
         {
-            throw new NotFiniteNumberException();
+            if (string.IsNullOrEmpty(code))
+                throw new ArgumentException("code");
+
+            code = code.ToLower();
+
+            var qty = this.mContext.Sets.Where(s => s.Code.ToLower() == code).Count();
+
+            if (qty <= 0)
+                return false;
+            else
+                return true;
         }
 
         public Set GetSet(string name)
