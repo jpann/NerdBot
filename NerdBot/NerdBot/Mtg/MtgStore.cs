@@ -35,7 +35,9 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            var qty = this.mContext.Cards.Where(c => c.Name.ToLower() == name.ToLower()).Count();
+            name = name.ToLower();
+
+            var qty = this.mContext.Cards.Where(c => c.Name.ToLower() == name).Count();
 
             if (qty <= 0)
                 return false;
@@ -51,7 +53,10 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(set))
                 throw new ArgumentException("set");
 
-            var qty = this.mContext.Cards.Where(c => c.Name.ToLower() == name.ToLower() && c.SetName.ToLower() == set.ToLower()).Count();
+            name = name.ToLower();
+            set = set.ToLower();
+
+            var qty = this.mContext.Cards.Where(c => c.Name.ToLower() == name && c.SetName.ToLower() == set).Count();
 
             if (qty <= 0)
                 return false;
@@ -64,7 +69,9 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            return this.mContext.Cards.Where(c => c.Name.ToLower().StartsWith(name.ToLower())).FirstOrDefault();
+            name = name.ToLower();
+
+            return this.mContext.Cards.Where(c => c.Name.ToLower().StartsWith(name)).FirstOrDefault();
         }
 
         public Card GetCard(string name, string set)
@@ -75,10 +82,13 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(set))
                 throw new ArgumentException("set");
 
+            name = name.ToLower();
+            set = set.ToLower();
+
             return
                 this.mContext.Cards.Where(
-                    c => c.Name.ToLower().StartsWith(name.ToLower()) && 
-                        (c.SetName.ToLower().StartsWith(set.ToLower())) || c.SetId.ToLower().StartsWith(set.ToLower()))
+                    c => c.Name.ToLower().StartsWith(name) && 
+                        (c.SetName.ToLower().StartsWith(set)) || c.SetId.ToLower().StartsWith(set))
                     .FirstOrDefault();
         }
 
@@ -92,7 +102,9 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            return this.mContext.Cards.Where(c => c.Name.ToLower().StartsWith(name.ToLower()));
+            name = name.ToLower();
+
+            return this.mContext.Cards.Where(c => c.Name.ToLower().StartsWith(name));
         }
 
         public IEnumerable<Set> GetCardOtherSets(int multiverseId)
