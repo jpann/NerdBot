@@ -126,7 +126,18 @@ namespace NerdBot.Mtg
 
         public IEnumerable<Card> GetCardsBySet(string setName)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(setName))
+                throw new ArgumentException(setName);
+
+            setName = setName.ToLower();
+
+            var set = this.mContext.Sets.Where(s => s.Name.ToLower() == setName).FirstOrDefault();
+            if (set == null)
+                throw new Exception(string.Format("No set exists using name '{0}'.", setName));
+
+            var cards = this.mContext.Cards.Where(c => c.SetName.ToLower() == setName);
+
+            return cards;
         }
 
         public bool SetExists(string name)

@@ -128,6 +128,32 @@ namespace NerdBot.Tests
                     Img = "https://api.mtgdb.info/content/card_images/1922.jpeg",
                     MultiverseId = 1922
                 },
+                new Card()
+                {
+                    Id = 7066,
+                    RelatedCardId = 0,
+                    SetNumber =  1,
+                    Name = "Aerial Maneuver",
+                    SearchName = "Aerial Maneuver",
+                    Desc = "Target creature gets +1/+1 and gains flying and first strike until end of turn.",
+                    Flavor = "",
+                    Colors = "white",
+                    Cost = "1W",
+                    Cmc = 2,
+                    SetName = "Gatecrash",
+                    Type = "Instant",
+                    SubType = "",
+                    Power = "0",
+                    Toughness = "0",
+                    Loyalty = "0",
+                    Rarity = "Common",
+                    Artist = "Scott Chou",
+                    SetId = "GTC",
+                    Token = false,
+                    Img = "https://api.mtgdb.info/content/card_images/366294.jpeg",
+                    ImgHires = "https://api.mtgdb.info/content/hi_res_card_images/366294.jpg",
+                    MultiverseId = 366294,
+                },
             };
 
             setData = new List<Set>()
@@ -389,5 +415,36 @@ namespace NerdBot.Tests
             Assert.That(ex.Message, Is.EqualTo(string.Format("No card exists using multiverse id of '{0}'.", multiverseId)));
         }
         #endregion
+
+        #region GetCardsBySet
+        [Test]
+        public void GetCardsBySet()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            string set = "Gatecrash";
+
+            var cards = mtgStore.GetCardsBySet(set);
+
+            Assert.AreEqual(2, cards.Count());
+        }
+
+        [Test]
+        public void GetCardsBySet_SetDoesntExist()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            string set = "Set";
+
+            Exception ex = Assert.Throws<Exception>(
+            delegate
+            {
+                var cards = mtgStore.GetCardsBySet(set);
+            });
+
+            Assert.That(ex.Message, Is.EqualTo(string.Format("No set exists using name '{0}'.", set.ToLower())));
+        }
+        #endregion
+
     }
 }
