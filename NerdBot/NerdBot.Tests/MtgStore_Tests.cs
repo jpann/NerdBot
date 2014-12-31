@@ -151,7 +151,7 @@ namespace NerdBot.Tests
                 new Set()
                 {
                     Id = 124,
-                    Name = "Commander",
+                    Name = "Commander 2013 Edition",
                     Code = "C13",
                     Block = "Commander",
                     Type = "Non-standard Legal",
@@ -293,7 +293,10 @@ namespace NerdBot.Tests
             int multiverseId = 376270;
             var otherSets = mtgStore.GetCardOtherSets(multiverseId);
 
+            var otherSet = otherSets.First();
+
             Assert.AreEqual(1, otherSets.Count());
+            Assert.AreEqual("Gatecrash", otherSet.Name);
         }
         #endregion
     }

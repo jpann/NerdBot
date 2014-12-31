@@ -7,6 +7,10 @@ namespace NerdBot.Mtg
 {
     public interface IMtgStore
     {
+        bool CardExists(int multiverseId);
+        bool CardExists(string name);
+        bool CardExists(string name, string set);
+
         Card GetCard(string name);
         Card GetCard(string name, string set);
 

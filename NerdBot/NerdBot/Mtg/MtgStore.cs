@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using Ninject.Infrastructure.Language;
 
@@ -16,6 +18,45 @@ namespace NerdBot.Mtg
                 throw new ArgumentNullException("context");
 
             this.mContext = context;
+        }
+
+        public bool CardExists(int multiverseId)
+        {
+            var qty = this.mContext.Cards.Where(c => c.MultiverseId == multiverseId).Count();
+
+            if (qty <= 0)
+                return false;
+            else
+                return true;
+        }
+
+        public bool CardExists(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
+            var qty = this.mContext.Cards.Where(c => c.Name.ToLower() == name.ToLower()).Count();
+
+            if (qty <= 0)
+                return false;
+            else
+                return true;
+        }
+
+        public bool CardExists(string name, string set)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
+            if (string.IsNullOrEmpty(set))
+                throw new ArgumentException("set");
+
+            var qty = this.mContext.Cards.Where(c => c.Name.ToLower() == name.ToLower() && c.SetName.ToLower() == set.ToLower()).Count();
+
+            if (qty <= 0)
+                return false;
+            else
+                return true;
         }
 
         public Card GetCard(string name)
@@ -56,19 +97,21 @@ namespace NerdBot.Mtg
 
         public IEnumerable<Set> GetCardOtherSets(int multiverseId)
         {
-            var card = this.mContext.Cards.Where(c => c.MultiverseId == multiverseId).FirstOrDefault();
-            if (card == null)
+            bool exists = this.CardExists(multiverseId);
+            if (!exists)
                 throw new Exception(string.Format("No card exists using multiverse id of '{0}'.", multiverseId));
 
-            //TODO Query for all sets that the other cards are in
-            //var otherSets = this.mContext.Cards
-            //    .Where(c =>
-            //        c.MultiverseId != multiverseId &&
-            //        c.Name == card.Name)
-            //    .Select(c => c.SetName)
-            //    .ToEnumerable();
+            var card = this.mContext.Cards.Where(c => c.MultiverseId == multiverseId).FirstOrDefault();
 
-            throw new NotImplementedException();
+            var otherSets =
+                (
+                    from cards in this.mContext.Cards
+                    join sets in this.mContext.Sets on cards.SetName equals sets.Name
+                    where (cards.MultiverseId != multiverseId && cards.Name == card.Name)
+                    select sets
+                );
+
+            return otherSets;
         }
 
         public IEnumerable<Card> GetCardsBySet(string set)
