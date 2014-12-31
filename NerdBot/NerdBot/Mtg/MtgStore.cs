@@ -45,18 +45,18 @@ namespace NerdBot.Mtg
                 return true;
         }
 
-        public bool CardExists(string name, string set)
+        public bool CardExists(string name, string setName)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            if (string.IsNullOrEmpty(set))
-                throw new ArgumentException("set");
+            if (string.IsNullOrEmpty(setName))
+                throw new ArgumentException("setName");
 
             name = name.ToLower();
-            set = set.ToLower();
+            setName = setName.ToLower();
 
-            var qty = this.mContext.Cards.Where(c => c.Name.ToLower() == name && c.SetName.ToLower() == set).Count();
+            var qty = this.mContext.Cards.Where(c => c.Name.ToLower() == name && c.SetName.ToLower() == setName).Count();
 
             if (qty <= 0)
                 return false;
@@ -74,21 +74,21 @@ namespace NerdBot.Mtg
             return this.mContext.Cards.Where(c => c.Name.ToLower().StartsWith(name)).FirstOrDefault();
         }
 
-        public Card GetCard(string name, string set)
+        public Card GetCard(string name, string setName)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            if (string.IsNullOrEmpty(set))
-                throw new ArgumentException("set");
+            if (string.IsNullOrEmpty(setName))
+                throw new ArgumentException("setName");
 
             name = name.ToLower();
-            set = set.ToLower();
+            setName = setName.ToLower();
 
             return
                 this.mContext.Cards.Where(
                     c => c.Name.ToLower().StartsWith(name) && 
-                        (c.SetName.ToLower().StartsWith(set)) || c.SetId.ToLower().StartsWith(set))
+                        (c.SetName.ToLower().StartsWith(setName)))
                     .FirstOrDefault();
         }
 
@@ -126,7 +126,7 @@ namespace NerdBot.Mtg
             return otherSets;
         }
 
-        public IEnumerable<Card> GetCardsBySet(string set)
+        public IEnumerable<Card> GetCardsBySet(string setName)
         {
             throw new NotImplementedException();
         }
