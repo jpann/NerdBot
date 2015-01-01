@@ -30,7 +30,7 @@ namespace NerdBot
                 // Send to all plugins
                 pluginManager.SendMessage(message, messenger);
 
-                return HttpStatusCode.NotImplemented;
+                return HttpStatusCode.Accepted;
             };
         }
     }
