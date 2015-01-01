@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using Ninject.Infrastructure.Language;
 
@@ -172,7 +170,12 @@ namespace NerdBot.Mtg
 
         public Set GetSet(string name)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
+            name = name.ToLower();
+
+            return this.mContext.Sets.Where(s => s.Name.ToLower() == name).FirstOrDefault();
         }
 
         public Set GetSetByCode(string code)

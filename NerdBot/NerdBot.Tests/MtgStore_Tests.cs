@@ -497,5 +497,35 @@ namespace NerdBot.Tests
             Assert.False(exists);
         }
         #endregion
+
+        #region GetSet
+        [Test]
+        public void GetSet()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            string set = "Gatecrash";
+
+            Set actual = mtgStore.GetSet(set);
+
+            Assert.NotNull(actual);
+            Assert.AreEqual("Gatecrash", actual.Name);
+        }
+
+        [Test]
+        public void GetSet_DoesntExist()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            string set = "SETNAME";
+
+            Set actual = mtgStore.GetSet(set);
+
+            Assert.Null(actual);
+        }
+        #endregion
+
+        #region GetSetByCode
+        #endregion
     }
 }
