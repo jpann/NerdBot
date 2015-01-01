@@ -48,8 +48,8 @@ namespace NerdBot
                 .SelectAllClasses().InheritedFrom<IPlugin>()
                 .BindAllInterfaces());
 
-            existingContainer.Bind<PluginManager>()
-                .ToSelf()
+            existingContainer.Bind<IPluginManager>()
+                .To<PluginManager>()
                 .WithConstructorArgument("pluginDirectory", pluginDirectory);
         }
 

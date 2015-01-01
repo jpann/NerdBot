@@ -10,7 +10,7 @@ namespace NerdBot
 
     public class IndexModule : NancyModule
     {
-        public IndexModule(IMtgContext context, IMessenger messenger, PluginManager pluginManager)
+        public IndexModule(IMtgContext context, IMessenger messenger, IPluginManager pluginManager)
         {
             Get["/"] = parameters =>
             {

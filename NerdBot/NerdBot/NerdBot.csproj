@@ -97,6 +97,7 @@
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="IPluginManager.cs" />
     <Compile Include="Messengers\GroupMe\GroupMeMessage.cs" />
     <Compile Include="Messengers\GroupMe\GroupMeMessenger.cs" />
     <Compile Include="Messengers\IMessage.cs" />

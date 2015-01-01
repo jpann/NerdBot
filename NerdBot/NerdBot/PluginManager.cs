@@ -12,7 +12,7 @@ using Ninject.Extensions.Logging;
 
 namespace NerdBot
 {
-    public class PluginManager
+    public class PluginManager : IPluginManager
     {
         private readonly ILogger mLogger;
         private readonly IMtgContext mContext;
