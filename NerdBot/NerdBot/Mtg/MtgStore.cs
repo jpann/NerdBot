@@ -180,7 +180,12 @@ namespace NerdBot.Mtg
 
         public Set GetSetByCode(string code)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(code))
+                throw new ArgumentException("code");
+
+            code = code.ToLower();
+
+            return this.mContext.Sets.Where(s => s.Code.ToLower() == code).FirstOrDefault();
         }
     }
 }
