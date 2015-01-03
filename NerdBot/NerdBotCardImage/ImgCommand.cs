@@ -46,7 +46,7 @@ namespace NerdBotCardImage
             // Parse command
             if (message.text.StartsWith("img "))
             {
-                string name = message.text.Substring(message.text.IndexOf(" "));
+                string name = message.text.Substring(message.text.IndexOf(" ") + 1);
 
                 if (string.IsNullOrEmpty(name))
                     return false;
