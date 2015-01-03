@@ -9,6 +9,7 @@ namespace NerdBot.Mtg
     public class MtgContext : DbContext, IMtgContext
     {
         public MtgContext()
+            : base("MtgContext")
         {
         }
 
