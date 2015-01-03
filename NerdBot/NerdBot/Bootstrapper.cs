@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Ninject;
@@ -28,16 +29,19 @@ namespace NerdBot
             string pluginDirectory = Path.Combine(Environment.CurrentDirectory, "plugins");
 
             existingContainer.Bind<IMtgContext>()
-                .To<MtgContext>();
+                .To<MtgContext>()
+                .InSingletonScope();
 
             existingContainer.Bind<IMtgStore>()
-                .To<MtgStore>();
+                .To<MtgStore>()
+                .InSingletonScope();
 
             existingContainer.Bind<IHttpClient>()
                 .To<SimpleHttpClient>();
 
             existingContainer.Bind<IMessenger>()
                 .To<GroupMeMessenger>()
+                .InSingletonScope()
                 .WithConstructorArgument("botId", Properties.Settings.Default.BotId)
                 .WithConstructorArgument("botName", Properties.Settings.Default.BotName)
                 .WithConstructorArgument("ignoreNames", new string[] {})
@@ -50,6 +54,7 @@ namespace NerdBot
 
             existingContainer.Bind<IPluginManager>()
                 .To<PluginManager>()
+                .InSingletonScope()
                 .WithConstructorArgument("pluginDirectory", pluginDirectory);
         }
 
