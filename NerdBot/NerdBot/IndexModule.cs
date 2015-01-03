@@ -27,6 +27,10 @@ namespace NerdBot
                 if (!ModelValidationResult.IsValid)
                     return HttpStatusCode.NotAcceptable;
 
+                // Don't handle messages sent from ourself
+                if (message.name.ToLower() == messenger.BotName.ToLower())
+                    return HttpStatusCode.NotAcceptable;
+
                 // Send to all plugins
                 pluginManager.SendMessage(message, messenger);
 
