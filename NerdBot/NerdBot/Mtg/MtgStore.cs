@@ -67,7 +67,7 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            name = name.ToLower();
+            name = name.Trim().ToLower();
 
             return this.mContext.Cards.Where(c => c.Name.ToLower().StartsWith(name)).FirstOrDefault();
         }
