@@ -15,7 +15,7 @@ namespace NerdBot
     public class PluginManager : IPluginManager
     {
         private readonly ILogger mLogger;
-        private readonly IMtgContext mContext;
+        private readonly IMtgStore mStore;
         private string mPluginDirectory;
         private List<IPlugin> mPlugins = new List<IPlugin>();
 
@@ -38,22 +38,22 @@ namespace NerdBot
         }
         #endregion
 
-        public PluginManager(ILogger logger, IMtgContext context)
+        public PluginManager(ILogger logger, IMtgStore store)
         {
             if (logger == null)
                 throw new ArgumentNullException("logger");
 
-            if (context == null)
-                throw new ArgumentNullException("context");
+            if (store == null)
+                throw new ArgumentNullException("store");
 
             this.mLogger = logger;
-            this.mContext = context;
+            this.mStore = store;
         }
 
         public PluginManager(
             string pluginDirectory,
             ILogger logger,
-            IMtgContext context)
+            IMtgStore store)
         {
             if (string.IsNullOrEmpty(pluginDirectory))
                 throw new ArgumentException("pluginDirectory");
@@ -61,12 +61,14 @@ namespace NerdBot
             if (!Directory.Exists(pluginDirectory))
                 throw new DirectoryNotFoundException(pluginDirectory);
 
-            if (context == null)
-                throw new ArgumentNullException("context");
+            if (store == null)
+                throw new ArgumentNullException("store");
 
             this.mPluginDirectory = pluginDirectory;
             this.mLogger = logger;
-            this.mContext = context;
+            this.mStore = store;
+
+            this.LoadPlugins();
         }
 
         public void LoadPlugins()
@@ -84,7 +86,7 @@ namespace NerdBot
 
                     IPlugin plugin = (IPlugin) Activator.CreateInstance(type);
 
-                    plugin.Load(this.mContext);
+                    plugin.Load(this.mStore);
 
                     this.mPlugins.Add(plugin);
                 }

@@ -11,7 +11,7 @@ namespace NerdBot.Plugin
     {
         string Name { get; }
         string Description { get; }
-        void Load(IMtgContext context);
+        void Load(IMtgStore store);
         void Unload();
         bool OnMessage(IMessage message, IMessenger messenger);
     }
