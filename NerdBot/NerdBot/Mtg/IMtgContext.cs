@@ -12,5 +12,6 @@ namespace NerdBot.Mtg
         IDbSet<Set> Sets { get; set; }
 
         int SaveChanges();
+        List<T> ExecuteQuery<T>(string query, object[] parameters);
     }
 }

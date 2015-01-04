@@ -20,7 +20,7 @@ namespace NerdBot.Mtg
 
         public bool CardExists(int multiverseId)
         {
-            var qty = this.mContext.Cards.Where(c => c.MultiverseId == multiverseId).Count();
+            var qty = this.mContext.Cards.Where(c => c.Multiverse_Id == multiverseId).Count();
 
             if (qty <= 0)
                 return false;
@@ -54,7 +54,7 @@ namespace NerdBot.Mtg
             name = name.ToLower();
             setName = setName.ToLower();
 
-            var qty = this.mContext.Cards.Where(c => c.Name.ToLower() == name && c.SetName.ToLower() == setName).Count();
+            var qty = this.mContext.Cards.Where(c => c.Name.ToLower() == name && c.Set_Name.ToLower() == setName).Count();
 
             if (qty <= 0)
                 return false;
@@ -86,7 +86,7 @@ namespace NerdBot.Mtg
             return
                 this.mContext.Cards.Where(
                     c => c.Name.ToLower().StartsWith(name) && 
-                        (c.SetName.ToLower().StartsWith(setName)))
+                        (c.Set_Name.ToLower().StartsWith(setName)))
                     .FirstOrDefault();
         }
 
@@ -107,15 +107,15 @@ namespace NerdBot.Mtg
 
         public IEnumerable<Set> GetCardOtherSets(int multiverseId)
         {
-            var card = this.mContext.Cards.Where(c => c.MultiverseId == multiverseId).FirstOrDefault();
+            var card = this.mContext.Cards.Where(c => c.Multiverse_Id == multiverseId).FirstOrDefault();
             if (card == null)
                 throw new Exception(string.Format("No card exists using multiverse id of '{0}'.", multiverseId));
 
             var otherSets =
                 (
                     from cards in this.mContext.Cards
-                    join sets in this.mContext.Sets on cards.SetName equals sets.Name
-                    where (cards.MultiverseId != multiverseId && cards.Name == card.Name)
+                    join sets in this.mContext.Sets on cards.Set_Name equals sets.Name
+                    where (cards.Multiverse_Id != multiverseId && cards.Name == card.Name)
                     select sets
                 );
 
@@ -133,7 +133,7 @@ namespace NerdBot.Mtg
             if (set == null)
                 throw new Exception(string.Format("No set exists using name '{0}'.", setName));
 
-            var cards = this.mContext.Cards.Where(c => c.SetName.ToLower() == setName);
+            var cards = this.mContext.Cards.Where(c => c.Set_Name.ToLower() == setName);
 
             return cards;
         }

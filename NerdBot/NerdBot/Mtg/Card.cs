@@ -13,16 +13,16 @@ namespace NerdBot.Mtg
         public long Id { get; set; }
 
         [Column("related_card_id")]
-        public int? RelatedCardId { get; set; }
+        public int? Related_Card_Id { get; set; }
 
         [Column("set_number")]
-        public int SetNumber { get; set; }
+        public int Set_Number { get; set; }
 
         [Column("name")]
         public string Name { get; set; }
 
         [Column("search_name")]
-        public string SearchName { get; set; }
+        public string Search_Name { get; set; }
 
         [Column("desc")]
         public string Desc { get; set; }
@@ -40,7 +40,7 @@ namespace NerdBot.Mtg
         public int Cmc { get; set; }
 
         [Column("set_name")]
-        public string SetName { get; set; }
+        public string Set_Name { get; set; }
 
         [Column("type")]
         public string Type { get; set; }
@@ -64,7 +64,7 @@ namespace NerdBot.Mtg
         public string Artist { get; set; }
 
         [Column("set_id")]
-        public string SetId { get; set; }
+        public string Set_Id { get; set; }
 
         [Column("token")]
         public bool? Token { get; set; }
@@ -73,9 +73,9 @@ namespace NerdBot.Mtg
         public string Img { get; set; }
 
         [Column("img_hires")]
-        public string ImgHires { get; set; }
+        public string Img_Hires { get; set; }
 
         [Column("multiverse_id")]
-        public int MultiverseId { get; set; }
+        public int Multiverse_Id { get; set; }
     }
 }
