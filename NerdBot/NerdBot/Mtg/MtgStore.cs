@@ -137,12 +137,32 @@ namespace NerdBot.Mtg
 
         public List<Card> SearchCards(string name)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
+            name = name.ToLower();
+
+            List<Card> cards = this.mContext.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0",
+                new string[] { name });
+
+            return cards;
         }
 
         public List<Card> SearchCards(string name, string setName)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
+            if (string.IsNullOrEmpty(setName))
+                throw new ArgumentException("setName");
+
+            name = name.ToLower();
+            setName = setName.ToLower();
+
+            List<Card> cards = this.mContext.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0 AND set_name LIKE @p1",
+                new string[] { name, setName});
+
+            return cards;
         }
 
         public IEnumerable<Set> GetCardOtherSets(int multiverseId)

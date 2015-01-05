@@ -214,7 +214,7 @@ namespace NerdBot.Tests
                 c => c.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0 LIMIT 1", new string[] {"boros%"}))
                 .Returns(() => cardData.Where(c => c.Name.ToLower().StartsWith("boros")).ToList());
 
-            // Mock querying for a card that start with 'doesntexist' which will an empty list
+            // Mock querying for a card that start with 'doesntexist' which will return an empty list
             contextMock.Setup(
                 c => c.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0 LIMIT 1", new string[] { "doesntexist%" }))
                 .Returns(() => new List<Card>());
@@ -227,6 +227,26 @@ namespace NerdBot.Tests
             // Mock querying for a card that starts with 'doesntexist' and is in set 'Commander 2013 Edition' which will return an empty list
             contextMock.Setup(
                 c => c.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0 AND set_name LIKE @p1 LIMIT 1", new string[] { "doesntexist%", "commander 2013 edition" }))
+                .Returns(() => new List<Card>());
+
+            // Mock querying for cards that start with 'boros'
+            contextMock.Setup(
+                c => c.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0", new string[] { "boros%" }))
+                .Returns(() => cardData.Where(c => c.Name.ToLower().StartsWith("boros")).ToList());
+
+            // Mock querying for cards that start with 'doesntexist' which will return an empty list
+            contextMock.Setup(
+                c => c.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0", new string[] { "doesntexist%" }))
+                .Returns(() => new List<Card>());
+
+            // Mock querying for cards that start with 'boros' and set contains 'c'
+            contextMock.Setup(
+                c => c.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0 AND set_name LIKE @p1", new string[] { "boros%", "%c%" }))
+                .Returns(() => cardData.Where(c => c.Name.ToLower().StartsWith("boros")&& c.Set_Name.ToLower().Contains("c")).ToList());
+
+            // Mock querying for cards that start with 'boros' and set contains 'DOESNTEXIST%' which will return an empty list
+            contextMock.Setup(
+                c => c.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0 AND set_name LIKE @p1", new string[] { "boros%", "doesntexist%" }))
                 .Returns(() => new List<Card>());
         }
 
@@ -439,7 +459,49 @@ namespace NerdBot.Tests
         }
         #endregion
 
-        #region GetCardOtherSets
+        #region SearchCards
+        [Test]
+        public void SearchCards()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            var cards = mtgStore.SearchCards("Boros%");
+
+            Assert.AreEqual(cardData.Where(c => c.Name.ToLower().StartsWith("boros")).Count(), cards.Count);
+        }
+
+        [Test]
+        public void SearchCards_DoesntExist()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            var cards = mtgStore.SearchCards("DOESNTEXIST%");
+
+            Assert.AreEqual(0, cards.Count);
+        }
+
+        [Test]
+        public void SearchCards_SetName()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            var cards = mtgStore.SearchCards("Boros%", "%C%");
+
+            Assert.AreEqual(cardData.Where(c => c.Name.ToLower().StartsWith("boros") && c.Set_Name.ToLower().Contains("c")).Count(), cards.Count);
+        }
+
+        [Test]
+        public void SearchCards_SetName_DoesntExist()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            var cards = mtgStore.SearchCards("Boros%", "DOESNTEXIST%");
+
+            Assert.AreEqual(0, cards.Count);
+        }
+        #endregion
+
+        #region #region GetCardOtherSets
         [Test]
         public void Get_CardsOtherSets()
         {
