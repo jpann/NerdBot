@@ -112,6 +112,9 @@
     <Compile Include="Mtg\MtgContext.cs" />
     <Compile Include="Mtg\MtgStore.cs" />
     <Compile Include="Mtg\Set.cs" />
+    <Compile Include="Parsers\Command.cs" />
+    <Compile Include="Parsers\CommandParser.cs" />
+    <Compile Include="Parsers\ICommandParser.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="Plugin\IPlugin.cs" />
     <Compile Include="Program.cs" />

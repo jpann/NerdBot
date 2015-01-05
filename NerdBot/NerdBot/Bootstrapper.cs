@@ -7,6 +7,7 @@ using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
+using NerdBot.Parsers;
 using NerdBot.Plugin;
 using Ninject;
 using Ninject.Extensions.Conventions;
@@ -38,6 +39,10 @@ namespace NerdBot
 
             existingContainer.Bind<IHttpClient>()
                 .To<SimpleHttpClient>();
+
+            existingContainer.Bind<ICommandParser>()
+                .To<CommandParser>()
+                .InSingletonScope();
 
             existingContainer.Bind<IMessenger>()
                 .To<GroupMeMessenger>()

@@ -7,6 +7,7 @@ using System.Text;
 using NerdBot.Extensions;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
+using NerdBot.Parsers;
 using NerdBot.Plugin;
 using Ninject.Extensions.Logging;
 
@@ -16,6 +17,7 @@ namespace NerdBot
     {
         private readonly ILogger mLogger;
         private readonly IMtgStore mStore;
+        private readonly ICommandParser mCommandParser;
         private string mPluginDirectory;
         private List<IPlugin> mPlugins = new List<IPlugin>();
 
@@ -38,7 +40,7 @@ namespace NerdBot
         }
         #endregion
 
-        public PluginManager(ILogger logger, IMtgStore store)
+        public PluginManager(ILogger logger, IMtgStore store, ICommandParser commandParser)
         {
             if (logger == null)
                 throw new ArgumentNullException("logger");
@@ -46,14 +48,19 @@ namespace NerdBot
             if (store == null)
                 throw new ArgumentNullException("store");
 
+            if (commandParser == null)
+                throw new ArgumentNullException("commandParser");
+
             this.mLogger = logger;
             this.mStore = store;
+            this.mCommandParser = commandParser;
         }
 
         public PluginManager(
             string pluginDirectory,
             ILogger logger,
-            IMtgStore store)
+            IMtgStore store,
+            ICommandParser commandParser)
         {
             if (string.IsNullOrEmpty(pluginDirectory))
                 throw new ArgumentException("pluginDirectory");
@@ -64,9 +71,13 @@ namespace NerdBot
             if (store == null)
                 throw new ArgumentNullException("store");
 
+            if (commandParser == null)
+                throw new ArgumentNullException("commandParser");
+
             this.mPluginDirectory = pluginDirectory;
             this.mLogger = logger;
             this.mStore = store;
+            this.mCommandParser = commandParser;
 
             this.LoadPlugins();
         }
@@ -86,7 +97,7 @@ namespace NerdBot
 
                     IPlugin plugin = (IPlugin) Activator.CreateInstance(type);
 
-                    plugin.Load(this.mStore);
+                    plugin.Load(this.mStore, this.mCommandParser);
 
                     this.mPlugins.Add(plugin);
                 }
