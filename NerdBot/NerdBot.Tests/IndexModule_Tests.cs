@@ -227,6 +227,12 @@ namespace NerdBot.Tests
             contextMock.Setup(c => c.Cards).Returns(cardDbSetMock.Object);
             contextMock.Setup(c => c.Sets).Returns(setDbSetMock.Object);
 
+            // Mock IMessenger properties so a null object reference exception is not thrown in IndexModule
+            messengerMock.Setup(p => p.BotName)
+                .Returns("BotName");
+            messengerMock.Setup(p => p.BotId)
+                .Returns("BOTID");
+
             // Setup the Browser object
             //var bootstrapper = new DefaultNancyBootstrapper();
             browser = new Browser(with =>
