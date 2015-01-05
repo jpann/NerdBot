@@ -13,9 +13,13 @@ namespace NerdBot.Mtg
 
         Card GetCard(string name);
         Card GetCard(string name, string setName);
+        Card SearchCard(string name);
+        Card SearchCard(string name, string setName);
 
         IEnumerable<Card> GetCards();
         IEnumerable<Card> GetCards(string name);
+        List<Card> SearchCards(string name);
+        List<Card> SearchCards(string name, string setName);
 
         IEnumerable<Set> GetCardOtherSets(int multiverseId);
 

@@ -90,6 +90,36 @@ namespace NerdBot.Mtg
                     .FirstOrDefault();
         }
 
+        public Card SearchCard(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
+            name = name.Trim().ToLower();
+
+            List<Card> cards = this.mContext.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0 LIMIT 1", 
+                new string[] { name });
+
+            return cards.FirstOrDefault();
+        }
+
+        public Card SearchCard(string name, string setName)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
+            if (string.IsNullOrEmpty(setName))
+                throw new ArgumentException("setName");
+
+            name = name.Trim().ToLower();
+            setName = setName.Trim().ToLower();
+
+            List<Card> cards = this.mContext.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0 AND set_name LIKE @p1 LIMIT 1",
+                new string[] { name, setName });
+
+            return cards.FirstOrDefault();
+        }
+
         public IEnumerable<Card> GetCards()
         {
             return this.mContext.Cards.ToEnumerable();
@@ -103,6 +133,16 @@ namespace NerdBot.Mtg
             name = name.ToLower();
 
             return this.mContext.Cards.Where(c => c.Name.ToLower().StartsWith(name));
+        }
+
+        public List<Card> SearchCards(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Card> SearchCards(string name, string setName)
+        {
+            throw new NotImplementedException();
         }
 
         public IEnumerable<Set> GetCardOtherSets(int multiverseId)

@@ -208,6 +208,26 @@ namespace NerdBot.Tests
             contextMock = new Mock<IMtgContext>();
             contextMock.Setup(c => c.Cards).Returns(cardDbSetMock.Object);
             contextMock.Setup(c => c.Sets).Returns(setDbSetMock.Object);
+
+            // Mock querying for a card that start with 'boros' using a like query
+            contextMock.Setup(
+                c => c.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0 LIMIT 1", new string[] {"boros%"}))
+                .Returns(() => cardData.Where(c => c.Name.ToLower().StartsWith("boros")).ToList());
+
+            // Mock querying for a card that start with 'doesntexist' which will an empty list
+            contextMock.Setup(
+                c => c.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0 LIMIT 1", new string[] { "doesntexist%" }))
+                .Returns(() => new List<Card>());
+
+            // Mock querying for a card that starts with 'boros' and is in set 'Commander 2013 Edition'
+            contextMock.Setup(
+                c => c.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0 AND set_name LIKE @p1 LIMIT 1", new string[] { "boros%" , "commander 2013 edition" }))
+                .Returns(() => cardData.Where(c => c.Name.ToLower().StartsWith("boros") && c.Set_Name == "Commander 2013 Edition").ToList());
+
+            // Mock querying for a card that starts with 'doesntexist' and is in set 'Commander 2013 Edition' which will return an empty list
+            contextMock.Setup(
+                c => c.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0 AND set_name LIKE @p1 LIMIT 1", new string[] { "doesntexist%", "commander 2013 edition" }))
+                .Returns(() => new List<Card>());
         }
 
         #region CardExists
@@ -368,6 +388,52 @@ namespace NerdBot.Tests
             var mtgStore = new MtgStore(contextMock.Object);
 
             var card = mtgStore.GetCard("Boros", "xC13");
+
+            Assert.Null(card);
+        }
+        #endregion
+
+        #region SearchCard
+        [Test]
+        public void SearchCard()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            var card = mtgStore.SearchCard("Boros%");
+
+            Assert.NotNull(card);
+            Assert.AreEqual(cardData.Where(c => c.Name.ToLower().StartsWith("boros")).ToList().FirstOrDefault().Multiverse_Id, 
+                card.Multiverse_Id);
+        }
+
+        [Test]
+        public void SearchCard_DoesntExist()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            var card = mtgStore.SearchCard("DOESNTEXIST%");
+
+            Assert.Null(card);
+        }
+
+        [Test]
+        public void SearchCard_SetName()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            var card = mtgStore.SearchCard("Boros%", "Commander 2013 Edition");
+
+            Assert.NotNull(card);
+            Assert.AreEqual(cardData.Where(c => c.Name.ToLower().StartsWith("boros") && c.Set_Name == "Commander 2013 Edition").ToList().FirstOrDefault().Multiverse_Id,
+                card.Multiverse_Id);
+        }
+
+        [Test]
+        public void SearchCard_SetName_DoesntExist()
+        {
+            var mtgStore = new MtgStore(contextMock.Object);
+
+            var card = mtgStore.SearchCard("DOESNTEXIST%", "Commander 2013 Edition");
 
             Assert.Null(card);
         }
