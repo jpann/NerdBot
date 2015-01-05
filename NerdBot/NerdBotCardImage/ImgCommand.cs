@@ -52,7 +52,7 @@ namespace NerdBotCardImage
                     return false;
 
                 // Get card
-                Card card = this.mStore.GetCard(name);
+                Card card = this.mStore.SearchCard(name);
 
                 if (card != null)
                 {
