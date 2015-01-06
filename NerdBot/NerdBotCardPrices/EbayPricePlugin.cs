@@ -97,5 +97,4 @@ namespace NerdBotCardPrices
             return false;
         }
     }
-    }
 }
