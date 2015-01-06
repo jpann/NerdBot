@@ -8,5 +8,6 @@ namespace NerdBot.Http
     public interface IHttpClient
     {
         string Post(string url, string json);
+        string GetPageSource(string url);
     }
 }

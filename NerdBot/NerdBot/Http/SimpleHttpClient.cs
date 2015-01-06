@@ -56,5 +56,26 @@ namespace NerdBot.Http
                 throw;
             }
         }
+
+        public string GetPageSource(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+                throw new ArgumentException("url");
+
+            try
+            {
+                using (WebClient wc = new WebClient())
+                {
+                    string html = wc.DownloadString(url);
+
+                    return html;
+                }
+            }
+            catch (Exception er)
+            {
+
+                return null;
+            }
+        }
     }
 }
