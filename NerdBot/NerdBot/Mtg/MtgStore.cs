@@ -64,6 +64,7 @@ namespace NerdBot.Mtg
             return searchValue;
         }
 
+        #region CardExists
         public async Task<bool> CardExists(int multiverseId)
         {
             var collection = this.mDatabase.GetCollection<Card>("cards");
@@ -122,7 +123,9 @@ namespace NerdBot.Mtg
             else
                 return false;
         }
+        #endregion
 
+        #region GetCard
         public async Task<Card> GetCard(string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -161,7 +164,9 @@ namespace NerdBot.Mtg
 
             return card;
         }
+        #endregion
 
+        #region GetCards
         public async Task<List<Card>> GetCards()
         {
             List<Card> cards = new List<Card>();
@@ -202,7 +207,9 @@ namespace NerdBot.Mtg
 
             return cards;
         }
+        #endregion
 
+        #region GetCardOtherSets
         public async Task<List<Set>> GetCardOtherSets(int multiverseId)
         {
             List<Set> sets = new List<Set>();
@@ -249,7 +256,9 @@ namespace NerdBot.Mtg
 
             return sets;
         }
+        #endregion
 
+        #region GetCardsBySet
         public async Task<List<Card>> GetCardsBySet(string setName)
         {
             if (string.IsNullOrEmpty(setName))
@@ -273,7 +282,9 @@ namespace NerdBot.Mtg
 
             return cards;
         }
+        #endregion
 
+        #region SetExists
         public async Task<bool> SetExists(string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -309,7 +320,9 @@ namespace NerdBot.Mtg
             else
                 return false;
         }
+        #endregion
 
+        #region GetSet
         public async Task<Set> GetSet(string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -339,5 +352,6 @@ namespace NerdBot.Mtg
 
             return sets;
         }
+        #endregion
     }
 }
