@@ -122,9 +122,6 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Database\MtgDb.sqlite">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="example-settings.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

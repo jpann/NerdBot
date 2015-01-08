@@ -147,6 +147,179 @@ namespace NerdBot.Tests
 
         #region GetCards
 
+        [Test]
+        public void GetCards()
+        {
+            int expectedCount = 23630;
+
+            List<Card> cards = mtgStore.GetCards().Result;
+
+            Assert.AreEqual(expectedCount, cards.Count);
+        }
+
+        [Test]
+        public void GetCards_ByName()
+        {
+            int expectedCount = 2;
+
+            string name = "Spore Cloud";
+
+            List<Card> cards = mtgStore.GetCards(name).Result;
+
+            Assert.AreEqual(expectedCount, cards.Count);
+        }
+
+        [Test]
+        public void GetCards_ByName_DoesntExist()
+        {
+            int expectedCount = 0;
+
+            string name = "Bore Cloud";
+
+            List<Card> cards = mtgStore.GetCards(name).Result;
+
+            Assert.AreEqual(expectedCount, cards.Count);
+        }
+        #endregion
+
+        #region GetCardOtherSets
+        [Test]
+        public void GetCardOtherSets()
+        {
+            int expectedCount = 1;
+            string expectedOtherSet = "Masters Edition II";
+
+            int multiverseId = 1922;
+
+            List<Set> sets = mtgStore.GetCardOtherSets(multiverseId).Result;
+
+            Assert.AreEqual(expectedCount, sets.Count);
+        }
+
+        [Test]
+        public void GetCardOtherSets_DoesntExist()
+        {
+            int expectedCount = 0;
+
+            int multiverseId = 999999;
+
+            List<Set> sets = mtgStore.GetCardOtherSets(multiverseId).Result;
+
+            Assert.AreEqual(expectedCount, sets.Count);
+        }
+        #endregion
+
+        #region GetCardsBySet
+        [Test]
+        public void GetCardsBySet()
+        {
+            int expectedCount = 245;
+
+            string name = "Masters Edition II";
+
+            List<Card> cards = mtgStore.GetCardsBySet(name).Result;
+
+            Assert.AreEqual(expectedCount, cards.Count);
+        }
+
+        [Test]
+        public void GetCardsBySet_DoesntExist()
+        {
+            int expectedCount = 0;
+
+            string name = "Blah Edition II";
+
+            List<Card> cards = mtgStore.GetCardsBySet(name).Result;
+
+            Assert.AreEqual(expectedCount, cards.Count);
+        }
+        #endregion
+
+        #region SetExists
+        [Test]
+        public void SetExists_ByCode()
+        {
+            string code = "MMA";
+
+            bool actual = mtgStore.SetExistsByCode(code).Result;
+
+            Assert.True(actual);
+        }
+
+        [Test]
+        public void SetExists_ByCode_DoesntExist()
+        {
+            string code = "XXX";
+
+            bool actual = mtgStore.SetExistsByCode(code).Result;
+
+            Assert.False(actual);
+        }
+
+        [Test]
+        public void SetExists_ByName()
+        {
+            string name = "Masters Edition II";
+
+            bool actual = mtgStore.SetExists(name).Result;
+
+            Assert.True(actual);
+        }
+
+        [Test]
+        public void SetExists_ByName_DoesntExist()
+        {
+            string name = "Blah Edition II";
+
+            bool actual = mtgStore.SetExists(name).Result;
+
+            Assert.False(actual);
+        }
+        #endregion
+
+        #region GetSet
+
+        [Test]
+        public void GetSet()
+        {
+            string name = "Masters Edition II";
+
+            Set actual = mtgStore.GetSet(name).Result;
+
+            Assert.AreEqual(name, actual.Name);
+        }
+
+        [Test]
+        public void GetSet_DoesntExist()
+        {
+            string name = "Blah Edition";
+
+            Set actual = mtgStore.GetSet(name).Result;
+
+            Assert.Null(actual);
+        }
+
+        [Test]
+        public void GetSet_ByCode()
+        {
+            string code = "MMA";
+            string name = "Modern Masters";
+
+            Set actual = mtgStore.GetSetByCode(code).Result;
+
+            Assert.NotNull(actual);
+            Assert.AreEqual(name, actual.Name);
+        }
+
+        [Test]
+        public void GetSet_ByCode_DoesntExist()
+        {
+            string code = "XXX";
+
+            Set actual = mtgStore.GetSetByCode(code).Result;
+
+            Assert.Null(actual);
+        }
         #endregion
     }
 }
