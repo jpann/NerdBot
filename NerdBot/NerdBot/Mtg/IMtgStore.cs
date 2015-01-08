@@ -8,7 +8,7 @@ namespace NerdBot.Mtg
 {
     public interface IMtgStore
     {
-        string GetSearchValue(string text);
+        string GetSearchValue(string text, bool forRegex = false);
 
         Task<bool> CardExists(int multiverseId);
         Task<bool> CardExists(string name);

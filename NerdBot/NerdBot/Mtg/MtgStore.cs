@@ -34,12 +34,31 @@ namespace NerdBot.Mtg
             this.mDatabase = this.mServer.GetDatabase(this.mDatabaseName);
         }
 
-        public string GetSearchValue(string text)
+        public string GetSearchValue(string text, bool forRegex = false)
         {
+            Regex rgx = new Regex("[^a-zA-Z0-9.^]");
+
             string searchValue = text.ToLower();
 
-            Regex rgx = new Regex("[^a-zA-Z0-9]");
+            if (forRegex)
+            {
+                // Replace * and % with a regex '.' char
+                searchValue = searchValue.Replace("*", ".");
+                searchValue = searchValue.Replace("%", ".");
+
+                // If the first character of the searchValue is not '.', 
+                // meaning the user does not want to do a contains search,
+                // explicitly use a starts with regex
+                if (!searchValue.StartsWith("."))
+                {
+                    searchValue = "^" + searchValue;
+                }
+            }
+
+            // Remove all non a-zA-Z0-9.^ characters
             searchValue = rgx.Replace(searchValue, "");
+
+            // Remove all spaces
             searchValue = searchValue.Replace(" ", "");
 
             return searchValue;
@@ -64,12 +83,12 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            name = this.GetSearchValue(name);
+            name = this.GetSearchValue(name, false);
 
             var collection = this.mDatabase.GetCollection<Card>("cards");
 
+            
             var query = Query<Card>.EQ(e => e.SearchName, name);
-
             long qty = collection.Count(query);
 
             if (qty > 0)
@@ -86,13 +105,13 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(setName))
                 throw new ArgumentException("setName");
 
-            name = this.GetSearchValue(name);
-            setName = this.GetSearchValue(setName);
+            name = this.GetSearchValue(name, false);
+            setName = this.GetSearchValue(setName, false);
 
             var collection = this.mDatabase.GetCollection<Card>("cards");
 
             var query = Query.And(
-                Query<Card>.EQ(e => e.SearchName, name), 
+                Query<Card>.EQ(e => e.SearchName, name),
                 Query<Card>.EQ(e => e.SetSearchName, setName)
                 );
 
@@ -109,7 +128,7 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            name = this.GetSearchValue(name);
+            name = this.GetSearchValue(name, true);
 
             var collection = this.mDatabase.GetCollection<Card>("cards");
 
@@ -128,8 +147,8 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(setName))
                 throw new ArgumentException("setName");
 
-            name = this.GetSearchValue(name);
-            setName = this.GetSearchValue(setName);
+            name = this.GetSearchValue(name, true);
+            setName = this.GetSearchValue(setName, true);
 
             var collection = this.mDatabase.GetCollection<Card>("cards");
 
@@ -167,11 +186,11 @@ namespace NerdBot.Mtg
 
             List<Card> cards = new List<Card>();
 
-            name = this.GetSearchValue(name);
+            name = this.GetSearchValue(name, true);
 
             var collection = this.mDatabase.GetCollection<Card>("cards");
 
-            var query = Query<Card>.EQ(e => e.SearchName, name);
+            var query = Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i"));
 
             MongoCursor<Card> cursor = collection.Find(query)
                 .SetSortOrder("name");
@@ -238,7 +257,7 @@ namespace NerdBot.Mtg
 
             List<Card> cards = new List<Card>();
 
-            setName = this.GetSearchValue(setName);
+            setName = this.GetSearchValue(setName, false);
 
             var collection = this.mDatabase.GetCollection<Card>("cards");
 
@@ -260,12 +279,12 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            name = this.GetSearchValue(name);
+            name = this.GetSearchValue(name, false);
 
             var collection = this.mDatabase.GetCollection<Set>("sets");
 
             var query = Query<Set>.EQ(e => e.SearchName, name);
-
+     
             long qty = collection.Count(query);
 
             if (qty > 0)
@@ -296,11 +315,11 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            name = this.GetSearchValue(name);
+            name = this.GetSearchValue(name, false);
 
             var collection = this.mDatabase.GetCollection<Set>("sets");
 
-            var query = Query<Set>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i"));
+            var query = Query<Set>.EQ(e => e.SearchName, name);
 
             var set = collection.FindOne(query);
 
