@@ -70,7 +70,7 @@ namespace NerdBotCardPrices
                             return false;
 
                         // Get card using only name
-                        card = this.mStore.SearchCard(name);
+                        //card = this.mStore.SearchCard(name);
                     }
                     else if (command.Arguments.Length == 2)
                     {
@@ -84,7 +84,7 @@ namespace NerdBotCardPrices
                             return false;
 
                         // Get card using only name
-                        card = this.mStore.SearchCard(name, set);
+                        //card = this.mStore.SearchCard(name, set);
                     }
 
                     if (card != null)

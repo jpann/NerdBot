@@ -17,5 +17,11 @@
     <Setting Name="RouteKey" Type="System.String" Scope="User">
       <Value Profile="(Default)">TOKEN</Value>
     </Setting>
+    <Setting Name="ConnectionString" Type="System.String" Scope="User">
+      <Value Profile="(Default)">mongodb://localhost</Value>
+    </Setting>
+    <Setting Name="ConnectionDb" Type="System.String" Scope="User">
+      <Value Profile="(Default)">mtgdb</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

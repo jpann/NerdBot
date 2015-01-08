@@ -29,13 +29,11 @@ namespace NerdBot
             // Perform registation that should have an application lifetime
             string pluginDirectory = Path.Combine(Environment.CurrentDirectory, "plugins");
 
-            existingContainer.Bind<IMtgContext>()
-                .To<MtgContext>()
-                .InSingletonScope();
-
             existingContainer.Bind<IMtgStore>()
                 .To<MtgStore>()
-                .InSingletonScope();
+                .InSingletonScope()
+                .WithConstructorArgument("connectionString", Properties.Settings.Default.ConnectionString)
+                .WithConstructorArgument("databaseName", Properties.Settings.Default.ConnectionDb);
 
             existingContainer.Bind<IHttpClient>()
                 .To<SimpleHttpClient>();

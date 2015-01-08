@@ -2,33 +2,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NerdBot.Mtg
 {
     public interface IMtgStore
     {
-        bool CardExists(int multiverseId);
-        bool CardExists(string name);
-        bool CardExists(string name, string setName);
+        string GetSearchValue(string text);
 
-        Card GetCard(string name);
-        Card GetCard(string name, string setName);
-        Card SearchCard(string name);
-        Card SearchCard(string name, string setName);
+        Task<bool> CardExists(int multiverseId);
+        Task<bool> CardExists(string name);
+        Task<bool> CardExists(string name, string setName);
 
-        IEnumerable<Card> GetCards();
-        IEnumerable<Card> GetCards(string name);
-        List<Card> SearchCards(string name);
-        List<Card> SearchCards(string name, string setName);
+        Task<Card> GetCard(string name);
+        Task<Card> GetCard(string name, string setName);
 
-        IEnumerable<Set> GetCardOtherSets(int multiverseId);
+        Task<List<Card>> GetCards();
+        Task<List<Card>> GetCards(string name);
 
-        IEnumerable<Card> GetCardsBySet(string setName);
+        Task<List<Set>> GetCardOtherSets(int multiverseId);
 
-        bool SetExists(string name);
-        bool SetExistsByCode(string code);
+        Task<List<Card>> GetCardsBySet(string setName);
 
-        Set GetSet(string name);
-        Set GetSetByCode(string code);
+        Task<bool> SetExists(string name);
+        Task<bool> SetExistsByCode(string code);
+
+        Task<Set> GetSet(string name);
+        Task<Set> GetSetByCode(string code);
     }
 }

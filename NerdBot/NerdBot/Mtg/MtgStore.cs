@@ -2,77 +2,82 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Ninject.Infrastructure.Language;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
 
 namespace NerdBot.Mtg
 {
     public class MtgStore : IMtgStore
     {
-        private readonly IMtgContext mContext;
+        private readonly string mConnectionString;
+        private readonly string mDatabaseName;
+        private readonly MongoClient mClient;
+        private readonly MongoServer mServer;
+        private readonly MongoDatabase mDatabase;
 
-        public MtgStore(IMtgContext context)
+        public MtgStore(string connectionString, string databaseName)
         {
-            if (context == null)
-                throw new ArgumentNullException("context");
+            if (string.IsNullOrEmpty(connectionString))
+                throw new ArgumentException("connectionString");
 
-            this.mContext = context;
+            if (string.IsNullOrEmpty(databaseName))
+                throw new ArgumentException("databaseName");
+
+            this.mConnectionString = connectionString;
+            this.mDatabaseName = databaseName;
+            this.mClient = new MongoClient(this.mConnectionString);
+            this.mServer = this.mClient.GetServer();
+            this.mDatabase = this.mServer.GetDatabase(this.mDatabaseName);
         }
 
-        public bool CardExists(int multiverseId)
+        public string GetSearchValue(string text)
         {
-            var qty = this.mContext.Cards.Where(c => c.Multiverse_Id == multiverseId).Count();
+            string searchValue = text.ToLower();
 
-            if (qty <= 0)
-                return false;
-            else
+            Regex rgx = new Regex("[^a-zA-Z0-9]");
+            searchValue = rgx.Replace(searchValue, "");
+            searchValue = searchValue.Replace(" ", "");
+
+            return searchValue;
+        }
+
+        public async Task<bool> CardExists(int multiverseId)
+        {
+            var collection = this.mDatabase.GetCollection<Card>("cards");
+
+            var query = Query<Card>.EQ(e => e.MultiverseId, multiverseId);
+
+            long qty = collection.Count(query);
+
+            if (qty > 0)
                 return true;
-        }
-
-        public bool CardExists(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("name");
-
-            name = name.ToLower();
-
-            var qty = this.mContext.Cards.Where(c => c.Name.ToLower() == name).Count();
-
-            if (qty <= 0)
-                return false;
             else
-                return true;
-        }
-
-        public bool CardExists(string name, string setName)
-        {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("name");
-
-            if (string.IsNullOrEmpty(setName))
-                throw new ArgumentException("setName");
-
-            name = name.ToLower();
-            setName = setName.ToLower();
-
-            var qty = this.mContext.Cards.Where(c => c.Name.ToLower() == name && c.Set_Name.ToLower() == setName).Count();
-
-            if (qty <= 0)
                 return false;
-            else
+        }
+
+        public async Task<bool> CardExists(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
+            name = this.GetSearchValue(name);
+
+            var collection = this.mDatabase.GetCollection<Card>("cards");
+
+            var query = Query<Card>.EQ(e => e.SearchName, name);
+
+            long qty = collection.Count(query);
+
+            if (qty > 0)
                 return true;
+            else
+                return false;
         }
 
-        public Card GetCard(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("name");
-
-            name = name.Trim().ToLower();
-
-            return this.mContext.Cards.Where(c => c.Name.ToLower().StartsWith(name)).FirstOrDefault();
-        }
-
-        public Card GetCard(string name, string setName)
+        public async Task<bool> CardExists(string name, string setName)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
@@ -80,172 +85,101 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(setName))
                 throw new ArgumentException("setName");
 
-            name = name.ToLower();
-            setName = setName.ToLower();
+            name = this.GetSearchValue(name);
+            setName = this.GetSearchValue(setName);
 
-            return
-                this.mContext.Cards.Where(
-                    c => c.Name.ToLower().StartsWith(name) && 
-                        (c.Set_Name.ToLower().StartsWith(setName)))
-                    .FirstOrDefault();
-        }
+            var collection = this.mDatabase.GetCollection<Card>("cards");
 
-        public Card SearchCard(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("name");
-
-            name = name.Trim().ToLower();
-
-            List<Card> cards = this.mContext.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0 LIMIT 1", 
-                new string[] { name });
-
-            return cards.FirstOrDefault();
-        }
-
-        public Card SearchCard(string name, string setName)
-        {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("name");
-
-            if (string.IsNullOrEmpty(setName))
-                throw new ArgumentException("setName");
-
-            name = name.Trim().ToLower();
-            setName = setName.Trim().ToLower();
-
-            List<Card> cards = this.mContext.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0 AND set_name LIKE @p1 LIMIT 1",
-                new string[] { name, setName });
-
-            return cards.FirstOrDefault();
-        }
-
-        public IEnumerable<Card> GetCards()
-        {
-            return this.mContext.Cards.ToEnumerable();
-        }
-
-        public IEnumerable<Card> GetCards(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("name");
-
-            name = name.ToLower();
-
-            return this.mContext.Cards.Where(c => c.Name.ToLower().StartsWith(name));
-        }
-
-        public List<Card> SearchCards(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("name");
-
-            name = name.ToLower();
-
-            List<Card> cards = this.mContext.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0",
-                new string[] { name });
-
-            return cards;
-        }
-
-        public List<Card> SearchCards(string name, string setName)
-        {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("name");
-
-            if (string.IsNullOrEmpty(setName))
-                throw new ArgumentException("setName");
-
-            name = name.ToLower();
-            setName = setName.ToLower();
-
-            List<Card> cards = this.mContext.ExecuteQuery<Card>("SELECT * FROM Cards WHERE name LIKE @p0 AND set_name LIKE @p1",
-                new string[] { name, setName});
-
-            return cards;
-        }
-
-        public IEnumerable<Set> GetCardOtherSets(int multiverseId)
-        {
-            var card = this.mContext.Cards.Where(c => c.Multiverse_Id == multiverseId).FirstOrDefault();
-            if (card == null)
-                throw new Exception(string.Format("No card exists using multiverse id of '{0}'.", multiverseId));
-
-            var otherSets =
-                (
-                    from cards in this.mContext.Cards
-                    join sets in this.mContext.Sets on cards.Set_Name equals sets.Name
-                    where (cards.Multiverse_Id != multiverseId && cards.Name == card.Name)
-                    select sets
+            var query = Query.And(
+                Query<Card>.EQ(e => e.SearchName, name), 
+                Query<Card>.EQ(e => e.SetSearchName, setName)
                 );
 
-            return otherSets;
+            long qty = collection.Count(query);
+
+            if (qty > 0)
+                return true;
+            else
+                return false;
         }
 
-        public IEnumerable<Card> GetCardsBySet(string setName)
+        public async Task<Card> GetCard(string name)
         {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
+            name = this.GetSearchValue(name);
+
+            var collection = this.mDatabase.GetCollection<Card>("cards");
+
+            var query = Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i"));
+
+            var card = collection.FindOne(query);
+
+            return card;
+        }
+
+        public async Task<Card> GetCard(string name, string setName)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
             if (string.IsNullOrEmpty(setName))
-                throw new ArgumentException(setName);
+                throw new ArgumentException("setName");
 
-            setName = setName.ToLower();
+            name = this.GetSearchValue(name);
+            setName = this.GetSearchValue(setName);
 
-            var set = this.mContext.Sets.Where(s => s.Name.ToLower() == setName).FirstOrDefault();
-            if (set == null)
-                throw new Exception(string.Format("No set exists using name '{0}'.", setName));
+            var collection = this.mDatabase.GetCollection<Card>("cards");
 
-            var cards = this.mContext.Cards.Where(c => c.Set_Name.ToLower() == setName);
+            var query = Query.And(
+                Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i")),
+                Query<Card>.Matches(e => e.SetSearchName, new BsonRegularExpression(setName, "i"))
+                );
 
-            return cards;
+            var card = collection.FindOne(query);
+
+            return card;
         }
 
-        public bool SetExists(string name)
+        public async Task<List<Card>> GetCards()
         {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("name");
-
-            name = name.ToLower();
-
-            var qty = this.mContext.Sets.Where(s => s.Name.ToLower() == name).Count();
-
-            if (qty <= 0)
-                return false;
-            else
-                return true;
+            throw new NotImplementedException();
         }
 
-        public bool SetExistsByCode(string code)
+        public async Task<List<Card>> GetCards(string name)
         {
-            if (string.IsNullOrEmpty(code))
-                throw new ArgumentException("code");
-
-            code = code.ToLower();
-
-            var qty = this.mContext.Sets.Where(s => s.Code.ToLower() == code).Count();
-
-            if (qty <= 0)
-                return false;
-            else
-                return true;
+            throw new NotImplementedException();
         }
 
-        public Set GetSet(string name)
+        public async Task<List<Set>> GetCardOtherSets(int multiverseId)
         {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("name");
-
-            name = name.ToLower();
-
-            return this.mContext.Sets.Where(s => s.Name.ToLower() == name).FirstOrDefault();
+            throw new NotImplementedException();
         }
 
-        public Set GetSetByCode(string code)
+        public async Task<List<Card>> GetCardsBySet(string setName)
         {
-            if (string.IsNullOrEmpty(code))
-                throw new ArgumentException("code");
+            throw new NotImplementedException();
+        }
 
-            code = code.ToLower();
+        public async Task<bool> SetExists(string name)
+        {
+            throw new NotImplementedException();
+        }
 
-            return this.mContext.Sets.Where(s => s.Code.ToLower() == code).FirstOrDefault();
+        public async Task<bool> SetExistsByCode(string code)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Set> GetSet(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Set> GetSetByCode(string code)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -82,5 +82,29 @@ namespace NerdBot.Properties {
                 this["RouteKey"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("mongodb://localhost")]
+        public string ConnectionString {
+            get {
+                return ((string)(this["ConnectionString"]));
+            }
+            set {
+                this["ConnectionString"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("mtgdb")]
+        public string ConnectionDb {
+            get {
+                return ((string)(this["ConnectionDb"]));
+            }
+            set {
+                this["ConnectionDb"] = value;
+            }
+        }
     }
 }

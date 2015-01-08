@@ -1,51 +1,74 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
+using Newtonsoft.Json;
 
 namespace NerdBot.Mtg
 {
-    [Table("Sets")]
     public class Set
     {
-        [Column("id")]
-        public int Id { get; set; }
+        [BsonId(IdGenerator = typeof(ObjectIdGenerator))]
+        public ObjectId Id { get; set; }
 
-        [Column("set_id")]
+        [JsonProperty("name")]
+        [BsonElement("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("searchName")]
+        [BsonElement("searchName")]
+        public string SearchName { get; set; }
+
+        [JsonProperty("code")]
+        [BsonElement("code")]
         public string Code { get; set; }
 
-        [Column("block")]
+        [JsonProperty("block")]
+        [BsonElement("block")]
         public string Block { get; set; }
 
-        [Column("type")]
+        [JsonProperty("type")]
+        [BsonElement("type")]
         public string Type { get; set; }
 
-        [Column("desc")]
+        [JsonProperty("desc")]
+        [BsonElement("desc")]
         public string Desc { get; set; }
 
-        [Column("common_qty")]
+        [JsonProperty("commonQty")]
+        [BsonElement("commonQty")]
         public int CommonQty { get; set; }
 
-        [Column("uncommon_qty")]
+        [JsonProperty("uncommonQty")]
+        [BsonElement("uncommonQty")]
         public int UncommonQty { get; set; }
 
-        [Column("rare_qty")]
+        [JsonProperty("setNumber")]
+        [BsonElement("setNumber")]
         public int RareQty { get; set; }
 
-        [Column("mythic_qty")]
+        [JsonProperty("mythicQty")]
+        [BsonElement("mythicQty")]
         public int MythicQty { get; set; }
 
-        [Column("basic_land_qty")]
+        [JsonProperty("basicLandQty")]
+        [BsonElement("basicLandQty")]
         public int BasicLandQty { get; set; }
 
-        [Column("total_qty")]
-        public int TotalQty { get; set; }
+        [JsonProperty("totalQty")]
+        [BsonElement("totalQty")]
+        public int TotalQty
+        {
+            get
+            {
+                return this.CommonQty + this.UncommonQty + this.RareQty + this.MythicQty + this.BasicLandQty;
+            }
+        }
 
-        [Column("released_at")]
+        [JsonProperty("releasedOn")]
+        [BsonElement("releasedOn")]
         public DateTime ReleasedOn { get; set; }
-
-        [Column("name")]
-        public string Name { get; set; }
     }
 }
