@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
 using NerdBot.Parsers;
@@ -64,7 +65,7 @@ namespace NerdBotCardPrices
                             return false;
 
                         // Get card using only name
-                        //card = this.mStore.SearchCard(name);
+                        card = await this.mStore.GetCard(name);
                     }
                     else if (command.Arguments.Length == 2)
                     {
@@ -78,12 +79,21 @@ namespace NerdBotCardPrices
                             return false;
 
                         // Get card using only name
-                        //card = this.mStore.SearchCard(name, set);
+                        card = await this.mStore.GetCard(name, set);
                     }
 
                     if (card != null)
                     {
+                        var ebay = new EbayPriceFetcher();
+                        string[] ebayPrice = ebay.GetPrice(card.Name);
 
+                        if (ebayPrice != null)
+                        {
+                            messenger.SendMessage(string.Format("The eBay Buy It Now price for '{0}' is {1} - {2}",
+                                card.Name,
+                                ebayPrice[0],
+                                ebayPrice[1]));
+                        }
                     }
                 }
             }
