@@ -27,11 +27,11 @@ namespace NerdBotCardPrices
         {
         }
 
-        public override void Load()
+        public override void OnLoad()
         {
         }
 
-        public override void Unload()
+        public override void OnUnload()
         {
         }
 

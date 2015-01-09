@@ -108,7 +108,7 @@ namespace NerdBot
 
                     IPlugin plugin = (IPlugin)this.mKernel.Get(type);
 
-                    plugin.Load();
+                    plugin.OnLoad();
 
                     this.mPlugins.Add(plugin);
                 }

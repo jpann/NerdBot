@@ -14,8 +14,8 @@ namespace NerdBot.Plugin
         string Name { get; }
         string Description { get; }
 
-        void Load();
-        void Unload();
+        void OnLoad();
+        void OnUnload();
         Task<bool> OnMessage(IMessage message, IMessenger messenger);
     }
 }

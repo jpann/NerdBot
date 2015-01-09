@@ -65,8 +65,8 @@ namespace NerdBot.Plugin
         public abstract string Description { get; }
         #endregion
 
-        public abstract void Load();
-        public abstract void Unload();
+        public abstract void OnLoad();
+        public abstract void OnUnload();
         public abstract Task<bool> OnMessage(IMessage message, IMessenger messenger);
     }
 }
