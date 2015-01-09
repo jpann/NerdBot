@@ -10,38 +10,33 @@ using NerdBot.Plugin;
 
 namespace NerdBotCardImage
 {
-    public class ImgCommand : IPlugin
+    public class ImgCommand : PluginBase
     {
-        private IMtgStore mStore;
-        private ICommandParser mCommandParser;
-
-        public string Name
+        public override string Name
         {
             get { return "img Command"; }
         }
 
-        public string Description
+        public override string Description
         {
             get { return "Returns a link to the card's image.";  }
         }
 
-        public void Load(IMtgStore store, ICommandParser commandParser)
-        {
-            if (store == null)
-                throw new ArgumentNullException("store");
-
-            if (commandParser == null)
-                throw new ArgumentException("commandParser");
-
-            this.mStore = store;
-            this.mCommandParser = commandParser;
-        }
-
-        public void Unload()
+        public ImgCommand()
+            : base()
         {
         }
 
-        public async Task<bool> OnMessage(IMessage message, IMessenger messenger)
+        public override void Load()
+        {
+
+        }
+
+        public override void Unload()
+        {
+        }
+
+        public override async Task<bool> OnMessage(IMessage message, IMessenger messenger)
         {
             if (message == null)
                 throw new ArgumentNullException("message");
@@ -49,7 +44,7 @@ namespace NerdBotCardImage
             if (messenger == null)
                 throw new ArgumentNullException("messenger");
 
-            var command = this.mCommandParser.Parse(message.text);
+            var command = this.CommandParser.Parse(message.text);
 
             // If there was no command, return
             if (command == null)
@@ -70,7 +65,7 @@ namespace NerdBotCardImage
                             return false;
 
                         // Get card using only name
-                        card = await this.mStore.GetCard(name);
+                        card = await this.Store.GetCard(name);
                     }
                     else if (command.Arguments.Length == 2)
                     {
@@ -84,7 +79,7 @@ namespace NerdBotCardImage
                             return false;
 
                         // Get card using only name
-                        card = await this.mStore.GetCard(name, set);
+                        card = await this.Store.GetCard(name, set);
                     }
 
                     if (card != null)

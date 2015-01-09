@@ -13,7 +13,8 @@ namespace NerdBot.Plugin
     {
         string Name { get; }
         string Description { get; }
-        void Load(IMtgStore store, ICommandParser commandParser);
+
+        void Load();
         void Unload();
         Task<bool> OnMessage(IMessage message, IMessenger messenger);
     }

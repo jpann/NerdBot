@@ -10,38 +10,32 @@ using NerdBot.Plugin;
 
 namespace NerdBotCardPrices
 {
-    public class EbayPricePlugin : IPlugin
+    public class EbayPricePlugin : PluginBase
     {
-        private IMtgStore mStore;
-        private ICommandParser mCommandParser;
-
-        public string Name
+        public override string Name
         {
             get { return "ebay Command"; }
         }
 
-        public string Description
+        public override string Description
         {
             get { return "Returns a card's eBay buy it now price.";  }
         }
 
-        public void Load(IMtgStore store, ICommandParser commandParser)
-        {
-            if (store == null)
-                throw new ArgumentNullException("store");
-
-            if (commandParser == null)
-                throw new ArgumentException("commandParser");
-
-            this.mStore = store;
-            this.mCommandParser = commandParser;
-        }
-
-        public void Unload()
+        public EbayPricePlugin()
+            : base()
         {
         }
 
-        public async Task<bool> OnMessage(IMessage message, IMessenger messenger)
+        public override void Load()
+        {
+        }
+
+        public override void Unload()
+        {
+        }
+
+        public override async Task<bool> OnMessage(IMessage message, IMessenger messenger)
         {
             if (message == null)
                 throw new ArgumentNullException("message");
