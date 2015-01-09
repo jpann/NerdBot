@@ -17,7 +17,7 @@ namespace NerdBot
                 return HttpStatusCode.NotAcceptable;
             };
 
-            Post["/"] = parameters =>
+            Post["/", true] = async (parameters, ct) =>
             {
                 var message = new GroupMeMessage();
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
 using NerdBot.Parsers;
@@ -14,6 +15,6 @@ namespace NerdBot.Plugin
         string Description { get; }
         void Load(IMtgStore store, ICommandParser commandParser);
         void Unload();
-        bool OnMessage(IMessage message, IMessenger messenger);
+        Task<bool> OnMessage(IMessage message, IMessenger messenger);
     }
 }

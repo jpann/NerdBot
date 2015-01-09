@@ -41,7 +41,7 @@ namespace NerdBotCardPrices
         {
         }
 
-        public bool OnMessage(IMessage message, IMessenger messenger)
+        public async Task<bool> OnMessage(IMessage message, IMessenger messenger)
         {
             if (message == null)
                 throw new ArgumentNullException("message");

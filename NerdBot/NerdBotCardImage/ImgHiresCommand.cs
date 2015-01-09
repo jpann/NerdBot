@@ -41,7 +41,7 @@ namespace NerdBotCardImage
         {
         }
 
-        public bool OnMessage(IMessage message, IMessenger messenger)
+        public async Task<bool> OnMessage(IMessage message, IMessenger messenger)
         {
             if (message == null)
                 throw new ArgumentNullException("message");
@@ -70,7 +70,7 @@ namespace NerdBotCardImage
                             return false;
 
                         // Get card using only name
-                        //card = this.mStore.SearchCard(name);
+                       card = await  this.mStore.GetCard(name);
                     }
                     else if (command.Arguments.Length == 2)
                     {
@@ -84,7 +84,7 @@ namespace NerdBotCardImage
                             return false;
 
                         // Get card using only name
-                        //card = this.mStore.SearchCard(name, set);
+                        card = await this.mStore.GetCard(name, set);
                     }
 
                     if (card != null)

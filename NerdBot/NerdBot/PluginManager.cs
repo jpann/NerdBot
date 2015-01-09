@@ -104,11 +104,11 @@ namespace NerdBot
             }
         }
 
-        public void SendMessage(IMessage message, IMessenger messenger)
+        public async void SendMessage(IMessage message, IMessenger messenger)
         {
             foreach (IPlugin plugin in this.mPlugins)
             {
-                bool handled = plugin.OnMessage(message, messenger);
+                bool handled = await plugin.OnMessage(message, messenger);
             }
         }
     }
