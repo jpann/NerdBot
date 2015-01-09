@@ -13,6 +13,7 @@ namespace NerdBot
         List<IPlugin> Plugins { get; }
 
         void LoadPlugins();
+        void UnloadPlugins();
         void SendMessage(IMessage message, IMessenger messenger);
     }
 }

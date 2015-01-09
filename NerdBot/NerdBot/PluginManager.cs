@@ -93,6 +93,11 @@ namespace NerdBot
             this.LoadPlugins();
         }
 
+        ~PluginManager()
+        {
+            this.UnloadPlugins();
+        }
+
         public void LoadPlugins()
         {
             DirectoryInfo info = new DirectoryInfo(this.mPluginDirectory);
@@ -112,6 +117,16 @@ namespace NerdBot
 
                     this.mPlugins.Add(plugin);
                 }
+            }
+        }
+
+        public void UnloadPlugins()
+        {
+            foreach (IPlugin plugin in this.mPlugins)
+            {
+                plugin.OnUnload();
+
+                this.mPlugins.Remove(plugin);
             }
         }
 
