@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
 using NerdBot.Parsers;
@@ -16,6 +17,7 @@ namespace NerdBot.Plugin
         protected IMtgStore mStore;
         protected ICommandParser mCommandParser;
         protected ILogger mLogger;
+        protected IHttpClient mHttpClient;
 
         public PluginBase()
         {
@@ -59,6 +61,20 @@ namespace NerdBot.Plugin
                 this.mCommandParser = value;
             }
             get { return this.mCommandParser; }
+        }
+
+        [Inject]
+        public IHttpClient HttpClient
+        {
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                this.mHttpClient = value;
+            }
+
+            get { return this.mHttpClient;  }
         }
 
         public abstract string Name { get; }

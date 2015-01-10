@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using System.Threading.Tasks;
 using Ninject.Extensions.Logging;
 
 namespace NerdBot.Http
@@ -76,6 +79,25 @@ namespace NerdBot.Http
 
                 return null;
             }
+        }
+
+        public async Task<string> GetAsJson(string url)
+        {
+	        try
+	        {
+		        using (var httpClient = new HttpClient())
+		        {
+			        var json = await httpClient.GetStringAsync(url);
+
+			        return json;
+		        }
+	        }
+	        catch (Exception er)
+	        {
+                this.mLogger.Error(er, "Error getting as json");
+
+		        return null;
+	        }
         }
     }
 }
