@@ -8,6 +8,7 @@ using NerdBot.Messengers;
 using NerdBot.Mtg;
 using NerdBot.Parsers;
 using NerdBot.Plugin;
+using NerdBotCardPrices.PriceFetchers;
 
 namespace NerdBotCardPrices
 {

@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
-using NerdBot.Http;
-using NerdBot.Mtg;
 
-namespace NerdBotCardPrices
+namespace NerdBotCardPrices.PriceFetchers
 {
     //TODO This implementation is horrible
     public class EbayPriceFetcher
