@@ -90,13 +90,31 @@ namespace NerdBotCardPrices
 
                         if (tcgPrice != null)
                         {
-                            messenger.SendMessage(string.Format("{0} [{1}] - High: {2}; Median: {3}; Low: {4} - {5}",
-                                card.Name,
-                                card.SetName,
-                                tcgPrice[2],
-                                tcgPrice[1],
-                                tcgPrice[0],
-                                tcgPrice[3]));
+                            string url = this.UrlShortener.ShortenUrl(tcgPrice[3]);
+
+                            string msg = "";
+
+                            if (!string.IsNullOrEmpty(url))
+                            {
+                                msg = string.Format("{0} [{1}] - High: {2}; Median: {3}; Low: {4} - {5}",
+                                    card.Name,
+                                    card.SetName,
+                                    tcgPrice[2],
+                                    tcgPrice[1],
+                                    tcgPrice[0],
+                                    url);
+                            }
+                            else
+                            {
+                                msg = string.Format("{0} [{1}] - High: {2}; Median: {3}; Low: {4}",
+                                    card.Name,
+                                    card.SetName,
+                                    tcgPrice[2],
+                                    tcgPrice[1],
+                                    tcgPrice[0]);
+                            }
+
+                            messenger.SendMessage(msg);
                         }
                     }
                 }

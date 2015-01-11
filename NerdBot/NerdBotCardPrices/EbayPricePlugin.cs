@@ -90,10 +90,24 @@ namespace NerdBotCardPrices
 
                         if (ebayPrice != null)
                         {
-                            messenger.SendMessage(string.Format("The eBay Buy It Now price for '{0}' is {1} - {2}",
-                                card.Name,
-                                ebayPrice[0],
-                                ebayPrice[1]));
+                            string url = this.UrlShortener.ShortenUrl(ebayPrice[1]);
+
+                            string msg = "";
+
+                            if (!string.IsNullOrEmpty(url))
+                            {
+                                msg = string.Format("The eBay Buy It Now price for '{0}' is {1} - {2}",
+                                    card.Name,
+                                    ebayPrice[0],
+                                    url);
+                            }
+                            else
+                            {
+                                msg = string.Format("The eBay Buy It Now price for '{0}' is {1}",
+                                    card.Name,
+                                    ebayPrice[0]);
+                            }
+                            messenger.SendMessage(msg);
                         }
                     }
                 }
