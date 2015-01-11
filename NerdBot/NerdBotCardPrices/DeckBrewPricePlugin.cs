@@ -124,6 +124,10 @@ namespace NerdBotCardPrices
 
                             messenger.SendMessage(msg);
                         }
+                        else
+                        {
+                            messenger.SendMessage("Price unavailable");
+                        }
                     }
                 }
             }
