@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotCardImage", "NerdBot
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotCardPrices", "NerdBotCardPrices\NerdBotCardPrices.csproj", "{71B184B0-2FD3-4B70-A8FA-572F4DB83BBF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotCoreCommands", "NerdBotCoreCommands\NerdBotCoreCommands.csproj", "{A7CC43AF-360A-46F8-8C89-22C30FAA1528}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{71B184B0-2FD3-4B70-A8FA-572F4DB83BBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71B184B0-2FD3-4B70-A8FA-572F4DB83BBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71B184B0-2FD3-4B70-A8FA-572F4DB83BBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7CC43AF-360A-46F8-8C89-22C30FAA1528}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7CC43AF-360A-46F8-8C89-22C30FAA1528}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7CC43AF-360A-46F8-8C89-22C30FAA1528}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7CC43AF-360A-46F8-8C89-22C30FAA1528}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

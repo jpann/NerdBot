@@ -12,7 +12,6 @@ namespace NerdBotCardPrices
 {
     public class DeckBrewPricePlugin : PluginBase
     {
-
         private const string cUrl = "https://api.deckbrew.com/mtg";
 
         public override string Name
