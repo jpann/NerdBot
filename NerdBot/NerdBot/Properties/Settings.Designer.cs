@@ -106,5 +106,29 @@ namespace NerdBot.Properties {
                 this["ConnectionDb"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("USER")]
+        public string UrlShort_User {
+            get {
+                return ((string)(this["UrlShort_User"]));
+            }
+            set {
+                this["UrlShort_User"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("KEY")]
+        public string UrlShort_Key {
+            get {
+                return ((string)(this["UrlShort_Key"]));
+            }
+            set {
+                this["UrlShort_Key"] = value;
+            }
+        }
     }
 }

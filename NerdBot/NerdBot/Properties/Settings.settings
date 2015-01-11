@@ -23,5 +23,11 @@
     <Setting Name="ConnectionDb" Type="System.String" Scope="User">
       <Value Profile="(Default)">mtgdb</Value>
     </Setting>
+    <Setting Name="UrlShort_User" Type="System.String" Scope="User">
+      <Value Profile="(Default)">USER</Value>
+    </Setting>
+    <Setting Name="UrlShort_Key" Type="System.String" Scope="User">
+      <Value Profile="(Default)">KEY</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

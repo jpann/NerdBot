@@ -7,6 +7,7 @@ using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
 using NerdBot.Parsers;
+using NerdBot.UrlShortners;
 using Ninject;
 using Ninject.Extensions.Logging;
 
@@ -18,6 +19,7 @@ namespace NerdBot.Plugin
         protected ICommandParser mCommandParser;
         protected ILogger mLogger;
         protected IHttpClient mHttpClient;
+        protected IUrlShortener mUrlShortener;
 
         public PluginBase()
         {
@@ -75,6 +77,20 @@ namespace NerdBot.Plugin
             }
 
             get { return this.mHttpClient;  }
+        }
+
+        [Inject]
+        public IUrlShortener UrlShortener
+        {
+            set
+            {
+                if (value == null)
+                    throw new ArgumentException("value");
+
+                this.mUrlShortener = value;
+            }
+
+            get { return this.mUrlShortener; }
         }
 
         public abstract string Name { get; }

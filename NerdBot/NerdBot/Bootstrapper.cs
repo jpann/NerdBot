@@ -9,6 +9,7 @@ using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
 using NerdBot.Parsers;
 using NerdBot.Plugin;
+using NerdBot.UrlShortners;
 using Ninject;
 using Ninject.Extensions.Conventions;
 
@@ -28,6 +29,12 @@ namespace NerdBot
         {
             // Perform registation that should have an application lifetime
             string pluginDirectory = Path.Combine(Environment.CurrentDirectory, "plugins");
+
+            existingContainer.Bind<IUrlShortener>()
+                .To<BitlyUrlShortener>()
+                .InSingletonScope()
+                .WithConstructorArgument("user", Properties.Settings.Default.UrlShort_User)
+                .WithConstructorArgument("key", Properties.Settings.Default.UrlShort_Key);
 
             existingContainer.Bind<IMtgStore>()
                 .To<MtgStore>()
