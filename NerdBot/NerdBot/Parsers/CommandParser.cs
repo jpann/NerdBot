@@ -13,22 +13,29 @@ namespace NerdBot.Parsers
             if (string.IsNullOrEmpty(text))
                 throw new ArgumentException("text");
 
-            Match cmdMatch = Regex.Match(text, @"^(?<cmd>[A-Za-z0-9]+) (?:(?<args>[A-Za-z0-9!%&\-']+),?)+", RegexOptions.IgnoreCase);
+            Match cmdMatch = Regex.Match(text, @"^(?<cmd>[A-Za-z0-9]+)", RegexOptions.IgnoreCase);
 
             if (cmdMatch.Success)
             {
                 Command cmd = new Command();
                 string command = cmdMatch.Groups["cmd"].Value;
 
-                List<string> arguments = new List<string>();
+                //TODO Dumb, need to spend more time with this
+                Match argMatch = Regex.Match(text, @"^(?<cmd>[A-Za-z0-9]+) (?:(?<args>[A-Za-z0-9!%&\- ']+),?)+", RegexOptions.IgnoreCase);
 
-                foreach (Capture capture in cmdMatch.Groups["args"].Captures)
+                if (argMatch.Success)
                 {
-                    arguments.Add(capture.Value);
+                    List<string> arguments = new List<string>();
+
+                    foreach (Capture capture in argMatch.Groups["args"].Captures)
+                    {
+                        arguments.Add(capture.Value);
+                    }
+
+                    cmd.Arguments = arguments.ToArray();
                 }
 
                 cmd.Cmd = command;
-                cmd.Arguments = arguments.ToArray();
 
                 return cmd;
             }
