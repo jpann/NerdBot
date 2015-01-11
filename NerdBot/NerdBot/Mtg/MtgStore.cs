@@ -209,6 +209,52 @@ namespace NerdBot.Mtg
         }
         #endregion
 
+        #region GetRandomCards
+
+        public async Task<Card> GetRandomCardByArtist(string artist)
+        {
+            if (string.IsNullOrEmpty(artist))
+                throw new ArgumentException("artist");
+
+            List<Card> cards = new List<Card>();
+
+            var collection = this.mDatabase.GetCollection<Card>("cards");
+
+            artist = artist.ToLower();
+
+            // Replace * and % with a regex '.' char
+            artist = artist.Replace("*", ".");
+            artist = artist.Replace("%", ".");
+
+            if (!artist.StartsWith("."))
+            {
+                artist = "^" + artist;
+            }
+
+            var query = Query<Card>.Matches(e => e.Artist, new BsonRegularExpression(artist, "i"));
+
+            MongoCursor<Card> cursor = collection.Find(query)
+                .SetSortOrder("multiverseId");
+
+            foreach (Card card in cursor)
+            {
+                cards.Add(card);
+            }
+
+            if (cards.Any())
+            {
+                Random rand = new Random();
+
+                Card card = cards[rand.Next(cards.Count)];
+
+                if (card != null)
+                    return card;
+            }
+
+            return null;
+        }
+        #endregion
+
         #region GetCardOtherSets
         public async Task<List<Set>> GetCardOtherSets(int multiverseId)
         {

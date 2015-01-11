@@ -321,5 +321,19 @@ namespace NerdBot.Tests
             Assert.Null(actual);
         }
         #endregion
+
+        #region GetRandomCardByArtist
+
+        [Test]
+        public void GetRandomCardByArtist()
+        {
+            string artist = "Scott Kirschner";
+
+            Card actual = mtgStore.GetRandomCardByArtist(artist).Result;
+
+            Assert.NotNull(actual);
+            Assert.AreEqual(artist.ToLower(), actual.Artist.ToLower());
+        }
+        #endregion
     }
 }

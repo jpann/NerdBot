@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NerdBot.Messengers;
+using NerdBot.Mtg;
 using NerdBot.Plugin;
 
 namespace NerdBotCoreCommands
@@ -49,6 +50,21 @@ namespace NerdBotCoreCommands
             // If there was no command, return
             if (command == null)
                 return false;
+
+            // randomartist
+            if (command.Cmd.ToLower() == "randomartist")
+            {
+                if (command.Arguments.Length == 1)
+                {
+                    Card card = await base.Store.GetRandomCardByArtist(command.Arguments[0]);
+
+                    if (card != null)
+                    {
+                        messenger.SendMessage(card.Img);
+                    }
+
+                }
+            }
 
             // roll command
             if (command.Cmd.ToLower() == "roll")
