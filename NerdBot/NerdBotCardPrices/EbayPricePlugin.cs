@@ -107,6 +107,15 @@ namespace NerdBotCardPrices
                                     card.Name,
                                     ebayPrice[0]);
                             }
+
+                            // Get other sets card is in
+                            List<Set> otherSets = await base.Store.GetCardOtherSets(card.MultiverseId);
+                            if (otherSets.Any())
+                            {
+                                msg += string.Format(". Also appears in sets: {0}",
+                                    string.Join(", ", otherSets.Select(s => s.Name).Take(5).ToArray()));
+                            }
+
                             messenger.SendMessage(msg);
                         }
                     }
