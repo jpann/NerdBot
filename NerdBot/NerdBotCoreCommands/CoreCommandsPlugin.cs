@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
+using NerdBot.Parsers;
 using NerdBot.Plugin;
+using NerdBot.UrlShortners;
 
 namespace NerdBotCoreCommands
 {
@@ -23,8 +26,16 @@ namespace NerdBotCoreCommands
             get { return "Various 'core' commands (e.g. roll, coinflip)";  }
         }
 
-        public CoreCommandsPlugin()
-            : base()
+        public CoreCommandsPlugin(
+                IMtgStore store,
+                ICommandParser commandParser,
+                IHttpClient httpClient,
+                IUrlShortener urlShortener)
+            : base(
+                store,
+                commandParser,
+                httpClient,
+                urlShortener)
         {
         }
 

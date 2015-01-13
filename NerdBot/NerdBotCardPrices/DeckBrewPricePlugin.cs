@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
+using NerdBot.Parsers;
 using NerdBot.Plugin;
+using NerdBot.UrlShortners;
 using NerdBotCardPrices.PriceFetchers;
 
 namespace NerdBotCardPrices
@@ -24,8 +27,16 @@ namespace NerdBotCardPrices
             get { return "Returns a card's TCGPlayer price using DeckBrew";  }
         }
 
-        public DeckBrewPricePlugin()
-            : base()
+        public DeckBrewPricePlugin(
+                IMtgStore store,
+                ICommandParser commandParser,
+                IHttpClient httpClient,
+                IUrlShortener urlShortener)
+            : base(
+                store,
+                commandParser,
+                httpClient,
+                urlShortener)
         {
         }
 

@@ -9,8 +9,8 @@ using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
-using Ninject.Extensions.Logging;
 using NUnit.Framework;
+using SimpleLogging.Core;
 
 namespace NerdBot.Tests
 {
@@ -21,7 +21,7 @@ namespace NerdBot.Tests
 
         private Mock<IMtgStore> storeMock;
         private Mock<IHttpClient> httpClientMock;
-        private Mock<ILogger> loggerMock;
+        private Mock<ILoggingService> loggerMock;
         private Mock<IPluginManager> pluginManagerMock;
         private Mock<IMessenger> messengerMock;
 
@@ -281,7 +281,7 @@ namespace NerdBot.Tests
             SetUp_Data();
 
             httpClientMock = new Mock<IHttpClient>();
-            loggerMock = new Mock<ILogger>();
+            loggerMock = new Mock<ILoggingService>();
             pluginManagerMock = new Mock<IPluginManager>();
             messengerMock = new Mock<IMessenger>();
 

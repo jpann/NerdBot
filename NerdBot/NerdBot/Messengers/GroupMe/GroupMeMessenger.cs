@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using Nancy.Json;
 using NerdBot.Http;
-using Ninject.Extensions.Logging;
+using SimpleLogging.Core;
 
 namespace NerdBot.Messengers.GroupMe
 {
     public class GroupMeMessenger : IMessenger
     {
         private readonly IHttpClient mHttpClient;
-        private readonly ILogger mLogger;
+        private readonly ILoggingService mLogger;
         private readonly string mBotId;
         private readonly string mBotName;
         private readonly string mEndpointUrl;
@@ -40,7 +40,7 @@ namespace NerdBot.Messengers.GroupMe
             string[] ignoreNames,
             string endPointUrl,
             IHttpClient httpClient,
-            ILogger logger)
+            ILoggingService logger)
         {
             if (string.IsNullOrEmpty(botId))
                 throw new ArgumentException("botId");
@@ -84,7 +84,7 @@ namespace NerdBot.Messengers.GroupMe
             }
             catch (Exception er)
             {
-                this.mLogger.Error(er, "Error sending groupme message: {0}", message);
+                this.mLogger.Error(er, string.Format("Error sending groupme message: {0}", message));
 
                 return false;
             }

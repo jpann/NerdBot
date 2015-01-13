@@ -4,18 +4,17 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
-using Ninject.Extensions.Logging;
+using SimpleLogging.Core;
 
 namespace NerdBot.Http
 {
     public class SimpleHttpClient : IHttpClient
     {
-        private readonly ILogger mLogger;
+        private readonly ILoggingService mLogger;
 
-        public SimpleHttpClient(ILogger logger)
+        public SimpleHttpClient(ILoggingService logger)
         {
             if (logger == null)
                 throw new ArgumentNullException("logger");
@@ -54,7 +53,7 @@ namespace NerdBot.Http
             }
             catch (Exception er)
             {
-                this.mLogger.Error(er, "Error posting data to url '{0}'", url);
+                this.mLogger.Error(er, string.Format("Error posting data to url '{0}'", url));
 
                 throw;
             }

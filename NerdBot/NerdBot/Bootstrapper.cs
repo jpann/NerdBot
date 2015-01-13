@@ -2,81 +2,69 @@
 using System.Collections;
 using System.IO;
 using Nancy.Bootstrapper;
-using Nancy.Bootstrappers.Ninject;
+using Nancy.TinyIoc;
 using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
 using NerdBot.Parsers;
-using NerdBot.Plugin;
 using NerdBot.UrlShortners;
-using Ninject;
-using Ninject.Extensions.Conventions;
+using SimpleLogging.Core;
+using SimpleLogging.NLog;
 
 namespace NerdBot
 {
     using Nancy;
 
-    public class Bootstrapper : NinjectNancyBootstrapper
+    public class Bootstrapper : DefaultNancyBootstrapper
     {
-        protected override void ApplicationStartup(IKernel container, IPipelines pipelines)
+        // The bootstrapper enables you to reconfigure the composition of the framework,
+        // by overriding the various methods and properties.
+        // For more information https://github.com/NancyFx/Nancy/wiki/Bootstrapper
+
+        protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
-            // No registrations should be performed in here, however you may
-            // resolve things that are needed during application startup.
+
         }
 
-        protected override void ConfigureApplicationContainer(IKernel existingContainer)
+        protected override void ConfigureApplicationContainer(TinyIoCContainer container)
         {
-            // Perform registation that should have an application lifetime
+            base.ConfigureApplicationContainer(container);
+
             string pluginDirectory = Path.Combine(Environment.CurrentDirectory, "plugins");
 
-            existingContainer.Bind<IUrlShortener>()
-                .To<BitlyUrlShortener>()
-                .InSingletonScope()
-                .WithConstructorArgument("user", Properties.Settings.Default.UrlShort_User)
-                .WithConstructorArgument("key", Properties.Settings.Default.UrlShort_Key);
+            // Register the instance of ILoggingService
+            var loggingService = new NLogLoggingService();
+            container.Register<ILoggingService>((c, p) => loggingService);
 
-            existingContainer.Bind<IMtgStore>()
-                .To<MtgStore>()
-                .InSingletonScope()
-                .WithConstructorArgument("connectionString", Properties.Settings.Default.ConnectionString)
-                .WithConstructorArgument("databaseName", Properties.Settings.Default.ConnectionDb);
+            // Register the instance of IUrlShortener
+            var bitlyUrl = new BitlyUrlShortener(Properties.Settings.Default.UrlShort_User,
+                Properties.Settings.Default.UrlShort_Key);
+            container.Register<IUrlShortener>(bitlyUrl);
 
-            existingContainer.Bind<IHttpClient>()
-                .To<SimpleHttpClient>();
+            // Register the instance of IMtgStore
+            var mtgStore = new MtgStore(Properties.Settings.Default.ConnectionString,
+                Properties.Settings.Default.ConnectionDb);
+            container.Register<IMtgStore>(mtgStore);
 
-            existingContainer.Bind<ICommandParser>()
-                .To<CommandParser>()
-                .InSingletonScope();
+            // Register the instance of IHttpClient
+            container.Register<IHttpClient, SimpleHttpClient>();
 
-            existingContainer.Bind<IMessenger>()
-                .To<GroupMeMessenger>()
-                .InSingletonScope()
-                .WithConstructorArgument("botId", Properties.Settings.Default.BotId)
-                .WithConstructorArgument("botName", Properties.Settings.Default.BotName)
-                .WithConstructorArgument("ignoreNames", new string[] {})
-                .WithConstructorArgument("endPointUrl", Properties.Settings.Default.EndPointUrl);
+            // Register the instance of ICommandParser
+            container.Register<ICommandParser, CommandParser>();
 
-            existingContainer.Bind(
-                x => x.FromAssembliesInPath(pluginDirectory)
-                .SelectAllClasses().InheritedFrom<IPlugin>()
-                .BindAllInterfaces());
+            // Register the instance of IMessenger
+            var groupMeMessenger = new GroupMeMessenger(Properties.Settings.Default.BotId,
+                Properties.Settings.Default.BotName,
+                new string[] { },
+                Properties.Settings.Default.EndPointUrl,
+                container.Resolve<IHttpClient>(),
+                loggingService);
+            container.Register<IMessenger>(groupMeMessenger);
 
-            existingContainer.Bind<IPluginManager>()
-                .To<PluginManager>()
-                .InSingletonScope()
-                .WithConstructorArgument("pluginDirectory", pluginDirectory);
-        }
-
-        protected override void ConfigureRequestContainer(IKernel container, NancyContext context)
-        {
-            // Perform registrations that should have a request lifetime
-        }
-
-        protected override void RequestStartup(IKernel container, IPipelines pipelines, NancyContext context)
-        {
-            // No registrations should be performed in here, however you may
-            // resolve things that are needed during request startup.
+            // Register the instance of IPluginManager
+            var pluginManager = new PluginManager(pluginDirectory, loggingService, container.Resolve<IMtgStore>(), container.Resolve<ICommandParser>(), container);
+            container.Register<IPluginManager>(pluginManager);
         }
     }
 }

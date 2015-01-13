@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
 using NerdBot.Parsers;
 using NerdBot.Plugin;
+using NerdBot.UrlShortners;
 
 namespace NerdBotCardImage
 {
@@ -22,8 +24,16 @@ namespace NerdBotCardImage
             get { return "Returns a link to the card's image.";  }
         }
 
-        public ImgCommand()
-            : base()
+        public ImgCommand(
+                IMtgStore store,
+                ICommandParser commandParser,
+                IHttpClient httpClient,
+                IUrlShortener urlShortener)
+            : base(
+                store,
+                commandParser,
+                httpClient,
+                urlShortener)
         {
         }
 

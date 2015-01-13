@@ -45,9 +45,6 @@
     <Reference Include="FluentValidation">
       <HintPath>..\packages\FluentValidation.5.5.0.0\lib\Net40\FluentValidation.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="MongoDB.Bson">
       <HintPath>..\packages\mongocsharpdriver.1.9.2\lib\net35\MongoDB.Bson.dll</HintPath>
     </Reference>
@@ -56,9 +53,6 @@
     </Reference>
     <Reference Include="Nancy">
       <HintPath>..\packages\Nancy.0.23.2\lib\net40\Nancy.dll</HintPath>
-    </Reference>
-    <Reference Include="Nancy.Bootstrappers.Ninject">
-      <HintPath>..\packages\Nancy.Bootstrappers.Ninject.0.23.2\lib\net40\Nancy.Bootstrappers.Ninject.dll</HintPath>
     </Reference>
     <Reference Include="Nancy.Hosting.Self">
       <HintPath>..\packages\Nancy.Hosting.Self.0.23.2\lib\net40\Nancy.Hosting.Self.dll</HintPath>
@@ -69,22 +63,14 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Ninject.3.2.0.0\lib\net40\Ninject.dll</HintPath>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.2.1.0\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject.Extensions.ChildKernel, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Ninject.Extensions.ChildKernel.3.2.0.0\lib\net40\Ninject.Extensions.ChildKernel.dll</HintPath>
+    <Reference Include="SimpleLogging.Core">
+      <HintPath>..\packages\SimpleLogging.Core.0.5.0\lib\portable-net4+sl4+wp7+win8\SimpleLogging.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject.Extensions.Conventions">
-      <HintPath>..\packages\Ninject.Extensions.Conventions.3.2.0.0\lib\net40\Ninject.Extensions.Conventions.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject.Extensions.Logging">
-      <HintPath>..\packages\Ninject.Extensions.Logging.3.2.0.0\lib\net40\Ninject.Extensions.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject.Extensions.Logging.Log4Net">
-      <HintPath>..\packages\Ninject.Extensions.Logging.Log4net.3.2.1.0\lib\net40\Ninject.Extensions.Logging.Log4Net.dll</HintPath>
+    <Reference Include="SimpleLogging.NLog">
+      <HintPath>..\packages\SimpleLogging.NLog.0.5.0\lib\net40\SimpleLogging.NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />

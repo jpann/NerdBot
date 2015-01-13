@@ -4,22 +4,22 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Nancy.TinyIoc;
 using NerdBot.Extensions;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
 using NerdBot.Parsers;
 using NerdBot.Plugin;
-using Ninject;
-using Ninject.Extensions.Logging;
+using SimpleLogging.Core;
 
 namespace NerdBot
 {
     public class PluginManager : IPluginManager
     {
-        private readonly ILogger mLogger;
+        private readonly ILoggingService mLogger;
         private readonly IMtgStore mStore;
         private readonly ICommandParser mCommandParser;
-        private readonly IKernel mKernel;
+        private readonly TinyIoCContainer mContainer;
         private string mPluginDirectory;
         private List<IPlugin> mPlugins = new List<IPlugin>();
 
@@ -42,7 +42,7 @@ namespace NerdBot
         }
         #endregion
 
-        public PluginManager(ILogger logger, IMtgStore store, ICommandParser commandParser, IKernel kernel)
+        public PluginManager(ILoggingService logger, IMtgStore store, ICommandParser commandParser, TinyIoCContainer container)
         {
             if (logger == null)
                 throw new ArgumentNullException("logger");
@@ -53,21 +53,21 @@ namespace NerdBot
             if (commandParser == null)
                 throw new ArgumentNullException("commandParser");
 
-            if (kernel == null)
-                throw new ArgumentNullException("kernel");
+            if (container == null)
+                throw new ArgumentNullException("container");
 
             this.mLogger = logger;
             this.mStore = store;
             this.mCommandParser = commandParser;
-            this.mKernel = kernel;
+            this.mContainer = container;
         }
 
         public PluginManager(
             string pluginDirectory,
-            ILogger logger,
+            ILoggingService logger,
             IMtgStore store,
             ICommandParser commandParser,
-            IKernel kernel)
+            TinyIoCContainer container)
         {
             if (string.IsNullOrEmpty(pluginDirectory))
                 throw new ArgumentException("pluginDirectory");
@@ -81,14 +81,14 @@ namespace NerdBot
             if (commandParser == null)
                 throw new ArgumentNullException("commandParser");
 
-            if (kernel == null)
-                throw new ArgumentNullException("kernel");
+            if (container == null)
+                throw new ArgumentNullException("container");
 
             this.mPluginDirectory = pluginDirectory;
             this.mLogger = logger;
             this.mStore = store;
             this.mCommandParser = commandParser;
-            this.mKernel = kernel;
+            this.mContainer = container;
 
             this.LoadPlugins();
         }
@@ -111,7 +111,7 @@ namespace NerdBot
                     if (!type.ImplementsInterface(typeof(IPlugin)))
                         continue;
 
-                    IPlugin plugin = (IPlugin)this.mKernel.Get(type);
+                    IPlugin plugin = (IPlugin)this.mContainer.Resolve(type);
 
                     plugin.OnLoad();
 

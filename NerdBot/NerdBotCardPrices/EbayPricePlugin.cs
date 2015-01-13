@@ -8,6 +8,7 @@ using NerdBot.Messengers;
 using NerdBot.Mtg;
 using NerdBot.Parsers;
 using NerdBot.Plugin;
+using NerdBot.UrlShortners;
 using NerdBotCardPrices.PriceFetchers;
 
 namespace NerdBotCardPrices
@@ -24,8 +25,16 @@ namespace NerdBotCardPrices
             get { return "Returns a card's eBay buy it now price.";  }
         }
 
-        public EbayPricePlugin()
-            : base()
+        public EbayPricePlugin(
+                IMtgStore store,
+                ICommandParser commandParser,
+                IHttpClient httpClient,
+                IUrlShortener urlShortener)
+            : base(
+                store,
+                commandParser,
+                httpClient,
+                urlShortener)
         {
         }
 
