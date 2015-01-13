@@ -10,15 +10,27 @@ namespace NerdBot
 
     public class IndexModule : NancyModule
     {
-        public IndexModule(IMtgStore mtgStore, IMessenger messenger, IPluginManager pluginManager)
+        public IndexModule(
+            BotConfig botConfig,
+            IMtgStore mtgStore, 
+            IMessenger messenger, 
+            IPluginManager pluginManager)
         {
             Get["/"] = parameters =>
             {
                 return HttpStatusCode.NotAcceptable;
             };
 
-            Post["/", true] = async (parameters, ct) =>
+            Post["/bot/{token}", true] = async (parameters, ct) =>
             {
+                string sentToken = parameters.token;
+
+                // If the passed token segment does not match the secret token, return NotAcceptable status
+                if (sentToken != botConfig.SecretToken)
+                {
+                    return HttpStatusCode.NotAcceptable;
+                }
+
                 var message = new GroupMeMessage();
 
                 // Bind and validate the request to GroupMeMessage

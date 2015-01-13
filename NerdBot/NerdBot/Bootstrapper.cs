@@ -31,8 +31,6 @@ namespace NerdBot
         {
             base.ConfigureApplicationContainer(container);
 
-            string pluginDirectory = Path.Combine(Environment.CurrentDirectory, "plugins");
-
             // Register the instance of ILoggingService
             var loggingService = new NLogLoggingService();
             container.Register<ILoggingService>((c, p) => loggingService);
@@ -63,8 +61,15 @@ namespace NerdBot
             container.Register<IMessenger>(groupMeMessenger);
 
             // Register the instance of IPluginManager
+            string pluginDirectory = Path.Combine(Environment.CurrentDirectory, "plugins");
+
             var pluginManager = new PluginManager(pluginDirectory, loggingService, container.Resolve<IMtgStore>(), container.Resolve<ICommandParser>(), container);
             container.Register<IPluginManager>(pluginManager);
+
+            // Register BotConfig
+            string secretToken = Properties.Settings.Default.RouteKey;
+            var botConfig = new BotConfig() { SecretToken = secretToken };
+            container.Register(botConfig);
         }
     }
 }

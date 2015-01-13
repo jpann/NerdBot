@@ -17,7 +17,7 @@ namespace NerdBot.Tests
     [TestFixture]
     class IndexModule_Tests
     {
-        private Browser browser;
+        private Browser browserGoodToken;
 
         private Mock<IMtgStore> storeMock;
         private Mock<IHttpClient> httpClientMock;
@@ -27,6 +27,9 @@ namespace NerdBot.Tests
 
         private List<Card> cardData = new List<Card>();
         private List<Set> setData = new List<Set>();
+
+        private string secretTokenGood = "TOKEN";
+        private string secretTokenBad = "BADTOKEN";
 
         private void SetUp_Data()
         {
@@ -296,12 +299,16 @@ namespace NerdBot.Tests
                 .Returns("BOTID");
 
             // Setup the Browser object
-            browser = new Browser(with =>
+            browserGoodToken = new Browser(with =>
             {
                 with.Module<IndexModule>();
                 with.Dependency<IMtgStore>(storeMock.Object);
                 with.Dependency<IMessenger>(messengerMock.Object);
                 with.Dependency<IPluginManager>(pluginManagerMock.Object);
+                with.Dependency<BotConfig>(new BotConfig()
+                {
+                    SecretToken = secretTokenGood
+                });
             });
         }
 
@@ -322,7 +329,7 @@ namespace NerdBot.Tests
 ]
 }";
 
-            var response = browser.Post("/",
+            var response = browserGoodToken.Post("/bot/" + secretTokenGood,
             with =>
             {
                 with.HttpRequest();
@@ -352,7 +359,35 @@ namespace NerdBot.Tests
 ]
 }";
 
-            var response = browser.Post("/",
+            var response = browserGoodToken.Post("/bot/" + secretTokenGood,
+            with =>
+            {
+                with.HttpRequest();
+                with.Body(groupMeMessageBody);
+                with.Header("content-type", "application/json");
+            });
+
+            Assert.AreEqual(HttpStatusCode.NotAcceptable, response.StatusCode);
+        }
+
+        [Test]
+        public void InvalidToken()
+        {
+            string groupMeMessageBody = @"{
+""id"":""141909488216484256"",
+""source_guid"":""b4182bb58a18ba162b29434"",
+""created_at"":1419094882,
+""user_id"":""111111"",
+""group_id"":""9999999"",
+""name"":""User Name"",
+""avatar_url"":""https://i.groupme.com/668x401.jpeg"",
+""text"":""This is a test message?"",
+""system"":false,
+""attachments"":[
+]
+}";
+
+            var response = browserGoodToken.Post("/bot/" + secretTokenBad,
             with =>
             {
                 with.HttpRequest();
