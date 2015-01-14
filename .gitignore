@@ -183,4 +183,5 @@ UpgradeLog*.htm
 FakesAssemblies/
 
 NerdBot/NerdBot/settings.config
+NerdBot/NerdBot/NerdBot.ini
 *.userprefs
