@@ -133,9 +133,19 @@ namespace NerdBot
 
         public async void SendMessage(IMessage message, IMessenger messenger)
         {
-            foreach (IPlugin plugin in this.mPlugins)
+            try
             {
-                bool handled = await plugin.OnMessage(message, messenger);
+                foreach (IPlugin plugin in this.mPlugins)
+                {
+                    bool handled = await plugin.OnMessage(message, messenger);
+                }
+            }
+            catch (Exception er)
+            {
+                string msg = string.Format("Error sending message to plugins: {0}", er.Message);
+
+                Console.WriteLine(msg);
+                this.mLogger.Error(er, msg);
             }
         }
     }
