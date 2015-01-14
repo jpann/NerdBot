@@ -15,8 +15,6 @@ namespace NerdBotCoreCommands
 {
     public class TappedOutFormatCheckPlugin : PluginBase
     {
-        private Random mRandom;
-
         public override string Name
         {
             get { return "formats Command"; }
@@ -42,7 +40,6 @@ namespace NerdBotCoreCommands
 
         public override void OnLoad()
         {
-            this.mRandom = new Random();
         }
 
         public override void OnUnload()
@@ -108,7 +105,6 @@ namespace NerdBotCoreCommands
                             msg = string.Format("{0} is legal in formats: {1}",
                                 card.Name,
                                 string.Join(", ", formats));
-                            ;
                         }
                     }
                 }
