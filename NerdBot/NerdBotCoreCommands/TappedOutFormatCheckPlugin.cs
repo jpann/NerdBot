@@ -105,6 +105,8 @@ namespace NerdBotCoreCommands
                             msg = string.Format("{0} is legal in formats: {1}",
                                 card.Name,
                                 string.Join(", ", formats));
+
+                            messenger.SendMessage(msg);
                         }
                     }
                 }
