@@ -95,7 +95,8 @@ namespace NerdBot
 
         ~PluginManager()
         {
-            this.UnloadPlugins();
+            // Opps, this is causing 'System.InvalidOperationException: Collection was modified; enumeration operation may not execute.'
+            //this.UnloadPlugins();
         }
 
         public void LoadPlugins()
