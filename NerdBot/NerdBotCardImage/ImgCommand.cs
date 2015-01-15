@@ -16,12 +16,32 @@ namespace NerdBotCardImage
     {
         public override string Name
         {
-            get { return "img Command"; }
+            get { return "img command"; }
         }
 
         public override string Description
         {
             get { return "Returns a link to the card's image.";  }
+        }
+
+        public override string ShortDescription
+        {
+            get { return "Returns a link to the card's image."; }
+        }
+
+        public override string Command
+        {
+            get { return "img"; }
+        }
+
+        public override string HelpCommand
+        {
+            get { return "help img"; }
+        }
+
+        public override string HelpDescription
+        {
+            get { return string.Format("{0}: HELP TEXT HERE", this.Command); }
         }
 
         public ImgCommand(
@@ -48,56 +68,57 @@ namespace NerdBotCardImage
 
         public override async Task<bool> OnMessage(IMessage message, IMessenger messenger)
         {
+
+            return false;
+        }
+
+        public override async Task<bool> OnCommand(Command command, IMessage message, IMessenger messenger)
+        {
+            if (command == null)
+                throw new ArgumentNullException("command");
+
             if (message == null)
                 throw new ArgumentNullException("message");
 
             if (messenger == null)
                 throw new ArgumentNullException("messenger");
 
-            var command = this.CommandParser.Parse(message.text);
-
-            // If there was no command, return
-            if (command == null)
-                return false;
-
-            // Parse command
-            if (command.Cmd.ToLower() == "img")
+            if (command.Arguments.Any())
             {
-                if (command.Arguments.Any())
+                Card card = null;
+
+                if (command.Arguments.Length == 1)
                 {
-                    Card card = null;
+                    string name = command.Arguments[0];
 
-                    if (command.Arguments.Length == 1)
-                    {
-                        string name = command.Arguments[0];
+                    if (string.IsNullOrEmpty(name))
+                        return false;
 
-                        if (string.IsNullOrEmpty(name))
-                            return false;
+                    // Get card using only name
+                    card = await this.Store.GetCard(name);
+                }
+                else if (command.Arguments.Length == 2)
+                {
+                    string name = command.Arguments[0];
+                    string set = command.Arguments[1];
 
-                        // Get card using only name
-                        card = await this.Store.GetCard(name);
-                    }
-                    else if (command.Arguments.Length == 2)
-                    {
-                        string name = command.Arguments[0];
-                        string set = command.Arguments[1];
+                    if (string.IsNullOrEmpty(name))
+                        return false;
 
-                        if (string.IsNullOrEmpty(name))
-                            return false;
+                    if (string.IsNullOrEmpty(set))
+                        return false;
 
-                        if (string.IsNullOrEmpty(set))
-                            return false;
+                    // Get card using only name
+                    card = await this.Store.GetCard(name, set);
+                }
 
-                        // Get card using only name
-                        card = await this.Store.GetCard(name, set);
-                    }
+                if (card != null)
+                {
+                    string imgUrl = card.Img;
 
-                    if (card != null)
-                    {
-                        string imgUrl = card.Img;
+                    messenger.SendMessage(imgUrl);
 
-                        messenger.SendMessage(imgUrl);
-                    }
+                    return true;
                 }
             }
 

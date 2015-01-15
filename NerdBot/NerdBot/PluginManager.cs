@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using Nancy.TinyIoc;
 using NerdBot.Extensions;
 using NerdBot.Messengers;
@@ -147,6 +148,43 @@ namespace NerdBot
                 Console.WriteLine(msg);
                 this.mLogger.Error(er, msg);
             }
+        }
+
+        public async Task<bool> HandleCommand(
+            Command command, 
+            IMessage message, 
+            IMessenger messenger)
+        {
+            if (command == null)
+                throw new ArgumentNullException("command");
+
+            if (message == null)
+                throw new ArgumentNullException("message");
+
+            if (messenger == null)
+                throw new ArgumentNullException("messenger");
+
+            try
+            {
+                foreach (IPlugin plugin in this.mPlugins)
+                {
+                    if (plugin.Command == command.Cmd)
+                    {
+                        bool handled = await plugin.OnCommand(command, message, messenger);
+
+                        return handled;
+                    }
+                }
+            }
+            catch (Exception er)
+            {
+                string msg = string.Format("Error sending command to plugins: {0}", er.Message);
+
+                Console.WriteLine(msg);
+                this.mLogger.Error(er, msg);
+            }
+
+            return false;
         }
     }
 }

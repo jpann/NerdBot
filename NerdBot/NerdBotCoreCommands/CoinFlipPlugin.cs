@@ -26,6 +26,26 @@ namespace NerdBotCoreCommands
             get { return "Clips a coin and returns the result.";  }
         }
 
+        public override string ShortDescription
+        {
+            get { return "Clips a coin and returns the result."; }
+        }
+
+        public override string Command
+        {
+            get { return "coinflip"; }
+        }
+
+        public override string HelpCommand
+        {
+            get { return "help coinflip"; }
+        }
+
+        public override string HelpDescription
+        {
+            get { return string.Format("{0}: HELP TEXT HERE", this.Command); }
+        }
+
         public CoinFlipPlugin(
                 IMtgStore store,
                 ICommandParser commandParser,
@@ -50,32 +70,30 @@ namespace NerdBotCoreCommands
 
         public override async Task<bool> OnMessage(IMessage message, IMessenger messenger)
         {
+            return false;
+        }
+
+        public override async Task<bool> OnCommand(Command command, IMessage message, IMessenger messenger)
+        {
+            if (command == null)
+                throw new ArgumentNullException("command");
+
             if (message == null)
                 throw new ArgumentNullException("message");
 
             if (messenger == null)
                 throw new ArgumentNullException("messenger");
 
-            var command = this.mCommandParser.Parse(message.text);
+            string flip = "Heads";
 
-            // If there was no command, return
-            if (command == null)
-                return false;
+            if ((this.mRandom.Next(0, 100) % 2) == 0)
+                flip = "Heads";
+            else
+                flip = "Tails";
 
-            // coinflip command
-            if (command.Cmd.ToLower() == "coinflip")
-            {
-                string flip = "Heads";
+            messenger.SendMessage(string.Format("Coin flip: {0}", flip));
 
-                if ((this.mRandom.Next(0, 100) % 2) == 0)
-                    flip = "Heads";
-                else
-                    flip = "Tails";
-
-                messenger.SendMessage(string.Format("Coin flip: {0}", flip));
-            }
-
-            return false;
+            return true;
         }
     }
 }

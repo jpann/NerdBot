@@ -18,12 +18,32 @@ namespace NerdBotCoreCommands
 
         public override string Name
         {
-            get { return "roll Commands"; }
+            get { return "roll command"; }
         }
 
         public override string Description
         {
             get { return "Rolls a die and returns the result.";  }
+        }
+
+        public override string ShortDescription
+        {
+            get { return "Rolls a die and returns the result."; }
+        }
+
+        public override string Command
+        {
+            get { return "roll"; }
+        }
+
+        public override string HelpCommand
+        {
+            get { return "help roll"; }
+        }
+
+        public override string HelpDescription
+        {
+            get { return string.Format("{0}: HELP TEXT HERE", this.Command); }
         }
 
         public DiceRollPlugin(
@@ -50,39 +70,37 @@ namespace NerdBotCoreCommands
 
         public override async Task<bool> OnMessage(IMessage message, IMessenger messenger)
         {
+            return false;
+        }
+
+        public override async Task<bool> OnCommand(Command command, IMessage message, IMessenger messenger)
+        {
+            if (command == null)
+                throw new ArgumentNullException("command");
+
             if (message == null)
                 throw new ArgumentNullException("message");
 
             if (messenger == null)
                 throw new ArgumentNullException("messenger");
 
-            var command = this.mCommandParser.Parse(message.text);
+            int max = 6;
 
-            // If there was no command, return
-            if (command == null)
-                return false;
-
-            // roll command
-            if (command.Cmd.ToLower() == "roll")
+            // Roll 1 through argument value, if argument is an integer
+            if (command.Arguments.Length == 1)
             {
-                int max = 6;
+                int n;
+                bool isNumeric = int.TryParse(command.Arguments[0], out n);
 
-                // Roll 1 through argument value, if argument is an integer
-                if (command.Arguments.Length == 1)
-                {
-                    int n;
-                    bool isNumeric = int.TryParse(command.Arguments[0], out n);
-
-                    if (isNumeric)
-                        max = n;
-                }
-
-                int roll = this.mRandom.Next(1, max);
-
-                messenger.SendMessage(string.Format("Roll 1-{0}: {1}", max, roll));
+                if (isNumeric)
+                    max = n;
             }
 
-            return false;
+            int roll = this.mRandom.Next(1, max);
+
+            messenger.SendMessage(string.Format("Roll 1-{0}: {1}", max, roll));
+
+            return true;
         }
     }
 }

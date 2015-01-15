@@ -94,10 +94,15 @@ namespace NerdBot.Plugin
 
         public abstract string Name { get; }
         public abstract string Description { get; }
+        public abstract string ShortDescription { get; }
+        public abstract string Command { get; }
+        public abstract string HelpCommand { get; }
+        public abstract string HelpDescription { get; }
         #endregion
 
         public abstract void OnLoad();
         public abstract void OnUnload();
         public abstract Task<bool> OnMessage(IMessage message, IMessenger messenger);
+        public abstract Task<bool> OnCommand(Command command, IMessage message, IMessenger messenger);
     }
 }

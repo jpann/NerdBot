@@ -25,6 +25,26 @@ namespace NerdBotCoreCommands
             get { return "Gets a list of formats the card is valid in from http://validator.tappedout.net/validate/";  }
         }
 
+        public override string ShortDescription
+        {
+            get { return "Gets a list of formats the card is valid in from http://validator.tappedout.net/validate/"; }
+        }
+
+        public override string Command
+        {
+            get { return "formats"; }
+        }
+
+        public override string HelpCommand
+        {
+            get { return "help formats"; }
+        }
+
+        public override string HelpDescription
+        {
+            get { return string.Format("{0}: HELP TEXT HERE", this.Command); }
+        }
+
         public TappedOutFormatCheckPlugin(
                 IMtgStore store,
                 ICommandParser commandParser,
@@ -48,66 +68,66 @@ namespace NerdBotCoreCommands
 
         public override async Task<bool> OnMessage(IMessage message, IMessenger messenger)
         {
+            return false;
+        }
+
+        public override async Task<bool> OnCommand(Command command, IMessage message, IMessenger messenger)
+        {
+            if (command == null)
+                throw new ArgumentNullException("command");
+
             if (message == null)
                 throw new ArgumentNullException("message");
 
             if (messenger == null)
                 throw new ArgumentNullException("messenger");
 
-            var command = this.mCommandParser.Parse(message.text);
-
-            // If there was no command, return
-            if (command == null)
-                return false;
-
-            // Parse command
-            if (command.Cmd.ToLower() == "formats")
+            if (command.Arguments.Any())
             {
-                if (command.Arguments.Any())
+                Card card = null;
+
+                if (command.Arguments.Length == 1)
                 {
-                    Card card = null;
+                    string name = command.Arguments[0];
 
-                    if (command.Arguments.Length == 1)
+                    if (string.IsNullOrEmpty(name))
+                        return false;
+
+                    // Get card using only name
+                    card = await this.Store.GetCard(name);
+                }
+                else if (command.Arguments.Length == 2)
+                {
+                    string name = command.Arguments[0];
+                    string set = command.Arguments[1];
+
+                    if (string.IsNullOrEmpty(name))
+                        return false;
+
+                    if (string.IsNullOrEmpty(set))
+                        return false;
+
+                    // Get card using only name
+                    card = await this.Store.GetCard(name, set);
+                }
+
+                if (card != null)
+                {
+                    // From tappedout.net, get the formats this card is legal in
+                    var tappedOutFormat = new TappedOutFormatChecker(this.HttpClient);
+                    string[] formats = await tappedOutFormat.GetFormats(card.Name);
+
+                    string msg = string.Format("No formats available for '{0}", card.Name);
+
+                    if (formats != null)
                     {
-                        string name = command.Arguments[0];
+                        msg = string.Format("{0} is legal in formats: {1}",
+                            card.Name,
+                            string.Join(", ", formats));
 
-                        if (string.IsNullOrEmpty(name))
-                            return false;
+                        messenger.SendMessage(msg);
 
-                        // Get card using only name
-                        card = await this.Store.GetCard(name);
-                    }
-                    else if (command.Arguments.Length == 2)
-                    {
-                        string name = command.Arguments[0];
-                        string set = command.Arguments[1];
-
-                        if (string.IsNullOrEmpty(name))
-                            return false;
-
-                        if (string.IsNullOrEmpty(set))
-                            return false;
-
-                        // Get card using only name
-                        card = await this.Store.GetCard(name, set);
-                    }
-
-                    if (card != null)
-                    {
-                        // From tappedout.net, get the formats this card is legal in
-                        var tappedOutFormat = new TappedOutFormatChecker(this.HttpClient);
-                        string[] formats = await tappedOutFormat.GetFormats(card.Name);
-
-                        string msg = string.Format("No formats available for '{0}", card.Name);
-
-                        if (formats != null)
-                        {
-                            msg = string.Format("{0} is legal in formats: {1}",
-                                card.Name,
-                                string.Join(", ", formats));
-
-                            messenger.SendMessage(msg);
-                        }
+                        return true;
                     }
                 }
             }
