@@ -43,8 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CoreCommandsPlugin.cs" />
+    <Compile Include="CoinFlipPlugin.cs" />
+    <Compile Include="DiceRollPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomArtistPlugin.cs" />
     <Compile Include="TappedOutFormatCheckPlugin.cs" />
   </ItemGroup>
   <ItemGroup>

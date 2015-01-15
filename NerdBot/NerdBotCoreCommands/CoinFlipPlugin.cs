@@ -12,21 +12,21 @@ using NerdBot.UrlShortners;
 
 namespace NerdBotCoreCommands
 {
-    public class CoreCommandsPlugin : PluginBase
+    public class CoinFlipPlugin : PluginBase
     {
         private Random mRandom;
 
         public override string Name
         {
-            get { return "Core Commands"; }
+            get { return "coinflip command"; }
         }
 
         public override string Description
         {
-            get { return "Various 'core' commands (e.g. roll, coinflip)";  }
+            get { return "Clips a coin and returns the result.";  }
         }
 
-        public CoreCommandsPlugin(
+        public CoinFlipPlugin(
                 IMtgStore store,
                 ICommandParser commandParser,
                 IHttpClient httpClient,
@@ -61,41 +61,6 @@ namespace NerdBotCoreCommands
             // If there was no command, return
             if (command == null)
                 return false;
-
-            // randomartist
-            if (command.Cmd.ToLower() == "randomartist")
-            {
-                if (command.Arguments.Length == 1)
-                {
-                    Card card = await base.Store.GetRandomCardByArtist(command.Arguments[0]);
-
-                    if (card != null)
-                    {
-                        messenger.SendMessage(card.Img);
-                    }
-
-                }
-            }
-
-            // roll command
-            if (command.Cmd.ToLower() == "roll")
-            {
-                int max = 6;
-
-                // Roll 1 through argument value, if argument is an integer
-                if (command.Arguments.Length == 1)
-                {
-                    int n;
-                    bool isNumeric = int.TryParse(command.Arguments[0], out n);
-
-                    if (isNumeric)
-                        max = n;
-                }
-
-                int roll = this.mRandom.Next(1, max);
-
-                messenger.SendMessage(string.Format("Roll 1-{0}: {1}", max, roll));
-            }
 
             // coinflip command
             if (command.Cmd.ToLower() == "coinflip")
