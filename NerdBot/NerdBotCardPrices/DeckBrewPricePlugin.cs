@@ -101,6 +101,14 @@ namespace NerdBotCardPrices
 
                         if (tcgPrice != null)
                         {
+                            // Not all cards have a price from DeckBrew, so check for 0 prices here,
+                            //  to prevent posting of 0.00 prices
+                            if (tcgPrice[2] == "0.00" && tcgPrice[1] == "0.00" && tcgPrice[0] == "0.00")
+                            {
+                                messenger.SendMessage("Price unavailable using DeckBrew");
+                                return false;
+                            }
+
                             string url = this.UrlShortener.ShortenUrl(tcgPrice[3]);
 
                             string msg = "";
@@ -137,7 +145,7 @@ namespace NerdBotCardPrices
                         }
                         else
                         {
-                            messenger.SendMessage("Price unavailable");
+                            messenger.SendMessage("Price unavailable using DeckBrew");
                         }
                     }
                 }
