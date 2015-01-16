@@ -108,7 +108,7 @@ namespace NerdBotCardImage
                     if (string.IsNullOrEmpty(set))
                         return false;
 
-                    // Get card using only name
+                    // Get card using name and set name or code
                     card = await this.Store.GetCard(name, set);
                 }
 

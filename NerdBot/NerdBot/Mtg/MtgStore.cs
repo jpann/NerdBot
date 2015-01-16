@@ -155,9 +155,12 @@ namespace NerdBot.Mtg
 
             var collection = this.mDatabase.GetCollection<Card>("cards");
 
+            // Search both the set's search name and set id
             var query = Query.And(
                 Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i")),
-                Query<Card>.Matches(e => e.SetSearchName, new BsonRegularExpression(setName, "i"))
+                Query.Or(
+                    Query<Card>.Matches(e => e.SetSearchName, new BsonRegularExpression(setName, "i")),
+                    Query<Card>.Matches(e => e.SetId, new BsonRegularExpression(setName, "i")))
                 );
 
             var card = collection.FindOne(query);
