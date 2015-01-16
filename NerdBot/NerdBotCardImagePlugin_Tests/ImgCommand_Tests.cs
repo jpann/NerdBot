@@ -81,7 +81,7 @@ namespace NerdBotCardImagePlugin_Tests
         }
 
         [Test]
-        public void ImgCommand_ByName_DoesntExist()
+        public void ImgCommand_ByName_NameDoesntExist()
         {
             var cmd = new Command()
             {
@@ -116,8 +116,8 @@ namespace NerdBotCardImagePlugin_Tests
                 Cmd = "img",
                 Arguments = new string[]
                 {
-                    "Spore Cloud",
-                    "Fallen Empires"
+                    "Fallen Empires",
+                    "Spore Cloud"
                 }
             };
 
@@ -134,7 +134,7 @@ namespace NerdBotCardImagePlugin_Tests
         }
 
         [Test]
-        public void ImgCommand_ByNameAndSet_DoesntExist()
+        public void ImgCommand_ByNameAndSet_NameDoesntExist()
         {
             var cmd = new Command()
             {
@@ -143,6 +143,119 @@ namespace NerdBotCardImagePlugin_Tests
                 {
                     "Fallen Empires",
                     "Bore Cloud"
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+
+            bool handled = imgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                messengerMock.Object
+                ).Result;
+
+            // Verify that the messenger's SendMessenger was never called 
+            //  because no message should be sent when a card was not found
+            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.Never);
+
+            Assert.False(handled);
+        }
+
+        [Test]
+        public void ImgCommand_ByNameAndSet_SetDoesntExist()
+        {
+            var cmd = new Command()
+            {
+                Cmd = "img",
+                Arguments = new string[]
+                {
+                    "Callen Empires",
+                    "Spore Cloud"
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+
+            bool handled = imgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                messengerMock.Object
+                ).Result;
+
+            // Verify that the messenger's SendMessenger was never called 
+            //  because no message should be sent when a card was not found
+            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.Never);
+
+            Assert.False(handled);
+        }
+
+
+        [Test]
+        public void ImgCommand_ByNameAndSetCode()
+        {
+            var cmd = new Command()
+            {
+                Cmd = "img",
+                Arguments = new string[]
+                {
+                    "FEM",
+                    "Spore Cloud"
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+
+            bool handled = imgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                messengerMock.Object
+                ).Result;
+
+            messengerMock.Verify(m => m.SendMessage("https://api.mtgdb.info/content/card_images/1922.jpeg"));
+        }
+
+        [Test]
+        public void ImgCommand_ByNameAndSetCode_NameDoesntExist()
+        {
+            var cmd = new Command()
+            {
+                Cmd = "img",
+                Arguments = new string[]
+                {
+                    "FEM",
+                    "Bore Cloud"
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+
+            bool handled = imgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                messengerMock.Object
+                ).Result;
+
+            // Verify that the messenger's SendMessenger was never called 
+            //  because no message should be sent when a card was not found
+            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.Never);
+
+            Assert.False(handled);
+        }
+
+        [Test]
+        public void ImgCommand_ByNameAndSetCode_SetDoesntExist()
+        {
+            var cmd = new Command()
+            {
+                Cmd = "img",
+                Arguments = new string[]
+                {
+                    "XXX",
+                    "Spore Cloud"
                 }
             };
 
