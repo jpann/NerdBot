@@ -9,6 +9,7 @@ using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
+using NerdBot.Parsers;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
@@ -24,6 +25,7 @@ namespace NerdBot.Tests
         private Mock<ILoggingService> loggerMock;
         private Mock<IPluginManager> pluginManagerMock;
         private Mock<IMessenger> messengerMock;
+        private Mock<ICommandParser> commandParserMock;
 
         private List<Card> cardData = new List<Card>();
         private List<Set> setData = new List<Set>();
@@ -287,16 +289,24 @@ namespace NerdBot.Tests
             loggerMock = new Mock<ILoggingService>();
             pluginManagerMock = new Mock<IPluginManager>();
             messengerMock = new Mock<IMessenger>();
+            commandParserMock = new Mock<ICommandParser>();
 
             // Create a mock set and IMtgStore
             storeMock = new Mock<IMtgStore>();
-            
 
             // Mock IMessenger properties so a null object reference exception is not thrown in IndexModule
             messengerMock.Setup(p => p.BotName)
                 .Returns("BotName");
             messengerMock.Setup(p => p.BotId)
                 .Returns("BOTID");
+
+            // ICommandParser Mocks
+            commandParserMock.Setup(c => c.Parse("img boros charm"))
+                .Returns(() => new Command()
+                {
+                    Cmd = "img",
+                    Arguments = new string[] { "boros charm" }
+                });
 
             // Setup the Browser object
             browserGoodToken = new Browser(with =>
@@ -305,6 +315,7 @@ namespace NerdBot.Tests
                 with.Dependency<IMtgStore>(storeMock.Object);
                 with.Dependency<IMessenger>(messengerMock.Object);
                 with.Dependency<IPluginManager>(pluginManagerMock.Object);
+                with.Dependency<ICommandParser>(commandParserMock.Object);
                 with.Dependency<BotConfig>(new BotConfig()
                 {
                     SecretToken = secretTokenGood
@@ -323,7 +334,7 @@ namespace NerdBot.Tests
 ""group_id"":""9999999"",
 ""name"":""User Name"",
 ""avatar_url"":""https://i.groupme.com/668x401.jpeg"",
-""text"":""This is a test message?"",
+""text"":""img boros charm"",
 ""system"":false,
 ""attachments"":[
 ]
@@ -337,8 +348,8 @@ namespace NerdBot.Tests
                 with.Header("content-type", "application/json");
             });
 
-            // Verify that the plugin manager's SendMessage was called and that the message text is what we sent
-            pluginManagerMock.Verify(c => c.SendMessage(It.Is<GroupMeMessage>(m => m.text == "This is a test message?"), It.IsAny<IMessenger>()));
+            // Verify that the command parser was given this message to try and parse
+            commandParserMock.Verify(c => c.Parse("img boros charm"));
 
             Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
         }
