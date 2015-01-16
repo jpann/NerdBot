@@ -141,8 +141,8 @@ namespace NerdBotCardImagePlugin_Tests
                 Cmd = "img",
                 Arguments = new string[]
                 {
-                    "Bore Cloud",
-                    "Fallen Empires"
+                    "Fallen Empires",
+                    "Bore Cloud"
                 }
             };
 
