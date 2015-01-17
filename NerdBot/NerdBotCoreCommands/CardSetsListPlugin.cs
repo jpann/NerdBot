@@ -9,35 +9,34 @@ using NerdBot.Mtg;
 using NerdBot.Parsers;
 using NerdBot.Plugin;
 using NerdBot.UrlShortners;
-using Newtonsoft.Json;
 
 namespace NerdBotCoreCommands
 {
-    public class TappedOutFormatCheckPlugin : PluginBase
+    public class CardSetsListPlugin : PluginBase
     {
         public override string Name
         {
-            get { return "formats Command"; }
+            get { return "cardsets command"; }
         }
 
         public override string Description
         {
-            get { return "Gets a list of formats the card is valid in from http://validator.tappedout.net/validate/";  }
+            get { return "Lists the sets the card appears in.";  }
         }
 
         public override string ShortDescription
         {
-            get { return "Gets a list of formats the card is valid in from http://validator.tappedout.net/validate/"; }
+            get { return "Lists the sets the card appears in."; }
         }
 
         public override string Command
         {
-            get { return "formats"; }
+            get { return "cardsets"; }
         }
 
         public override string HelpCommand
         {
-            get { return "help formats"; }
+            get { return "help cardsets"; }
         }
 
         public override string HelpDescription
@@ -45,7 +44,7 @@ namespace NerdBotCoreCommands
             get { return string.Format("{0}: HELP TEXT HERE", this.Command); }
         }
 
-        public TappedOutFormatCheckPlugin(
+        public CardSetsListPlugin(
                 IMtgStore store,
                 ICommandParser commandParser,
                 IHttpClient httpClient,
@@ -113,17 +112,15 @@ namespace NerdBotCoreCommands
 
                 if (card != null)
                 {
-                    // From tappedout.net, get the formats this card is legal in
-                    var tappedOutFormat = new TappedOutFormatChecker(this.HttpClient);
-                    string[] formats = await tappedOutFormat.GetFormats(card.Name);
+                    List<Set> sets = await this.Store.GetCardSets(card.MultiverseId);
 
-                    string msg = string.Format("No formats available for '{0}", card.Name);
-
-                    if (formats != null)
+                    if (sets.Any())
                     {
-                        msg = string.Format("{0} is legal in formats: {1}",
-                            card.Name,
-                            string.Join(", ", formats));
+                        string[] setNames = sets.Select(s => string.Format("{0} [{1}]", s.Name, s.Code)).ToArray();
+
+                        string msg = string.Format("{0} appears in sets: {1}",
+                           card.Name,
+                           string.Join(", ", setNames));
 
                         messenger.SendMessage(msg);
 
@@ -134,47 +131,5 @@ namespace NerdBotCoreCommands
 
             return false;
         }
-    }
-
-    public class TappedOutFormat
-    {
-        public string[] Formats { get; set; }
-    }
-
-    public class TappedOutFormatChecker
-    {
-        private readonly IHttpClient mHttpClient;
-        private const string cUrl = @"http://validator.tappedout.net/validate/?cards=[""{0}""]";
-
-        public TappedOutFormatChecker(IHttpClient httpClient)
-        {
-            if (httpClient == null)
-                throw new ArgumentNullException("httpClient");
-
-            this.mHttpClient = httpClient;
-        }
-
-        public async Task<string[]> GetFormats(string cardName)
-        {
-            if (string.IsNullOrEmpty(cardName))
-                throw new ArgumentNullException("cardName");
-
-            try
-            {
-                string formatJson = await this.mHttpClient.GetAsJson(string.Format(cUrl, cardName));
-
-                var format = JsonConvert.DeserializeObject<TappedOutFormat>(formatJson);
-
-                if (format.Formats == null)
-                    return null;
-
-                return format.Formats;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
     }
 }

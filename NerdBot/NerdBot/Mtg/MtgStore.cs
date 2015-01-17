@@ -260,6 +260,50 @@ namespace NerdBot.Mtg
         }
         #endregion
 
+        #region GetCardSets
+        public async Task<List<Set>> GetCardSets(int multiverseId, int limit = 8)
+        {
+            List<Set> sets = new List<Set>();
+
+            var cardsCollection = this.mDatabase.GetCollection<Card>("cards");
+            var setsCollection = this.mDatabase.GetCollection<Set>("sets");
+
+            // Query to get the card with this multiverseId
+            var cardMultiverseIdQuery = Query<Card>.EQ(e => e.MultiverseId, multiverseId);
+
+            var card = cardsCollection.FindOne(cardMultiverseIdQuery);
+
+            if (card != null)
+            {
+                // Queries to get all other cards that share the card's name
+                var cardNameQuery = Query<Card>.EQ(e => e.SearchName, card.SearchName);
+
+                MongoCursor<Card> cursor = cardsCollection.Find(cardNameQuery)
+                    .SetSortOrder("setName");
+
+                List<IMongoQuery> setQueries = new List<IMongoQuery>();
+
+                // Go throug each card that shares this name and add create a set query for it
+                foreach (Card c in cursor)
+                {
+                    setQueries.Add(Query<Set>.EQ(e => e.SearchName, c.SetSearchName));
+                }
+
+                // Get all sets for cards that share this name
+                MongoCursor<Set> setCursor = setsCollection.Find(Query.Or(setQueries))
+                    .SetSortOrder("name")
+                    .SetLimit(limit);
+
+                foreach (Set s in setCursor)
+                {
+                    sets.Add(s);
+                }
+            }
+
+            return sets;
+        }
+        #endregion
+
         #region GetCardOtherSets
         public async Task<List<Set>> GetCardOtherSets(int multiverseId)
         {

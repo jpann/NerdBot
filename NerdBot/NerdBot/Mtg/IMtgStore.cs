@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Nancy.Routing.Trie;
 
 namespace NerdBot.Mtg
 {
@@ -21,6 +22,8 @@ namespace NerdBot.Mtg
         Task<List<Card>> GetCards(string name);
 
         Task<Card> GetRandomCardByArtist(string artist);
+
+        Task<List<Set>> GetCardSets(int multiverseId, int limit = 8);
 
         Task<List<Set>> GetCardOtherSets(int multiverseId);
 
