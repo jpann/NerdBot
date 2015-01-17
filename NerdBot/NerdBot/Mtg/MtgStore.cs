@@ -137,9 +137,10 @@ namespace NerdBot.Mtg
 
             var query = Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i"));
 
-            var card = collection.FindOne(query);
+            var sortBy = SortBy.Ascending("setName");
+            var card = collection.FindAs<Card>(query).SetSortOrder(sortBy).SetLimit(1);
 
-            return card;
+            return card.FirstOrDefault();
         }
 
         public async Task<Card> GetCard(string name, string setName)
@@ -163,9 +164,10 @@ namespace NerdBot.Mtg
                     Query<Card>.Matches(e => e.SetId, new BsonRegularExpression(setName, "i")))
                 );
 
-            var card = collection.FindOne(query);
+            var sortBy = SortBy.Ascending("setName");
+            var card = collection.FindAs<Card>(query).SetSortOrder(sortBy).SetLimit(1);
 
-            return card;
+            return card.FirstOrDefault();
         }
         #endregion
 
