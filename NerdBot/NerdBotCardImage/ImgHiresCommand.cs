@@ -113,7 +113,7 @@ namespace NerdBotCardImage
 
                 if (card != null)
                 {
-                    string imgUrl = card.Img;
+                    string imgUrl = card.ImgHires;
 
                     messenger.SendMessage(imgUrl);
 
