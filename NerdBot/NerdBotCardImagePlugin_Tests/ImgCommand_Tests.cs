@@ -77,7 +77,7 @@ namespace NerdBotCardImagePlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("https://api.mtgdb.info/content/card_images/184710.jpeg"));
+            messengerMock.Verify(m => m.SendMessage("https://api.mtgdb.info/content/card_images/1922.jpeg"));
         }
 
         [Test]
