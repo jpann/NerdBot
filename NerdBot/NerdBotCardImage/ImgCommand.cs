@@ -114,7 +114,10 @@ namespace NerdBotCardImage
 
                 if (card != null)
                 {
-                    string imgUrl = card.Img;
+                    // Default to high resolution image.
+                    string imgUrl = card.ImgHires;
+                    if (string.IsNullOrEmpty(imgUrl))
+                        imgUrl = card.Img;
 
                     messenger.SendMessage(imgUrl);
 
