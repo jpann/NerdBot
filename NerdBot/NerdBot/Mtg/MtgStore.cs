@@ -441,7 +441,8 @@ namespace NerdBot.Mtg
 
             var collection = this.mDatabase.GetCollection<Set>("sets");
 
-            var query = Query<Set>.EQ(e => e.Code, code);
+            // BsonRegEx in order to do a case insensitive match
+            var query = Query<Set>.Matches(e => e.Code, new BsonRegularExpression(code, "i"));
 
             var sets = collection.FindOne(query);
 

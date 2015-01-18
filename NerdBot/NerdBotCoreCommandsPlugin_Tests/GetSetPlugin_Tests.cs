@@ -81,6 +81,85 @@ namespace NerdBotCoreCommandsPlugin_Tests
             messengerMock.Verify(m => m.SendMessage("Set 'Fallen Empires' [FEM] in block '' was released on 11-01-1994 and contains 187 cards."));
         }
 
-        //TODO Other tests
+        [Test]
+        public void GetSet_ByName_DoesntExist()
+        {
+            var cmd = new Command()
+            {
+                Cmd = "set",
+                Arguments = new string[]
+                {
+                    "ballen empires"   
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+            bool handled =
+            plugin.OnCommand(
+                cmd,
+                msg,
+                messengerMock.Object
+                ).Result;
+
+            // Verify that the messenger's SendMessenger was never called 
+            //  because no message should be sent when a card was not found
+            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.Never);
+
+            Assert.False(handled);
+        }
+
+        [Test]
+        public void GetSet_ByCode()
+        {
+            var cmd = new Command()
+            {
+                Cmd = "set",
+                Arguments = new string[]
+                {
+                    "fem"   
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+            bool handled =
+            plugin.OnCommand(
+                cmd,
+                msg,
+                messengerMock.Object
+                ).Result;
+
+            messengerMock.Verify(m => m.SendMessage("Set 'Fallen Empires' [FEM] in block '' was released on 11-01-1994 and contains 187 cards."));
+        }
+
+        [Test]
+        public void GetSet_ByCode_DoesntExist()
+        {
+            var cmd = new Command()
+            {
+                Cmd = "set",
+                Arguments = new string[]
+                {
+                    "XXX"   
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+            bool handled =
+            plugin.OnCommand(
+                cmd,
+                msg,
+                messengerMock.Object
+                ).Result;
+
+            // Verify that the messenger's SendMessenger was never called 
+            //  because no message should be sent when a card was not found
+            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.Never);
+
+            Assert.False(handled);
+        }
+        
     }
 }
