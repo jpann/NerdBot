@@ -423,11 +423,11 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            name = this.GetSearchValue(name, false);
+            name = this.GetSearchValue(name, true);
 
             var collection = this.mDatabase.GetCollection<Set>("sets");
 
-            var query = Query<Set>.EQ(e => e.SearchName, name);
+            var query = Query<Set>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i"));
 
             var set = collection.FindOne(query);
 
