@@ -116,14 +116,20 @@ namespace NerdBotCoreCommands
                     // From tappedout.net, get the formats this card is legal in
                     var tappedOutFormat = new TappedOutFormatChecker(this.HttpClient);
                     string[] formats = await tappedOutFormat.GetFormats(card.Name);
-
-                    string msg = string.Format("No formats available for '{0}", card.Name);
-
+                    
                     if (formats != null)
                     {
-                        msg = string.Format("{0} is legal in formats: {1}",
+                        string msg = string.Format("{0} is legal in formats: {1}",
                             card.Name,
                             string.Join(", ", formats));
+
+                        messenger.SendMessage(msg);
+
+                        return true;
+                    }
+                    else
+                    {
+                        string msg = string.Format("No formats available for '{0}' or http://validator.tappedout.net/validate/ is offline.", card.Name);
 
                         messenger.SendMessage(msg);
 
@@ -162,6 +168,9 @@ namespace NerdBotCoreCommands
             try
             {
                 string formatJson = await this.mHttpClient.GetAsJson(string.Format(cUrl, cardName));
+
+                if (string.IsNullOrEmpty(formatJson))
+                    return null;
 
                 var format = JsonConvert.DeserializeObject<TappedOutFormat>(formatJson);
 
