@@ -53,9 +53,16 @@ namespace NerdBot
                 {
                     if (!string.IsNullOrEmpty(command.Cmd))
                     {
-                        // If a message is in a command format '<cmd>\s[message]', 
-                        //  have the plugin manager see if any loaded plugins are set to respond to that command
-                        bool handled = await pluginManager.HandleCommand(command, message, messenger);
+                        if (command.Cmd.ToLower() == "help")
+                        {
+                                bool helpHandled = await pluginManager.HandledHelpCommand(command, messenger);
+                        }
+                        else
+                        {
+                            // If a message is in a command format '<cmd>\s[message]', 
+                            //  have the plugin manager see if any loaded plugins are set to respond to that command
+                            bool handled = await pluginManager.HandleCommand(command, message, messenger);
+                        }
                     }
                 }
 

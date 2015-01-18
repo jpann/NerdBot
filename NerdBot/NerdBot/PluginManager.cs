@@ -186,5 +186,68 @@ namespace NerdBot
 
             return false;
         }
+
+        public async Task<bool> HandledHelpCommand(Command command, IMessenger messenger)
+        {
+            if (command == null)
+                throw new ArgumentNullException("command");
+
+            if (messenger == null)
+                throw new ArgumentNullException("messenger");
+
+            // If no arguments were used, return false because the command wasn't handled
+            if (!command.Arguments.Any())
+                return false;
+
+            try
+            {
+                string argument = command.Arguments[0];
+
+                foreach (IPlugin plugin in this.mPlugins)
+                {
+                    string helpCmd = command.Cmd + " " + argument;
+
+                    if (plugin.HelpCommand.ToLower() == helpCmd)
+                    {
+                        string helpText = plugin.HelpDescription;
+
+                        messenger.SendMessage(helpText);
+
+                        return true;
+                    }
+                }
+
+                // Check for core help commands
+                // Get list of available commands
+                if (argument == "commands")
+                {
+                    string msg;
+
+                    if (!this.Plugins.Any())
+                    {
+                        msg = "No commands available.";
+                    }
+                    else
+                    {
+                        string availableCommands = string.Join(", ", this.Plugins.Select(p => p.Command).ToArray());
+
+                        msg = string.Format("Available commands: {0}", availableCommands);
+                    }
+
+                    messenger.SendMessage(msg);
+
+                    return true;
+                }
+            }
+            catch (Exception er)
+            {
+                string msg = string.Format("Error handling help command: {0}", er.Message);
+
+                Console.WriteLine(msg);
+                this.mLogger.Error(er, msg);
+            }
+
+            return false;
+        }
     }
 }

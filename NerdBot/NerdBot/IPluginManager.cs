@@ -16,7 +16,9 @@ namespace NerdBot
 
         void LoadPlugins();
         void UnloadPlugins();
+
         void SendMessage(IMessage message, IMessenger messenger);
         Task<bool> HandleCommand(Command command, IMessage message, IMessenger messenger);
+        Task<bool> HandledHelpCommand(Command command, IMessenger messenger);
     }
 }
