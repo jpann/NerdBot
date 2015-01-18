@@ -43,7 +43,7 @@ namespace NerdBotCoreCommands
 
         public override string HelpDescription
         {
-            get { return string.Format("{0}: HELP TEXT HERE", this.Command); }
+            get { return string.Format("{0} example usage: 'coinflip'", this.Command); }
         }
 
         public CoinFlipPlugin(

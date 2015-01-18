@@ -41,7 +41,7 @@ namespace NerdBotCoreCommands
 
         public override string HelpDescription
         {
-            get { return string.Format("{0}: HELP TEXT HERE", this.Command); }
+            get { return string.Format("{0} example usage: 'set command% 2013' or 'set c13'", this.Command); }
         }
 
         public GetSetPlugin(

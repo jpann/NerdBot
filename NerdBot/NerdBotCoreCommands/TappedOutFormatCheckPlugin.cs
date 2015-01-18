@@ -42,7 +42,7 @@ namespace NerdBotCoreCommands
 
         public override string HelpDescription
         {
-            get { return string.Format("{0}: HELP TEXT HERE", this.Command); }
+            get { return string.Format("{0} example usage: 'formats spore clou%' or 'formats fem,spore clou%' or 'formats fallen empires,spore clou%'", this.Command); }
         }
 
         public TappedOutFormatCheckPlugin(

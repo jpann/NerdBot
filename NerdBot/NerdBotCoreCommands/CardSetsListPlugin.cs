@@ -41,7 +41,7 @@ namespace NerdBotCoreCommands
 
         public override string HelpDescription
         {
-            get { return string.Format("{0}: HELP TEXT HERE", this.Command); }
+            get { return string.Format("{0} example usage: 'cardsets spore clou%' or 'cardsets fem,spore clou%' or 'cardsets 'fallen empires,spore %loud'", this.Command); }
         }
 
         public CardSetsListPlugin(

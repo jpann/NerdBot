@@ -41,7 +41,7 @@ namespace NerdBotCardImage
 
         public override string HelpDescription
         {
-            get { return string.Format("{0}: HELP TEXT HERE", this.Command); }
+            get { return string.Format("{0} example usage: 'img spore clou%' or 'img fem,spore cloud' or 'img fallen empires,spore %loud'", this.Command); }
         }
 
         public ImgCommand(

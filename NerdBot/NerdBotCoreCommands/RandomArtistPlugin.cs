@@ -41,7 +41,7 @@ namespace NerdBotCoreCommands
 
         public override string HelpDescription
         {
-            get { return string.Format("{0}: HELP TEXT HERE", this.Command); }
+            get { return string.Format("{0} example usage: randomartist amy w%ber", this.Command); }
         }
 
         public RandomArtistPlugin(
