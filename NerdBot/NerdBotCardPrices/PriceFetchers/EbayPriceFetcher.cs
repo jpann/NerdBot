@@ -29,6 +29,7 @@ namespace NerdBotCardPrices.PriceFetchers
                 throw new ArgumentException("name");
 
             string url = "http://www.ebay.com/sch/i.html?_sacat=0&_sop=15&LH_BIN=1&_nkw=" + Uri.EscapeDataString(name);
+            url += " mtg nm";
 
             if (!string.IsNullOrEmpty(setName))
             {
