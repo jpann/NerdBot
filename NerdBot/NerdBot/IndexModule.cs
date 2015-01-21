@@ -55,7 +55,7 @@ namespace NerdBot
                     {
                         if (command.Cmd.ToLower() == "help")
                         {
-                                bool helpHandled = await pluginManager.HandledHelpCommand(command, messenger);
+                            bool helpHandled = await pluginManager.HandledHelpCommand(command, messenger);
                         }
                         else
                         {
