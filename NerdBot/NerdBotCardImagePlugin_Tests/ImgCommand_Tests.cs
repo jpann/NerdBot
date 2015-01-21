@@ -77,7 +77,7 @@ namespace NerdBotCardImagePlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("https://api.mtgdb.info/content/card_images/1922.jpeg"));
+            messengerMock.Verify(m => m.SendMessage("https://api.mtgdb.info/content/hi_res_card_images/1922.jpg"));
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace NerdBotCardImagePlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("https://api.mtgdb.info/content/card_images/1922.jpeg"));
+            messengerMock.Verify(m => m.SendMessage("https://api.mtgdb.info/content/hi_res_card_images/1922.jpg"));
         }
 
         [Test]
@@ -214,7 +214,7 @@ namespace NerdBotCardImagePlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("https://api.mtgdb.info/content/card_images/1922.jpeg"));
+            messengerMock.Verify(m => m.SendMessage("https://api.mtgdb.info/content/hi_res_card_images/1922.jpg"));
         }
 
         [Test]
