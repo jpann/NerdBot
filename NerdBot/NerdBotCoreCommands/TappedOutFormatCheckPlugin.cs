@@ -179,8 +179,10 @@ namespace NerdBotCoreCommands
 
                 return format.Formats;
             }
-            catch (Exception)
+            catch (Exception er)
             {
+                Console.WriteLine("ERROR getting format: {0}", er.Message);
+
                 throw;
             }
         }
