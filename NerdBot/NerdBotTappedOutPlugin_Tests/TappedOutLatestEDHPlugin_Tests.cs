@@ -1,0 +1,59 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Moq;
+using NerdBot.Http;
+using NerdBot.Messengers;
+using NerdBot.Mtg;
+using NerdBot.Parsers;
+using NerdBot.UrlShortners;
+using NerdBotTappedOut;
+using NUnit.Framework;
+
+namespace NerdBotTappedOutPlugin_Tests
+{
+    [TestFixture]
+    class TappedOutLatestEDHPlugin_Tests
+    {
+        private const string connectionString = "mongodb://localhost";
+        private const string databaseName = "mtgdb";
+
+        private IMtgStore mtgStore;
+        private TappedOutLatestEDHPlugin plugin;
+
+        private Mock<ICommandParser> commandParserMock;
+        private Mock<IHttpClient> httpClientMock;
+        private Mock<IUrlShortener> urlShortenerMock;
+        private Mock<IMessenger> messengerMock;
+
+        [TestFixtureSetUp]
+        public void TestFixtureSetUp()
+        {
+            mtgStore = new MtgStore(connectionString, databaseName);
+        }
+
+        [SetUp]
+        public void SetUp()
+        {
+            // Setup ICommandParser Mocks
+            commandParserMock = new Mock<ICommandParser>();
+
+            // Setup IHttpClient Mocks
+            httpClientMock = new Mock<IHttpClient>();
+
+            // Setup IUrlShortener Mocks
+            urlShortenerMock = new Mock<IUrlShortener>();
+
+            // Setup IMessenger Mocks
+            messengerMock = new Mock<IMessenger>();
+
+            plugin = new TappedOutLatestEDHPlugin(
+                mtgStore,
+                commandParserMock.Object,
+                httpClientMock.Object,
+                urlShortenerMock.Object);
+        }  
+    }
+}
