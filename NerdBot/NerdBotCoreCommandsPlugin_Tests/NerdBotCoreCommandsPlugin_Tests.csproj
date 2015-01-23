@@ -50,6 +50,7 @@
     <Compile Include="CardSetsListPlugin_Tests.cs" />
     <Compile Include="GetSetPlugin_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomArtistPlugin_Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
