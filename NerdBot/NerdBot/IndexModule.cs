@@ -1,11 +1,10 @@
 ﻿using System.Linq;
-using Nancy.Json;
 using Nancy.ModelBinding;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
 using NerdBot.Parsers;
-using NerdBot.Plugin;
+using SimpleLogging.Core;
 
 namespace NerdBot
 {
@@ -18,10 +17,15 @@ namespace NerdBot
             IMtgStore mtgStore, 
             IMessenger messenger, 
             IPluginManager pluginManager,
-            ICommandParser commandParser)
+            ICommandParser commandParser,
+            ILoggingService loggingService)
         {
             Get["/"] = parameters =>
             {
+                loggingService.Warning("GET request from {0}: Path '{1}' was invalid.",
+                        this.Request.UserHostAddress,
+                        this.Request.Path);
+                
                 return HttpStatusCode.NotAcceptable;
             };
 
@@ -32,6 +36,10 @@ namespace NerdBot
                 // If the passed token segment does not match the secret token, return NotAcceptable status
                 if (sentToken != botConfig.SecretToken)
                 {
+                    loggingService.Warning("POST request from {0}: Token '{1}' was invalid.", 
+                        this.Request.UserHostAddress,
+                        sentToken);
+
                     return HttpStatusCode.NotAcceptable;
                 }
 
@@ -41,7 +49,12 @@ namespace NerdBot
                 var msg = this.BindToAndValidate(message);
 
                 if (!ModelValidationResult.IsValid)
+                {
+                    loggingService.Warning("POST request from {0}: Message was invalid.",
+                        this.Request.UserHostAddress);
+
                     return HttpStatusCode.NotAcceptable;
+                }
 
                 // Don't handle messages sent from ourself
                 if (message.name.ToLower() == messenger.BotName.ToLower())

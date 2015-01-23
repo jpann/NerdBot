@@ -102,6 +102,8 @@ namespace NerdBot
 
         public void LoadPlugins()
         {
+            this.mLogger.Debug("Loading plugins from {0}...", this.mPluginDirectory);
+
             DirectoryInfo info = new DirectoryInfo(this.mPluginDirectory);
 
             foreach (FileInfo fileInfo in info.GetFiles("*.dll"))
@@ -113,13 +115,19 @@ namespace NerdBot
                     if (!type.ImplementsInterface(typeof(IPlugin)))
                         continue;
 
+                    this.mLogger.Debug("Loading plugin '{0}'...", currentAssembly.FullName);
+
                     IPlugin plugin = (IPlugin)this.mContainer.Resolve(type);
 
                     plugin.OnLoad();
 
+                    this.mLogger.Debug("Loaded plugin '{0}'!", currentAssembly.FullName);
+
                     this.mPlugins.Add(plugin);
                 }
             }
+
+            this.mLogger.Debug("Loaded {0} plugins.", this.Plugins.Count);
         }
 
         public void UnloadPlugins()
@@ -170,6 +178,10 @@ namespace NerdBot
                 {
                     if (plugin.Command == command.Cmd)
                     {
+                        this.mLogger.Debug("Calling OnCommand for {0}' in plugin '{1}'...",
+                            command.Cmd,
+                            plugin.Name);
+
                         bool handled = await plugin.OnCommand(command, message, messenger);
 
                         return handled;

@@ -316,6 +316,7 @@ namespace NerdBot.Tests
                 with.Dependency<IMessenger>(messengerMock.Object);
                 with.Dependency<IPluginManager>(pluginManagerMock.Object);
                 with.Dependency<ICommandParser>(commandParserMock.Object);
+                with.Dependency<ILoggingService>(loggerMock.Object);
                 with.Dependency<BotConfig>(new BotConfig()
                 {
                     SecretToken = secretTokenGood
