@@ -214,7 +214,6 @@ namespace NerdBot.Mtg
         #endregion
 
         #region GetRandomCards
-
         public async Task<Card> GetRandomCardByArtist(string artist)
         {
             if (string.IsNullOrEmpty(artist))
@@ -244,6 +243,40 @@ namespace NerdBot.Mtg
             {
                 cards.Add(card);
             }
+
+            if (cards.Any())
+            {
+                Random rand = new Random();
+
+                Card card = cards[rand.Next(cards.Count)];
+
+                if (card != null)
+                    return card;
+            }
+
+            return null;
+        }
+
+        public async Task<Card> GetRandomCardInSet(string setName)
+        {
+            if (string.IsNullOrEmpty(setName))
+                throw new ArgumentException("setName");
+
+            List<Card> cards = new List<Card>();
+
+            var collection = this.mDatabase.GetCollection<Card>("cards");
+
+            setName = this.GetSearchValue(setName, false);
+
+            var query = Query.Or(
+                    Query<Card>.Matches(e => e.SetSearchName, new BsonRegularExpression(setName, "i")),
+                    Query<Card>.Matches(e => e.SetId, new BsonRegularExpression(setName, "i")));
+
+            MongoCursor<Card> cursor = collection.Find(query)
+                .SetSortOrder("name");
+
+            foreach (Card card in cursor)
+                cards.Add(card);
 
             if (cards.Any())
             {

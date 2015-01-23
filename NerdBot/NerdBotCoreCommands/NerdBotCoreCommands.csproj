@@ -49,6 +49,7 @@
     <Compile Include="GetSetPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomArtistPlugin.cs" />
+    <Compile Include="RandomSetCardPlugin.cs" />
     <Compile Include="TappedOutFormatCheckPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
