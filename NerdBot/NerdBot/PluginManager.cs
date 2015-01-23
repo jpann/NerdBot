@@ -115,13 +115,16 @@ namespace NerdBot
                     if (!type.ImplementsInterface(typeof(IPlugin)))
                         continue;
 
-                    this.mLogger.Debug("Loading plugin '{0}'...", currentAssembly.FullName);
+                    this.mLogger.Debug("Loading plugin '{0}' from '{1}'...", 
+                        type.ToString(),
+                        currentAssembly.GetName());
 
                     IPlugin plugin = (IPlugin)this.mContainer.Resolve(type);
 
                     plugin.OnLoad();
 
-                    this.mLogger.Debug("Loaded plugin '{0}'!", currentAssembly.FullName);
+                    this.mLogger.Debug("Loaded plugin '{0}'!",
+                        type.ToString());
 
                     this.mPlugins.Add(plugin);
                 }
