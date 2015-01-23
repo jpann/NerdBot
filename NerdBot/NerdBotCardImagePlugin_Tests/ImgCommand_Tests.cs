@@ -56,6 +56,33 @@ namespace NerdBotCardImagePlugin_Tests
                 urlShortenerMock.Object);
         }
 
+        #region Tests for cards that failed in live testing
+        // This command was not returning any cards when it should have.
+        [Test]
+        public void ImgCommand_ByName_BreathSteeler()
+        {
+            var cmd = new Command()
+            {
+                Cmd = "IMG",
+                Arguments = new string[]
+                {
+                    "breath%stealer%"   
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+
+            bool handled = imgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                messengerMock.Object
+                ).Result;
+
+            messengerMock.Verify(m => m.SendMessage("https://api.mtgdb.info/content/hi_res_card_images/3278.jpg"));
+        }
+        #endregion
+
         [Test]
         public void ImgCommand_ByName()
         {

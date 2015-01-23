@@ -42,14 +42,13 @@ namespace NerdBot.Mtg
 
             if (forRegex)
             {
-                // Replace * and % with a regex '.' char
-                searchValue = searchValue.Replace("*", ".");
-                searchValue = searchValue.Replace("%", ".");
+                // Replace * and % with a regex '*' char
+                searchValue = searchValue.Replace("%", "*");
 
-                // If the first character of the searchValue is not '.', 
+                // If the first character of the searchValue is not '*', 
                 // meaning the user does not want to do a contains search,
                 // explicitly use a starts with regex
-                if (!searchValue.StartsWith("."))
+                if (!searchValue.StartsWith("*"))
                 {
                     searchValue = "^" + searchValue;
                 }
