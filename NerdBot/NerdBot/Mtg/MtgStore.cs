@@ -36,19 +36,19 @@ namespace NerdBot.Mtg
 
         public string GetSearchValue(string text, bool forRegex = false)
         {
-            Regex rgx = new Regex("[^a-zA-Z0-9.^]");
+            Regex rgx = new Regex("[^a-zA-Z0-9.^*]");
 
             string searchValue = text.ToLower();
 
             if (forRegex)
             {
                 // Replace * and % with a regex '*' char
-                searchValue = searchValue.Replace("%", "*");
+                searchValue = searchValue.Replace("%", ".*");
 
                 // If the first character of the searchValue is not '*', 
                 // meaning the user does not want to do a contains search,
                 // explicitly use a starts with regex
-                if (!searchValue.StartsWith("*"))
+                if (!searchValue.StartsWith(".*"))
                 {
                     searchValue = "^" + searchValue;
                 }
