@@ -146,9 +146,16 @@ namespace NerdBot.Mtg
             var collection = this.mDatabase.GetCollection<Card>("cards");
 
             var query = Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i"));
-
             var sortBy = SortBy.Ascending("setName");
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             var card = collection.FindAs<Card>(query).SetSortOrder(sortBy).SetLimit(1);
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
             return card.FirstOrDefault();
         }
@@ -175,7 +182,15 @@ namespace NerdBot.Mtg
                 );
 
             var sortBy = SortBy.Ascending("setName");
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             var card = collection.FindAs<Card>(query).SetSortOrder(sortBy).SetLimit(1);
+
+            watch.Stop();
+            
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
             return card.FirstOrDefault();
         }
@@ -189,6 +204,9 @@ namespace NerdBot.Mtg
 
             var collection = this.mDatabase.GetCollection<Card>("cards");
             
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             MongoCursor <Card> cursor = collection.FindAll()
                 .SetSortOrder("name");
 
@@ -196,6 +214,10 @@ namespace NerdBot.Mtg
             {
                 cards.Add(card);
             }
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
             return cards;
         }
@@ -211,6 +233,9 @@ namespace NerdBot.Mtg
 
             var collection = this.mDatabase.GetCollection<Card>("cards");
 
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             var query = Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i"));
 
             MongoCursor<Card> cursor = collection.Find(query)
@@ -220,6 +245,10 @@ namespace NerdBot.Mtg
             {
                 cards.Add(card);
             }
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
             return cards;
         }
@@ -357,6 +386,9 @@ namespace NerdBot.Mtg
             // Query to get the card with this multiverseId
             var cardMultiverseIdQuery = Query<Card>.EQ(e => e.MultiverseId, multiverseId);
 
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             var card = cardsCollection.FindOne(cardMultiverseIdQuery);
 
             if (card != null)
@@ -386,6 +418,10 @@ namespace NerdBot.Mtg
                 }
             }
 
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
             return sets;
         }
         #endregion
@@ -400,6 +436,9 @@ namespace NerdBot.Mtg
 
             // Query to get the card with this multiverseId
             var cardMultiverseIdQuery = Query<Card>.EQ(e => e.MultiverseId, multiverseId);
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
 
             var card = cardsCollection.FindOne(cardMultiverseIdQuery);
 
@@ -435,6 +474,10 @@ namespace NerdBot.Mtg
                 }
             }
 
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
             return sets;
         }
         #endregion
@@ -453,6 +496,9 @@ namespace NerdBot.Mtg
 
             var query = Query<Card>.EQ(e => e.SetSearchName, setName);
 
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             MongoCursor<Card> cursor = collection.Find(query)
                 .SetSortOrder("name");
 
@@ -460,6 +506,10 @@ namespace NerdBot.Mtg
             {
                 cards.Add(card);
             }
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
             return cards;
         }
@@ -477,7 +527,14 @@ namespace NerdBot.Mtg
 
             var query = Query<Set>.EQ(e => e.SearchName, name);
      
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             long qty = collection.Count(query);
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
             if (qty > 0)
                 return true;
@@ -494,7 +551,14 @@ namespace NerdBot.Mtg
 
             var query = Query<Set>.EQ(e => e.Code, code);
 
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             long qty = collection.Count(query);
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
             if (qty > 0)
                 return true;
@@ -515,7 +579,14 @@ namespace NerdBot.Mtg
 
             var query = Query<Set>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i"));
 
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             var set = collection.FindOne(query);
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
             return set;
         }
@@ -530,7 +601,14 @@ namespace NerdBot.Mtg
             // BsonRegEx in order to do a case insensitive match
             var query = Query<Set>.Matches(e => e.Code, new BsonRegularExpression(code, "i"));
 
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             var sets = collection.FindOne(query);
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
             return sets;
         }
