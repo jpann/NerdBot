@@ -289,37 +289,24 @@ namespace NerdBot.Mtg
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            MongoCursor<Card> cursor = collection.Find(query)
-                .SetSortOrder("multiverseId");
+            int count = (int)collection.Find(query).Count();
 
-            foreach (Card card in cursor)
-            {
-                cards.Add(card);
-            }
+            var rand = new Random();
+            var r = rand.Next(count);
+            var card = collection.Find(query).Skip(r).FirstOrDefault();
+
 
             watch.Stop();
 
             this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
-            if (cards.Any())
-            {
-                Random rand = new Random();
-
-                Card card = cards[rand.Next(cards.Count)];
-
-                if (card != null)
-                    return card;
-            }
-
-            return null;
+            return card;
         }
 
         public async Task<Card> GetRandomCardInSet(string setName)
         {
             if (string.IsNullOrEmpty(setName))
                 throw new ArgumentException("setName");
-
-            List<Card> cards = new List<Card>();
 
             var collection = this.mDatabase.GetCollection<Card>("cards");
 
@@ -332,27 +319,17 @@ namespace NerdBot.Mtg
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            MongoCursor<Card> cursor = collection.Find(query)
-                .SetSortOrder("name");
+            int count = (int) collection.Find(query).Count();
 
-            foreach (Card card in cursor)
-                cards.Add(card);
+            var rand = new Random();
+            var r = rand.Next(count);
+            var card = collection.Find(query).Skip(r).FirstOrDefault();
 
             watch.Stop();
 
             this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
-            if (cards.Any())
-            {
-                Random rand = new Random();
-
-                Card card = cards[rand.Next(cards.Count)];
-
-                if (card != null)
-                    return card;
-            }
-
-            return null;
+            return card;
         }
 
         public async Task<Card> GetRandomCard()
