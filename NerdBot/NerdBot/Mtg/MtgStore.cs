@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -167,6 +168,45 @@ namespace NerdBot.Mtg
             var card = collection.FindAs<Card>(query).SetSortOrder(sortBy).SetLimit(1);
 
             return card.FirstOrDefault();
+        }
+
+        public async Task<Card> GetCardWithStaticAbility(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                throw new ArgumentException("text");
+
+            List<Card> cards = new List<Card>();
+
+            text = text.Replace("%", ".*");
+
+            if (!text.EndsWith(".*"))
+                text = text + ".*";
+
+            text = "^" + text;
+
+            var collection = this.mDatabase.GetCollection<Card>("cards");
+
+            var query = Query<Card>.Matches(e => e.Desc, new BsonRegularExpression(text, "i"));
+
+            MongoCursor<Card> cursor = collection.Find(query)
+                .SetSortOrder("multiverseId");
+
+            foreach (Card card in cursor)
+            {
+                cards.Add(card);
+            }
+
+            if (cards.Any())
+            {
+                Random rand = new Random();
+
+                Card card = cards[rand.Next(cards.Count)];
+
+                if (card != null)
+                    return card;
+            }
+
+            return null;
         }
         #endregion
 

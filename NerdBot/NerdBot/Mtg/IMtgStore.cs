@@ -18,6 +18,8 @@ namespace NerdBot.Mtg
         Task<Card> GetCard(string name);
         Task<Card> GetCard(string name, string setName);
 
+        Task<Card> GetCardWithStaticAbility(string text);
+
         Task<List<Card>> GetCards();
         Task<List<Card>> GetCards(string name);
 

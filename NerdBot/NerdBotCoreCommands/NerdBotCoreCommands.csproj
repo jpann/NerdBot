@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="CardSetsListPlugin.cs" />
     <Compile Include="CoinFlipPlugin.cs" />
+    <Compile Include="GetCardStaticAbilityPlugin.cs" />
     <Compile Include="DiceRollPlugin.cs" />
     <Compile Include="GetSetPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
