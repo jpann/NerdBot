@@ -11,6 +11,7 @@ using NerdBot.Parsers;
 using NerdBot.UrlShortners;
 using NerdBotTappedOut;
 using NUnit.Framework;
+using SimpleLogging.Core;
 
 namespace NerdBotTappedOutPlugin_Tests
 {
@@ -27,11 +28,14 @@ namespace NerdBotTappedOutPlugin_Tests
         private Mock<IHttpClient> httpClientMock;
         private Mock<IUrlShortener> urlShortenerMock;
         private Mock<IMessenger> messengerMock;
+        private Mock<ILoggingService> loggingServiceMock;
 
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            mtgStore = new MtgStore(connectionString, databaseName);
+            loggingServiceMock = new Mock<ILoggingService>();
+
+            mtgStore = new MtgStore(connectionString, databaseName, loggingServiceMock.Object);
         }
 
         [SetUp]

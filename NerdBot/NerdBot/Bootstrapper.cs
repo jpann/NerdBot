@@ -74,7 +74,8 @@ namespace NerdBot
             // Register the instance of IMtgStore
             var mtgStore = new MtgStore(
                 dbConnectionString,
-                dbName);
+                dbName,
+                loggingService);
             container.Register<IMtgStore>(mtgStore);
 
             // Register the instance of IHttpClient

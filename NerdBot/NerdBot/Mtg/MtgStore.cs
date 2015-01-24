@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using SimpleLogging.Core;
 
 namespace NerdBot.Mtg
 {
@@ -19,8 +21,12 @@ namespace NerdBot.Mtg
         private readonly MongoClient mClient;
         private readonly MongoServer mServer;
         private readonly MongoDatabase mDatabase;
+        private readonly ILoggingService mLoggingService;
 
-        public MtgStore(string connectionString, string databaseName)
+        public MtgStore(
+            string connectionString, 
+            string databaseName,
+            ILoggingService loggingService)
         {
             if (string.IsNullOrEmpty(connectionString))
                 throw new ArgumentException("connectionString");
@@ -28,11 +34,15 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(databaseName))
                 throw new ArgumentException("databaseName");
 
+            if (loggingService == null)
+                throw new ArgumentNullException("loggingService");
+
             this.mConnectionString = connectionString;
             this.mDatabaseName = databaseName;
             this.mClient = new MongoClient(this.mConnectionString);
             this.mServer = this.mClient.GetServer();
             this.mDatabase = this.mServer.GetDatabase(this.mDatabaseName);
+            this.mLoggingService = loggingService;
         }
 
         public string GetSearchValue(string text, bool forRegex = false)
@@ -276,6 +286,9 @@ namespace NerdBot.Mtg
 
             var query = Query<Card>.Matches(e => e.Artist, new BsonRegularExpression(artist, "i"));
 
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             MongoCursor<Card> cursor = collection.Find(query)
                 .SetSortOrder("multiverseId");
 
@@ -283,6 +296,10 @@ namespace NerdBot.Mtg
             {
                 cards.Add(card);
             }
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
             if (cards.Any())
             {
@@ -312,11 +329,18 @@ namespace NerdBot.Mtg
                     Query<Card>.Matches(e => e.SetSearchName, new BsonRegularExpression(setName, "i")),
                     Query<Card>.Matches(e => e.SetId, new BsonRegularExpression(setName, "i")));
 
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             MongoCursor<Card> cursor = collection.Find(query)
                 .SetSortOrder("name");
 
             foreach (Card card in cursor)
                 cards.Add(card);
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
             if (cards.Any())
             {
@@ -329,6 +353,25 @@ namespace NerdBot.Mtg
             }
 
             return null;
+        }
+
+        public async Task<Card> GetRandomCard()
+        {
+            var collection = this.mDatabase.GetCollection<Card>("cards");
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            int count = (int)collection.Count();
+            var random = new Random();
+            var r = random.Next(count);
+            var card = collection.FindAll().Skip(r).FirstOrDefault();
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return card;
         }
         #endregion
 

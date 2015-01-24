@@ -12,6 +12,7 @@ using NerdBot.Parsers;
 using NerdBot.UrlShortners;
 using NerdBotCardImage;
 using NUnit.Framework;
+using SimpleLogging.Core;
 
 namespace NerdBotCardImagePlugin_Tests
 {
@@ -28,11 +29,14 @@ namespace NerdBotCardImagePlugin_Tests
         private Mock<IHttpClient> httpClientMock;
         private Mock<IUrlShortener> urlShortenerMock;
         private Mock<IMessenger> messengerMock;
+        private Mock<ILoggingService> loggingServiceMock;
 
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            mtgStore = new MtgStore(connectionString, databaseName);
+            loggingServiceMock = new Mock<ILoggingService>();
+
+            mtgStore = new MtgStore(connectionString, databaseName, loggingServiceMock.Object);
         }
 
         [SetUp]

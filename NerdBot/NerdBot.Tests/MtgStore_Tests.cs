@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Moq;
 using NerdBot.Mtg;
 using NUnit.Framework;
+using SimpleLogging.Core;
 
 namespace NerdBot.Tests
 {
@@ -17,6 +19,7 @@ namespace NerdBot.Tests
         private const string databaseName = "mtgdb";
 
         private IMtgStore mtgStore;
+        private Mock<ILoggingService> loggingServiceMock;
 
         public string GetSearchValue(string text)
         {
@@ -32,7 +35,9 @@ namespace NerdBot.Tests
         [SetUp]
         public void SetUp()
         {
-            mtgStore = new MtgStore(connectionString, databaseName);
+            loggingServiceMock = new Mock<ILoggingService>();
+
+            mtgStore = new MtgStore(connectionString, databaseName, loggingServiceMock.Object);
         }
 
         #region CardExists
