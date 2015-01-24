@@ -92,7 +92,7 @@ namespace NerdBotCoreCommands
                     if (string.IsNullOrEmpty(ability))
                         return false;
 
-                    card = await this.Store.GetCardWithStaticAbility(ability);
+                    card = await this.Store.GetRandomCardWithStaticAbility(ability);
                 }
 
                 if (card != null)

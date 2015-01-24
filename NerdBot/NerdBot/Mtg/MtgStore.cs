@@ -180,44 +180,6 @@ namespace NerdBot.Mtg
             return card.FirstOrDefault();
         }
 
-        public async Task<Card> GetCardWithStaticAbility(string text)
-        {
-            if (string.IsNullOrEmpty(text))
-                throw new ArgumentException("text");
-
-            List<Card> cards = new List<Card>();
-
-            text = text.Replace("%", ".*");
-
-            if (!text.EndsWith(".*"))
-                text = text + ".*";
-
-            text = "^" + text;
-
-            var collection = this.mDatabase.GetCollection<Card>("cards");
-
-            var query = Query<Card>.Matches(e => e.Desc, new BsonRegularExpression(text, "i"));
-
-            MongoCursor<Card> cursor = collection.Find(query)
-                .SetSortOrder("multiverseId");
-
-            foreach (Card card in cursor)
-            {
-                cards.Add(card);
-            }
-
-            if (cards.Any())
-            {
-                Random rand = new Random();
-
-                Card card = cards[rand.Next(cards.Count)];
-
-                if (card != null)
-                    return card;
-            }
-
-            return null;
-        }
         #endregion
 
         #region GetCards
@@ -295,7 +257,6 @@ namespace NerdBot.Mtg
             var r = rand.Next(count);
             var card = collection.Find(query).Skip(r).FirstOrDefault();
 
-
             watch.Stop();
 
             this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
@@ -343,6 +304,39 @@ namespace NerdBot.Mtg
             var random = new Random();
             var r = random.Next(count);
             var card = collection.FindAll().Skip(r).FirstOrDefault();
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return card;
+        }
+
+        public async Task<Card> GetRandomCardWithStaticAbility(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                throw new ArgumentException("text");
+
+            text = text.Replace("%", ".*");
+
+            if (!text.EndsWith(".*"))
+                text = text + ".*";
+
+            text = "^" + text;
+
+            var collection = this.mDatabase.GetCollection<Card>("cards");
+
+            var query = Query<Card>.Matches(e => e.Desc, new BsonRegularExpression(text, "i"));
+            var sortBy = SortBy.Ascending("multiverseId");
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            int count = (int)collection.Find(query).Count();
+
+            var rand = new Random();
+            var r = rand.Next(count);
+            var card = collection.Find(query).SetSortOrder(sortBy).Skip(r).FirstOrDefault();
 
             watch.Stop();
 

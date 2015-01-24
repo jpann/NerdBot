@@ -18,14 +18,13 @@ namespace NerdBot.Mtg
         Task<Card> GetCard(string name);
         Task<Card> GetCard(string name, string setName);
 
-        Task<Card> GetCardWithStaticAbility(string text);
-
         Task<List<Card>> GetCards();
         Task<List<Card>> GetCards(string name);
 
         Task<Card> GetRandomCardByArtist(string artist);
         Task<Card> GetRandomCardInSet(string setName);
         Task<Card> GetRandomCard();
+        Task<Card> GetRandomCardWithStaticAbility(string text);
 
         Task<List<Set>> GetCardSets(int multiverseId, int limit = 8);
 
