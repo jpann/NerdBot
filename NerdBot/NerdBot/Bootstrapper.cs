@@ -62,8 +62,7 @@ namespace NerdBot
                 );
 
             // Register the instance of ILoggingService
-            var loggingService = new NLogLoggingService();
-            container.Register<ILoggingService>((c, p) => loggingService);
+            container.Register<ILoggingService>((c, p) => new NLogLoggingService());
 
             // Register the instance of IUrlShortener
             var bitlyUrl = new BitlyUrlShortener(
@@ -75,7 +74,7 @@ namespace NerdBot
             var mtgStore = new MtgStore(
                 dbConnectionString,
                 dbName,
-                loggingService);
+                container.Resolve<ILoggingService>());
             container.Register<IMtgStore>(mtgStore);
 
             // Register the instance of IHttpClient
@@ -91,13 +90,19 @@ namespace NerdBot
                 msgrIgnoreNames,
                 msgrEndPointUrl,
                 container.Resolve<IHttpClient>(),
-                loggingService);
+                container.Resolve<ILoggingService>());
             container.Register<IMessenger>(groupMeMessenger);
 
             // Register the instance of IPluginManager
             string pluginDirectory = Path.Combine(Environment.CurrentDirectory, "plugins");
 
-            var pluginManager = new PluginManager(pluginDirectory, loggingService, container.Resolve<IMtgStore>(), container.Resolve<ICommandParser>(), container);
+            var pluginManager = new PluginManager(
+                pluginDirectory,
+                container.Resolve<ILoggingService>(), 
+                container.Resolve<IMtgStore>(), 
+                container.Resolve<ICommandParser>(), 
+                container);
+
             container.Register<IPluginManager>(pluginManager);
 
             // Register BotConfig
