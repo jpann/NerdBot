@@ -9,6 +9,7 @@ using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
 using NerdBot.Parsers;
+using NerdBot.Statistics;
 using NerdBot.UrlShortners;
 using Nini.Config;
 using SimpleLogging.Core;
@@ -76,6 +77,14 @@ namespace NerdBot
                 dbName,
                 container.Resolve<ILoggingService>());
             container.Register<IMtgStore>(mtgStore);
+
+            // Register the instance of IQueryStatisticsStore
+            var queryStatStore = new QueryStatisticsStore(
+                dbConnectionString,
+                dbName,
+                container.Resolve<ILoggingService>()
+                );
+            container.Register<IQueryStatisticsStore>(queryStatStore);
 
             // Register the instance of IHttpClient
             container.Register<IHttpClient, SimpleHttpClient>();

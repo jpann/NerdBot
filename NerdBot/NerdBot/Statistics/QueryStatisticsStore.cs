@@ -17,6 +17,8 @@ namespace NerdBot.Statistics
         private readonly MongoDatabase mDatabase;
         private readonly ILoggingService mLoggingService;
 
+        private const string cCardQueryCollection = "card_query_stats";
+
         public QueryStatisticsStore(
             string connectionString, 
             string databaseName,
@@ -39,16 +41,42 @@ namespace NerdBot.Statistics
             this.mLoggingService = loggingService;
         }
 
-        public async Task<bool> InsertCardQueryStat(CardQueryStat stat)
+        public async Task<bool> InsertCardQueryStat(string userName, int userId, int multiverseId)
         {
-            if (stat == null)
-                throw new ArgumentException("stat");
+            if (string.IsNullOrEmpty(userName))
+                throw new ArgumentNullException("userName");
 
-            var collection = this.mDatabase.GetCollection<CardQueryStat>("card_query_stats");
+            CardQueryStat stat = new CardQueryStat()
+            {
+                UserId = userId,
+                UserName = userName,
+                MultiverseId = multiverseId,
+                Date = DateTime.Now
+            };
+
+            var collection = this.mDatabase.GetCollection<CardQueryStat>(cCardQueryCollection);
 
             collection.Save(stat);
 
             return true;
+        }
+
+        public async Task<CardQueryStat> GetCardQueryStatByMultiverseId(int multiverseId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<CardQueryStat> GetCardQueryStatByUserId(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<CardQueryStat> GetCardQueryStatByUserName(string userName)
+        {
+            if (string.IsNullOrEmpty(userName))
+                throw new ArgumentNullException("userName");
+
+            throw new NotImplementedException();
         }
     }
 }

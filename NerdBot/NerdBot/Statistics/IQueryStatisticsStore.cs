@@ -8,6 +8,9 @@ namespace NerdBot.Statistics
 {
     public interface IQueryStatisticsStore
     {
-        Task<bool> InsertCardQueryStat(CardQueryStat stat);
+        Task<bool> InsertCardQueryStat(string userName, int userId, int multiverseId);
+        Task<CardQueryStat> GetCardQueryStatByMultiverseId(int multiverseId);
+        Task<CardQueryStat> GetCardQueryStatByUserId(int userId);
+        Task<CardQueryStat> GetCardQueryStatByUserName(string userName);
     }
 }
