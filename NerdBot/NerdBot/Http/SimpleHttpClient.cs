@@ -84,6 +84,7 @@ namespace NerdBot.Http
             }
             catch (Exception er)
             {
+                this.mLogger.Error(er, string.Format("Error getting page source from '{0}'", url));
 
                 return null;
             }
@@ -102,7 +103,7 @@ namespace NerdBot.Http
 	        }
 	        catch (Exception er)
 	        {
-                this.mLogger.Error(er, "Error getting as json");
+                this.mLogger.Error(er, string.Format("Error getting json result from '{0}'", url));
 
 		        return null;
 	        }

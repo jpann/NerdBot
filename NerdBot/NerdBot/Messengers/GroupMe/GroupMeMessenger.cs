@@ -78,6 +78,8 @@ namespace NerdBot.Messengers.GroupMe
 
             try
             {
+                this.mLogger.Trace("Sending message '{0}' using botId '{1}'...", message, this.mBotId);
+
                 string result = this.mHttpClient.Post(this.mEndpointUrl, json);
 
                 return true;
