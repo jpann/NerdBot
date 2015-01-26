@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace NerdBot.Statistics
 {
-    public class CardQueryStatSummary
+    public class CardQueryStatData
     {
         public string UserName { get; set; }
         public int MultiverseId { get; set; }
