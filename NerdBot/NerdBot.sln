@@ -19,6 +19,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotTappedOut", "NerdBot
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotTappedOutPlugin_Tests", "NerdBotTappedOutPlugin_Tests\NerdBotTappedOutPlugin_Tests.csproj", "{94E876C5-76D4-417C-8327-9BCED45AD40D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotUrbanDictionary", "NerdBotUrbanDictionary\NerdBotUrbanDictionary.csproj", "{AEDBBACB-CCCD-4D70-B1F5-81E3B8A46758}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrbanDictionaryPlugin_Tests", "UrbanDictionaryPlugin_Tests\UrbanDictionaryPlugin_Tests.csproj", "{6944899F-BE04-4A19-AC3F-CD6A327A1202}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +65,14 @@ Global
 		{94E876C5-76D4-417C-8327-9BCED45AD40D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94E876C5-76D4-417C-8327-9BCED45AD40D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94E876C5-76D4-417C-8327-9BCED45AD40D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEDBBACB-CCCD-4D70-B1F5-81E3B8A46758}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEDBBACB-CCCD-4D70-B1F5-81E3B8A46758}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEDBBACB-CCCD-4D70-B1F5-81E3B8A46758}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEDBBACB-CCCD-4D70-B1F5-81E3B8A46758}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6944899F-BE04-4A19-AC3F-CD6A327A1202}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6944899F-BE04-4A19-AC3F-CD6A327A1202}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6944899F-BE04-4A19-AC3F-CD6A327A1202}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6944899F-BE04-4A19-AC3F-CD6A327A1202}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
