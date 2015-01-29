@@ -43,13 +43,20 @@ namespace NerdBot.UrlShortners
             if (string.IsNullOrEmpty(url))
                 throw new ArgumentException("url");
 
-            string shortened;
-            if (this.mBitlyService.Shorten(url, out shortened) == StatusCode.OK)
+            try
             {
-                return shortened;
-            }
+                string shortened;
+                if (this.mBitlyService.Shorten(url, out shortened) == StatusCode.OK)
+                {
+                    return shortened;
+                }
 
-            return null;
+                return url;
+            }
+            catch (Exception er)
+            {
+                return url;
+            }
         }
     }
 }
