@@ -95,15 +95,13 @@ namespace NerdBotUrbanDictionary
                     if (command.Arguments[0].StartsWith("is a"))
                     {
                         string word = command.Arguments[0].Replace("is a", "").Trim();
-                        word = word.Replace("?", ""); // Remove any question marks
 
                         defData = await urbanDict.GetDefinition(word);
                     }
                     else if (command.Arguments[0].StartsWith("is"))
                     {
                         string word = command.Arguments[0].Replace("is", "").Trim();
-                        word = word.Replace("?", ""); // Remove any question marks
-
+                       
                         defData = await urbanDict.GetDefinition(word);
                     }
                 }
