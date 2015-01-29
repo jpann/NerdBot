@@ -464,13 +464,16 @@ namespace NerdBot.Mtg
                     setQueries.Add(Query<Set>.EQ(e => e.SearchName, c.SetSearchName));
                 }
 
-                // Get all sets for cards that share this name
-                MongoCursor<Set> setCursor = setsCollection.Find(Query.Or(setQueries))
-                    .SetSortOrder("name");
-
-                foreach (Set s in setCursor)
+                if (setQueries.Any())
                 {
-                    sets.Add(s);
+                    // Get all sets for cards that share this name
+                    MongoCursor<Set> setCursor = setsCollection.Find(Query.Or(setQueries))
+                        .SetSortOrder("name");
+
+                    foreach (Set s in setCursor)
+                    {
+                        sets.Add(s);
+                    }
                 }
             }
 
