@@ -92,18 +92,23 @@ namespace NerdBotUrbanDictionary
                 // wtf is a <text>?
                 if (command.Arguments.Length == 1)
                 {
-                    if (command.Arguments[0].StartsWith("is a"))
-                    {
-                        string word = command.Arguments[0].Replace("is a", "").Trim();
+                    string word = null;
 
-                        defData = await urbanDict.GetDefinition(word);
+                    if (command.Arguments[0].StartsWith("is an"))
+                    {
+                        word = command.Arguments[0].Replace("is an", "").Trim();
+                    }
+                    else if (command.Arguments[0].StartsWith("is a"))
+                    {
+                        word = command.Arguments[0].Replace("is a", "").Trim();
                     }
                     else if (command.Arguments[0].StartsWith("is"))
                     {
-                        string word = command.Arguments[0].Replace("is", "").Trim();
-                       
-                        defData = await urbanDict.GetDefinition(word);
+                        word = command.Arguments[0].Replace("is", "").Trim();
                     }
+
+                    if (!string.IsNullOrEmpty(word))
+                        defData = await urbanDict.GetDefinition(word);
                 }
 
                 if (defData != null)
@@ -113,7 +118,8 @@ namespace NerdBotUrbanDictionary
 
                     if (defData.Definitions.Any())
                     {
-                        var definition = defData.Definitions.FirstOrDefault();
+                        // Get random definition
+                        var definition = defData.Definitions.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
                         if (definition != null)
                         {
                             messenger.SendMessage(definition.Definition);
