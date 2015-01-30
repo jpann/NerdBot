@@ -72,6 +72,19 @@ namespace NerdBot.Tests.PriceStore
 
             CardPrice card2 = new CardPrice()
             {
+                Name = "Find Modify 1",
+                SetCode = "XXX",
+                PriceDiff = "12%",
+                PriceLow = "$12.00",
+                PriceMid = "$22.00",
+                PriceFoil = "$32.00",
+                SearchName = this.GetSearchValue("Find Modify 1", false),
+                Url = testDataTag,
+                LastUpdated = DateTime.Now.AddDays(-1)
+            };
+
+            CardPrice card3 = new CardPrice()
+            {
                 Name = "Find Modify 2",
                 SetCode = "XXX",
                 PriceDiff = "2%",
@@ -85,6 +98,7 @@ namespace NerdBot.Tests.PriceStore
 
             collection.Save(card1);
             collection.Save(card2);
+            collection.Save(card3);
         }
         #endregion
 
@@ -122,7 +136,6 @@ namespace NerdBot.Tests.PriceStore
         }
 
         #region FindAndModifyCardPrice
-
         [Test]
         public void FindAndModifyCardPrice()
         {
@@ -159,6 +172,30 @@ namespace NerdBot.Tests.PriceStore
                 PriceMid = "$20.00",
                 PriceFoil = "$30.00",
                 SearchName = this.GetSearchValue("Find Modify 3", false),
+                Url = testDataTag,
+                LastUpdated = DateTime.Now
+            };
+
+            CardPrice actual = priceStore.FindAndModifyCardPrice(expected, true);
+
+            Assert.AreEqual(expected.PriceDiff, actual.PriceDiff);
+            Assert.AreEqual(expected.PriceLow, actual.PriceLow);
+            Assert.AreEqual(expected.PriceMid, actual.PriceMid);
+            Assert.AreEqual(expected.PriceFoil, actual.PriceFoil);
+        }
+
+        [Test]
+        public void FindAndModifyCardPrice_MultipleButUpdateOne()
+        {
+            CardPrice expected = new CardPrice()
+            {
+                Name = "Find Modify 1",
+                SetCode = "XXX",
+                PriceDiff = "10%",
+                PriceLow = "$10.00",
+                PriceMid = "$20.00",
+                PriceFoil = "$30.00",
+                SearchName = this.GetSearchValue("Find Modify 1", false),
                 Url = testDataTag,
                 LastUpdated = DateTime.Now
             };

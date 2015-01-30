@@ -141,7 +141,33 @@ namespace NerdBot.Mtg.Prices
 
         public bool RemoveCardPrice(CardPrice cardPrice)
         {
-            throw new NotImplementedException();
+            if (cardPrice == null)
+                throw new ArgumentNullException("cardPrice");
+
+            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cPriceCollectionName);
+
+            var query = Query<CardPrice>.EQ(c => c.Id, cardPrice.Id);
+
+            var removeResult = cardPriceCollection.Remove(query);
+
+            if (removeResult.Ok)
+                return true;
+            else
+                return false;
+        }
+
+        public int RemoveCardPricesOnOrBefore(DateTime date)
+        {
+            if (date == DateTime.MinValue)
+                throw new ArgumentException("date");
+
+            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cPriceCollectionName);
+
+            var query = Query<CardPrice>.LTE(c => c.LastUpdated, date.ToUniversalTime());
+
+            var removeResult = cardPriceCollection.Remove(query);
+
+            return (int)removeResult.DocumentsAffected;
         }
 
         public CardPrice FindAndModifyCardPrice(CardPrice cardPrice, bool upsert = true)
@@ -183,11 +209,6 @@ namespace NerdBot.Mtg.Prices
             var cardModified = cardResult.GetModifiedDocumentAs<CardPrice>();
 
             return cardModified;
-        }
-
-        public int RemoveCardPricesOnOrBefore(DateTime date)
-        {
-            throw new NotImplementedException();
         }
     }
 }
