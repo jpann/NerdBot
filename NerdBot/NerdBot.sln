@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotUrbanDictionary", "N
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrbanDictionaryPlugin_Tests", "UrbanDictionaryPlugin_Tests\UrbanDictionaryPlugin_Tests.csproj", "{6944899F-BE04-4A19-AC3F-CD6A327A1202}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBot_PriceUpdater", "NerdBot_PriceUpdater\NerdBot_PriceUpdater.csproj", "{BBBFDEE7-2EC4-495C-8190-0BFEFB99E12D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{6944899F-BE04-4A19-AC3F-CD6A327A1202}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6944899F-BE04-4A19-AC3F-CD6A327A1202}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6944899F-BE04-4A19-AC3F-CD6A327A1202}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBBFDEE7-2EC4-495C-8190-0BFEFB99E12D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBBFDEE7-2EC4-495C-8190-0BFEFB99E12D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBBFDEE7-2EC4-495C-8190-0BFEFB99E12D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBBFDEE7-2EC4-495C-8190-0BFEFB99E12D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
