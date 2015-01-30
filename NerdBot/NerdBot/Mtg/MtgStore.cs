@@ -16,6 +16,9 @@ namespace NerdBot.Mtg
 {
     public class MtgStore : IMtgStore
     {
+        private const string cCardsCollectionName = "cards";
+        private const string cSetsCollectionName = "sets";
+
         private readonly string mConnectionString;
         private readonly string mDatabaseName;
         private readonly MongoClient mClient;
@@ -77,7 +80,7 @@ namespace NerdBot.Mtg
         #region CardExists
         public async Task<bool> CardExists(int multiverseId)
         {
-            var collection = this.mDatabase.GetCollection<Card>("cards");
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             var query = Query<Card>.EQ(e => e.MultiverseId, multiverseId);
 
@@ -96,7 +99,7 @@ namespace NerdBot.Mtg
 
             name = this.GetSearchValue(name, false);
 
-            var collection = this.mDatabase.GetCollection<Card>("cards");
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             
             var query = Query<Card>.EQ(e => e.SearchName, name);
@@ -119,7 +122,7 @@ namespace NerdBot.Mtg
             name = this.GetSearchValue(name, false);
             setName = this.GetSearchValue(setName, false);
 
-            var collection = this.mDatabase.GetCollection<Card>("cards");
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             var query = Query.And(
                 Query<Card>.EQ(e => e.SearchName, name),
@@ -143,7 +146,7 @@ namespace NerdBot.Mtg
 
             name = this.GetSearchValue(name, true);
 
-            var collection = this.mDatabase.GetCollection<Card>("cards");
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             var query = Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i"));
             var sortBy = SortBy.Ascending("setName");
@@ -171,7 +174,7 @@ namespace NerdBot.Mtg
             name = this.GetSearchValue(name, true);
             setName = this.GetSearchValue(setName, true);
 
-            var collection = this.mDatabase.GetCollection<Card>("cards");
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             // Search both the set's search name and set id
             var query = Query.And(
@@ -202,7 +205,7 @@ namespace NerdBot.Mtg
         {
             List<Card> cards = new List<Card>();
 
-            var collection = this.mDatabase.GetCollection<Card>("cards");
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
             
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -231,7 +234,7 @@ namespace NerdBot.Mtg
 
             name = this.GetSearchValue(name, true);
 
-            var collection = this.mDatabase.GetCollection<Card>("cards");
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -262,7 +265,7 @@ namespace NerdBot.Mtg
 
             List<Card> cards = new List<Card>();
 
-            var collection = this.mDatabase.GetCollection<Card>("cards");
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             artist = artist.ToLower();
 
@@ -298,7 +301,7 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(setName))
                 throw new ArgumentException("setName");
 
-            var collection = this.mDatabase.GetCollection<Card>("cards");
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             setName = this.GetSearchValue(setName, false);
 
@@ -324,7 +327,7 @@ namespace NerdBot.Mtg
 
         public async Task<Card> GetRandomCard()
         {
-            var collection = this.mDatabase.GetCollection<Card>("cards");
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -353,7 +356,7 @@ namespace NerdBot.Mtg
 
             text = "^" + text;
 
-            var collection = this.mDatabase.GetCollection<Card>("cards");
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             var query = Query<Card>.Matches(e => e.Desc, new BsonRegularExpression(text, "i"));
             var sortBy = SortBy.Ascending("multiverseId");
@@ -380,8 +383,8 @@ namespace NerdBot.Mtg
         {
             List<Set> sets = new List<Set>();
 
-            var cardsCollection = this.mDatabase.GetCollection<Card>("cards");
-            var setsCollection = this.mDatabase.GetCollection<Set>("sets");
+            var cardsCollection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
+            var setsCollection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 
             // Query to get the card with this multiverseId
             var cardMultiverseIdQuery = Query<Card>.EQ(e => e.MultiverseId, multiverseId);
@@ -431,8 +434,8 @@ namespace NerdBot.Mtg
         {
             List<Set> sets = new List<Set>();
 
-            var cardsCollection = this.mDatabase.GetCollection<Card>("cards");
-            var setsCollection = this.mDatabase.GetCollection<Set>("sets");
+            var cardsCollection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
+            var setsCollection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 
             // Query to get the card with this multiverseId
             var cardMultiverseIdQuery = Query<Card>.EQ(e => e.MultiverseId, multiverseId);
@@ -495,7 +498,7 @@ namespace NerdBot.Mtg
 
             setName = this.GetSearchValue(setName, false);
 
-            var collection = this.mDatabase.GetCollection<Card>("cards");
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             var query = Query<Card>.EQ(e => e.SetSearchName, setName);
 
@@ -526,7 +529,7 @@ namespace NerdBot.Mtg
 
             name = this.GetSearchValue(name, false);
 
-            var collection = this.mDatabase.GetCollection<Set>("sets");
+            var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 
             var query = Query<Set>.EQ(e => e.SearchName, name);
      
@@ -550,7 +553,7 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(code))
                 throw new ArgumentException("code");
 
-            var collection = this.mDatabase.GetCollection<Set>("sets");
+            var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 
             var query = Query<Set>.EQ(e => e.Code, code);
 
@@ -578,7 +581,7 @@ namespace NerdBot.Mtg
 
             name = this.GetSearchValue(name, true);
 
-            var collection = this.mDatabase.GetCollection<Set>("sets");
+            var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 
             var query = Query<Set>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i"));
 
@@ -599,7 +602,7 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(code))
                 throw new ArgumentException("code");
 
-            var collection = this.mDatabase.GetCollection<Set>("sets");
+            var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 
             // BsonRegEx in order to do a case insensitive match
             var query = Query<Set>.Matches(e => e.Code, new BsonRegularExpression(code, "i"));
