@@ -618,6 +618,29 @@ namespace NerdBot.Mtg
 
             return sets;
         }
+
+        public async Task<List<Set>> GetSets()
+        {
+            List<Set> sets = new List<Set>();
+
+            var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            MongoCursor<Set> cursor = collection.FindAll().SetSortOrder("name");
+
+            foreach (Set set in cursor)
+            {
+                sets.Add(set);
+            }
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return sets;
+        }
         #endregion
     }
 }

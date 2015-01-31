@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NerdBot.Http;
 using NerdBot.Mtg;
 using NerdBot.Mtg.Prices;
 using NerdBot_PriceUpdater.PriceUpdaters;
@@ -32,6 +33,9 @@ namespace NerdBot_PriceUpdater
             // Register the instance of ILoggingService
             TinyIoCContainer.Current.Register<ILoggingService>((c, p) => new NLogLoggingService());
 
+            // Register the instance of IHttpClient
+             TinyIoCContainer.Current.Register<IHttpClient, SimpleHttpClient>();
+
             // Register the instance of IMtgStore
             var mtgStore = new MtgStore(
                 dbConnectionString,
@@ -50,6 +54,7 @@ namespace NerdBot_PriceUpdater
             var priceUpdater = new EchoMtgPriceUpdater(
                 TinyIoCContainer.Current.Resolve<IMtgStore>(),
                 TinyIoCContainer.Current.Resolve<ICardPriceStore>(),
+                TinyIoCContainer.Current.Resolve<IHttpClient>(),
                 TinyIoCContainer.Current.Resolve<ILoggingService>());
             TinyIoCContainer.Current.Register<EchoMtgPriceUpdater>(priceUpdater);
         }

@@ -37,5 +37,6 @@ namespace NerdBot.Mtg
 
         Task<Set> GetSet(string name);
         Task<Set> GetSetByCode(string code);
+        Task<List<Set>> GetSets();
     }
 }
