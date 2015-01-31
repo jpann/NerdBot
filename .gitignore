@@ -185,3 +185,5 @@ FakesAssemblies/
 NerdBot/NerdBot/settings.config
 NerdBot/NerdBot/NerdBot.ini
 *.userprefs
+
+NerdBot/NerdBot/NerdBot_PriceUpdater/NerdBotPriceUpdater.ini
