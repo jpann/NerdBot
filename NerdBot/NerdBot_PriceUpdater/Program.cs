@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -17,15 +18,16 @@ namespace NerdBot_PriceUpdater
         private static IMtgStore mMtgStore;
         private static ILoggingService mLoggingService;
         private static BackgroundWorker mUpdaterBackgroundWorker;
-        private static List<IPriceUpdater> mPriceUpdaters; 
+        private static List<IPriceUpdater> mPriceUpdaters;
+        private static Stopwatch mStopwatch;
 
         private static void Main(string[] args)
         {
             Bootstrapper.Register();
 
+            mStopwatch = new Stopwatch();
             mLoggingService = TinyIoCContainer.Current.Resolve<ILoggingService>();
             mMtgStore = TinyIoCContainer.Current.Resolve<IMtgStore>();
-
             mPriceUpdaters = TinyIoCContainer.Current.ResolveAll<IPriceUpdater>().ToList();
 
             // Setup worker
@@ -59,6 +61,8 @@ namespace NerdBot_PriceUpdater
         {
             BackgroundWorker worker = sender as BackgroundWorker;
 
+            mStopwatch.Start();
+
             // Get sets from IMtgStore
             mLoggingService.Debug("Getting sets...");
             List<Set> sets = mMtgStore.GetSets().Result;
@@ -89,6 +93,8 @@ namespace NerdBot_PriceUpdater
 
         private static void bw_EchoMtgsCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            mStopwatch.Stop();
+
             if ((e.Cancelled == true))
             {
                 string sMsg = string.Format("Cancelled. {0}", e.Result);
@@ -110,6 +116,8 @@ namespace NerdBot_PriceUpdater
                 mLoggingService.Info(sMsg);
                 Console.WriteLine(sMsg);
             }
+
+            Console.WriteLine("Elapsed time: {0}", mStopwatch.Elapsed);
         }
 
         private static void bw_EchoMtgProgressChanged(object sender, ProgressChangedEventArgs e)
