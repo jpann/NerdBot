@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MarketPricePlugin.cs" />
     <Compile Include="DeckBrewPricePlugin.cs" />
     <Compile Include="PriceFetchers\DeckBrewPriceFetcher.cs" />
     <Compile Include="PriceFetchers\EbayPriceFetcher.cs" />
