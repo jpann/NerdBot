@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NerdBot.Mtg;
 using NerdBot_PriceUpdater.PriceUpdaters;
@@ -46,6 +47,11 @@ namespace NerdBot_PriceUpdater
                 
                 mLoggingService.Fatal(er, msg);
                 Console.WriteLine(msg);
+            }
+
+            while (mUpdaterBackgroundWorker.IsBusy)
+            {
+                Thread.Sleep(100);
             }
         }
 
