@@ -8,6 +8,7 @@ using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
+using NerdBot.Mtg.Prices;
 using NerdBot.Parsers;
 using NerdBot.Statistics;
 using NerdBot.UrlShortners;
@@ -41,6 +42,7 @@ namespace NerdBot
 
             string dbConnectionString;
             string dbName;
+            string priceDbName;
             string msgrBotId;
             string msgrBotName;
             string msgrEndPointUrl;
@@ -53,6 +55,7 @@ namespace NerdBot
                 configFile,
                 out dbConnectionString,
                 out dbName,
+                out priceDbName,
                 out msgrBotId,
                 out msgrBotName,
                 out msgrEndPointUrl,
@@ -102,6 +105,13 @@ namespace NerdBot
                 container.Resolve<ILoggingService>());
             container.Register<IMessenger>(groupMeMessenger);
 
+            // Register the instance of ICardPriceStore
+            var priceStore = new EchoMtgPriceStore(
+                dbConnectionString,
+                priceDbName,
+                container.Resolve<ILoggingService>());
+            container.Register<ICardPriceStore>(priceStore);
+
             // Register the instance of IPluginManager
             string pluginDirectory = Path.Combine(Environment.CurrentDirectory, "plugins");
 
@@ -124,6 +134,7 @@ namespace NerdBot
             string fileName,
             out string dbConnectionString,
             out string dbName,
+            out string priceDbName,
             out string msgrBotId,
             out string msgrBotName,
             out string msgrEndPointUrl,
@@ -141,6 +152,10 @@ namespace NerdBot
             dbName = source.Configs["Database"].Get("dbName");
             if (string.IsNullOrEmpty(dbName))
                 throw new Exception("Configuration file is missing 'dbName' setting in section 'Database'.");
+
+            priceDbName = source.Configs["Database"].Get("priceDbName");
+            if (string.IsNullOrEmpty(priceDbName))
+                throw new Exception("Configuration file is missing 'priceDbName' setting in section 'Database'.");
 
             msgrBotId = source.Configs["Messenger"].Get("botId");
             if (string.IsNullOrEmpty(msgrBotId))

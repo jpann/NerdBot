@@ -8,6 +8,7 @@ using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
+using NerdBot.Mtg.Prices;
 using NerdBot.Parsers;
 using NerdBot.UrlShortners;
 using NerdBotCoreCommands;
@@ -30,6 +31,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
         private Mock<IUrlShortener> urlShortenerMock;
         private Mock<IMessenger> messengerMock;
         private Mock<ILoggingService> loggingServiceMock;
+        private Mock<ICardPriceStore> priceStoreMock;
 
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
@@ -42,6 +44,9 @@ namespace NerdBotCoreCommandsPlugin_Tests
         [SetUp]
         public void SetUp()
         {
+            // Setup ICardPriceStore Mocks
+            priceStoreMock = new Mock<ICardPriceStore>();
+
             // Setup ICommandParser Mocks
             commandParserMock = new Mock<ICommandParser>();
 
@@ -56,6 +61,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
 
             plugin = new RandomCardPlugin(
                 mtgStore,
+                priceStoreMock.Object,
                 commandParserMock.Object,
                 httpClientMock.Object,
                 urlShortenerMock.Object);

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
+using NerdBot.Mtg.Prices;
 using NerdBot.Parsers;
 using NerdBot.UrlShortners;
 
@@ -14,12 +15,14 @@ namespace NerdBot.Plugin
     public abstract class PluginBase : IPlugin
     {
         protected IMtgStore mStore;
+        protected ICardPriceStore mPriceStore;
         protected ICommandParser mCommandParser;
         protected IHttpClient mHttpClient;
         protected IUrlShortener mUrlShortener;
 
         public PluginBase(
             IMtgStore store,
+            ICardPriceStore priceStore,
             ICommandParser commandParser,
             IHttpClient httpClient,
             IUrlShortener urlShortener)
@@ -27,8 +30,12 @@ namespace NerdBot.Plugin
             if (store == null)
                 throw new ArgumentNullException("store");
 
+            if (priceStore == null)
+                throw new ArgumentNullException("priceStore");
+
             if (commandParser == null)
                 throw new ArgumentNullException("commandParser");
+
             if (httpClient == null)
                 throw new ArgumentNullException("httpClient");
 
@@ -36,6 +43,7 @@ namespace NerdBot.Plugin
                 throw new ArgumentNullException("urlShortener");
 
             this.mStore = store;
+            this.mPriceStore = priceStore;
             this.mCommandParser = commandParser;
             this.mHttpClient = httpClient;
             this.mUrlShortener = urlShortener;
@@ -52,6 +60,18 @@ namespace NerdBot.Plugin
                 this.mStore = value;
             }
             get { return this.mStore; }
+        }
+
+        public ICardPriceStore PriceStore
+        {
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                this.mPriceStore = value;
+            }
+            get { return this.mPriceStore; }
         }
 
         public ICommandParser CommandParser

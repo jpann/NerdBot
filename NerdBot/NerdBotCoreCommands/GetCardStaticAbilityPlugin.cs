@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
+using NerdBot.Mtg.Prices;
 using NerdBot.Parsers;
 using NerdBot.Plugin;
 using NerdBot.UrlShortners;
@@ -46,11 +47,13 @@ namespace NerdBotCoreCommands
 
         public GetCardStaticAbilityPlugin(
                 IMtgStore store,
+                ICardPriceStore priceStore,
                 ICommandParser commandParser,
                 IHttpClient httpClient,
                 IUrlShortener urlShortener)
             : base(
                 store,
+                priceStore,
                 commandParser,
                 httpClient,
                 urlShortener)

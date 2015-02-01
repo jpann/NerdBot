@@ -7,6 +7,7 @@ using Moq;
 using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
+using NerdBot.Mtg.Prices;
 using NerdBot.Parsers;
 using NerdBot.UrlShortners;
 using NerdBotTappedOut;
@@ -29,6 +30,7 @@ namespace NerdBotTappedOutPlugin_Tests
         private Mock<IUrlShortener> urlShortenerMock;
         private Mock<IMessenger> messengerMock;
         private Mock<ILoggingService> loggingServiceMock;
+        private Mock<ICardPriceStore> priceStoreMock;
 
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
@@ -41,6 +43,9 @@ namespace NerdBotTappedOutPlugin_Tests
         [SetUp]
         public void SetUp()
         {
+            // Setup ICardPriceStore Mocks
+            priceStoreMock = new Mock<ICardPriceStore>();
+
             // Setup ICommandParser Mocks
             commandParserMock = new Mock<ICommandParser>();
 
@@ -55,6 +60,7 @@ namespace NerdBotTappedOutPlugin_Tests
 
             plugin = new TappedOutLatestTop8Plugin(
                 mtgStore,
+                priceStoreMock.Object,
                 commandParserMock.Object,
                 httpClientMock.Object,
                 urlShortenerMock.Object);
