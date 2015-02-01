@@ -118,49 +118,70 @@ namespace NerdBotCardPrices
 
                 if (card != null)
                 {
-                    var tcg = new DeckBrewPriceFetcher(cUrl, base.HttpClient);
-                    string[] tcgPrice = tcg.GetPrice(card.MultiverseId);
+                    // Remove TCG prices for now.
+                    //var tcg = new DeckBrewPriceFetcher(cUrl, base.HttpClient);
+                    //string[] tcgPrice = tcg.GetPrice(card.MultiverseId);
+
+                    var tcgPrice = this.mPriceStore.GetCardPrice(card.Name, card.SetId);
 
                     if (tcgPrice != null)
                     {
                         // Not all cards have a price from DeckBrew, so check for 0 prices here,
                         //  to prevent posting of 0.00 prices
-                        if (tcgPrice[2] == "0.00" && tcgPrice[1] == "0.00" && tcgPrice[0] == "0.00")
+                        //if (tcgPrice[2] == "0.00" && tcgPrice[1] == "0.00" && tcgPrice[0] == "0.00")
+                        //{
+                        //    messenger.SendMessage("Price unavailable using DeckBrew");
+                        //    return true;
+                        //}
+
+                        //string url = this.UrlShortener.ShortenUrl(tcgPrice[3]);
+
+                        //string msg = "";
+
+                        //if (!string.IsNullOrEmpty(url))
+                        //{
+                        //    msg = string.Format("{0} [{1}] - High: {2}; Median: {3}; Low: {4} - {5}",
+                        //        card.Name,
+                        //        card.SetName,
+                        //        tcgPrice[2],
+                        //        tcgPrice[1],
+                        //        tcgPrice[0],
+                        //        url);
+                        //}
+                        //else
+                        //{
+                        //    msg = string.Format("{0} [{1}] - High: {2}; Median: {3}; Low: {4}",
+                        //        card.Name,
+                        //        card.SetName,
+                        //        tcgPrice[2],
+                        //        tcgPrice[1],
+                        //        tcgPrice[0]);
+                        //}
+
+                        if (string.IsNullOrEmpty(tcgPrice.PriceFoil) && 
+                            string.IsNullOrEmpty(tcgPrice.PriceLow) &&
+                            string.IsNullOrEmpty(tcgPrice.PriceMid))
                         {
-                            messenger.SendMessage("Price unavailable using DeckBrew");
+                            messenger.SendMessage("Price unavailable");
                             return true;
                         }
 
-                        string url = this.UrlShortener.ShortenUrl(tcgPrice[3]);
-
-                        string msg = "";
-
-                        if (!string.IsNullOrEmpty(url))
-                        {
-                            msg = string.Format("{0} [{1}] - High: {2}; Median: {3}; Low: {4} - {5}",
-                                card.Name,
-                                card.SetName,
-                                tcgPrice[2],
-                                tcgPrice[1],
-                                tcgPrice[0],
-                                url);
-                        }
-                        else
-                        {
-                            msg = string.Format("{0} [{1}] - High: {2}; Median: {3}; Low: {4}",
-                                card.Name,
-                                card.SetName,
-                                tcgPrice[2],
-                                tcgPrice[1],
-                                tcgPrice[0]);
-                        }
+                        string msg =
+                            string.Format(
+                                "{0} [{1}] Low: {2}; Mid: {3}; Foil: {4}. Price difference of {5} since yesterday.",
+                                tcgPrice.Name,
+                                tcgPrice.SetCode,
+                                tcgPrice.PriceLow,
+                                tcgPrice.PriceMid,
+                                tcgPrice.PriceFoil,
+                                !string.IsNullOrEmpty(tcgPrice.PriceDiff) ? tcgPrice.PriceDiff : "0%");
 
                         // Get other sets card is in
                         List<Set> otherSets = await base.Store.GetCardOtherSets(card.MultiverseId);
                         if (otherSets.Any())
                         {
                             msg += string.Format(". Also appears in sets: {0}",
-                                string.Join(", ", otherSets.Select(s => s.Name).Take(5).ToArray()));
+                                string.Join(", ", otherSets.Select(s => s.Code).Take(10).ToArray()));
                         }
 
                         messenger.SendMessage(msg);
