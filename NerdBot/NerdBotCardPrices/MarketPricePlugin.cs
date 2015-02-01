@@ -122,6 +122,14 @@ namespace NerdBotCardPrices
 
                     if (priceData != null)
                     {
+                        if (string.IsNullOrEmpty(priceData.PriceFoil) &&
+                            string.IsNullOrEmpty(priceData.PriceLow) &&
+                            string.IsNullOrEmpty(priceData.PriceMid))
+                        {
+                            messenger.SendMessage("Price unavailable");
+                            return true;
+                        }
+
                         string msg =
                             string.Format(
                                 "{0} [{1}] Low: {2}; Mid: {3}; Foil: {4}. Price difference of {5} since yesterday.",
