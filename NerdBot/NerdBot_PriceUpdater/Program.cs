@@ -47,8 +47,6 @@ namespace NerdBot_PriceUpdater
                 mLoggingService.Fatal(er, msg);
                 Console.WriteLine(msg);
             }
-
-            Console.ReadKey();
         }
 
         private static void bw_UpdaterDoWork(object sender, DoWorkEventArgs e)
