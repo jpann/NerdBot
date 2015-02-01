@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NerdBot.Mtg;
 using NerdBot_PriceUpdater.PriceUpdaters;
 using SimpleLogging.Core;
 using TinyIoC;
@@ -12,30 +13,32 @@ namespace NerdBot_PriceUpdater
 {
     internal class Program
     {
+        private static IMtgStore mMtgStore;
         private static ILoggingService mLoggingService;
-        private static EchoMtgPriceUpdater mEchoMtgPriceUpdater;
-        private static BackgroundWorker mEchoMtgBackgroundWorker;
+        private static BackgroundWorker mUpdaterBackgroundWorker;
+        private static List<IPriceUpdater> mPriceUpdaters; 
 
         private static void Main(string[] args)
         {
             Bootstrapper.Register();
 
             mLoggingService = TinyIoCContainer.Current.Resolve<ILoggingService>();
+            mMtgStore = TinyIoCContainer.Current.Resolve<IMtgStore>();
 
-            mEchoMtgPriceUpdater = TinyIoCContainer.Current.Resolve<EchoMtgPriceUpdater>();
+            mPriceUpdaters = TinyIoCContainer.Current.ResolveAll<IPriceUpdater>().ToList();
 
             // Setup worker
-            mEchoMtgBackgroundWorker = new BackgroundWorker();
-            mEchoMtgBackgroundWorker.WorkerReportsProgress = true;
-            mEchoMtgBackgroundWorker.WorkerSupportsCancellation = true;
-            mEchoMtgBackgroundWorker.DoWork += new DoWorkEventHandler(mEchoMtgPriceUpdater.UpdatePrices);
-            mEchoMtgBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_EchoMtgsCompleted);
-            mEchoMtgBackgroundWorker.ProgressChanged += new ProgressChangedEventHandler(bw_EchoMtgProgressChanged);
+            mUpdaterBackgroundWorker = new BackgroundWorker();
+            mUpdaterBackgroundWorker.WorkerReportsProgress = true;
+            mUpdaterBackgroundWorker.WorkerSupportsCancellation = true;
+            mUpdaterBackgroundWorker.DoWork += new DoWorkEventHandler(bw_UpdaterDoWork);
+            mUpdaterBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_EchoMtgsCompleted);
+            mUpdaterBackgroundWorker.ProgressChanged += new ProgressChangedEventHandler(bw_EchoMtgProgressChanged);
 
             try
             {
                 Console.WriteLine("Running worker thread for EchoMtg...");
-                mEchoMtgBackgroundWorker.RunWorkerAsync();
+                mUpdaterBackgroundWorker.RunWorkerAsync();
             }
             catch (Exception er)
             {
@@ -46,6 +49,38 @@ namespace NerdBot_PriceUpdater
             }
 
             Console.ReadKey();
+        }
+
+        private static void bw_UpdaterDoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            // Get sets from IMtgStore
+            mLoggingService.Debug("Getting sets...");
+            List<Set> sets = mMtgStore.GetSets().Result;
+            mLoggingService.Debug("Got {0} sets!", sets.Count);
+
+            // Go through each IPriceUpdater and call the UpdatePrices method
+            foreach (IPriceUpdater priceUpdater in mPriceUpdaters)
+            {
+                try
+                {
+                    foreach (Set set in sets)
+                    {
+                        priceUpdater.UpdatePrices(set);
+                    }
+                }
+                catch (Exception er)
+                {
+                    string msg = string.Format("Error in price updater '{0}': {1}",
+                        priceUpdater.GetType(),
+                        er.Message);
+
+                    mLoggingService.Error(er, msg);
+
+                    Console.WriteLine(msg);
+                }
+            }
         }
 
         private static void bw_EchoMtgsCompleted(object sender, RunWorkerCompletedEventArgs e)
