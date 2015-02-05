@@ -109,7 +109,7 @@ namespace NerdBotTappedOut
 
                         if (command.Arguments.Length == 2)
                         {
-                            string filter = command.Arguments[2].ToLower();
+                            string filter = command.Arguments[1].ToLower();
 
                             latestData = latestData.Where(l => l.Name.ToLower().Contains(filter)).ToList();
                         }
