@@ -14,7 +14,7 @@ using NerdBotTappedOut.Fetchers;
 
 namespace NerdBotTappedOut
 {
-    public class TappedOutFeaturedComboDecksPlugin : PluginBase
+    public class TappedOutComboDecksPlugin : PluginBase
     {
         private const int cLimit = 8;
 
@@ -48,7 +48,7 @@ namespace NerdBotTappedOut
             get { return string.Format("{0}: 'combodecks' or 'combodecks esper'", this.Command); }
         }
 
-        public TappedOutFeaturedComboDecksPlugin(
+        public TappedOutComboDecksPlugin(
                 IMtgStore store,
                 ICardPriceStore priceStore,
                 ICommandParser commandParser,

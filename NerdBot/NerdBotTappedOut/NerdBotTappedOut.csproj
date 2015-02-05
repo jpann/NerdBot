@@ -43,7 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TappedOutFeaturedComboDecksPlugin.cs" />
+    <Compile Include="TappedOutDecksHubPlugin.cs" />
+    <Compile Include="TappedOutComboDecksPlugin.cs" />
     <Compile Include="Fetchers\TappedOutLatestFetcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TappedOutFeaturedPlugin.cs" />
