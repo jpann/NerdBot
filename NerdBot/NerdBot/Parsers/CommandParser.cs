@@ -20,7 +20,6 @@ namespace NerdBot.Parsers
                 Command cmd = new Command();
                 string command = cmdMatch.Groups["cmd"].Value.ToLower();
 
-                //TODO Dumb, need to spend more time with this
                 Match argMatch = Regex.Match(text, @"^(?<cmd>[A-Za-z0-9]+) (?:(?<args>[A-Za-z0-9!%&\- ']+),?)+", RegexOptions.IgnoreCase);
 
                 if (argMatch.Success)

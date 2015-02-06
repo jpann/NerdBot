@@ -24,8 +24,6 @@ namespace NerdBotCardPrices.PriceFetchers
             this.mHttpClient = httpClient;
         }
 
-
-        //TODO This is lame
         public string[] GetPrice(int multiverseId)
         {
             // Build the request url for this card
