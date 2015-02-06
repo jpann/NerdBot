@@ -62,6 +62,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mappers\IMtgDataMapper.cs" />
+    <Compile Include="Mappers\MtgInfoMapper.cs" />
+    <Compile Include="Mappers\MtgJsonMapper.cs" />
+    <Compile Include="DataReaders\IMtgDataReader.cs" />
+    <Compile Include="DataReaders\MtgInfoReader.cs" />
+    <Compile Include="DataReaders\MtgJsonReader.cs" />
+    <Compile Include="MtgData\MtgJsonCard.cs" />
+    <Compile Include="MtgData\MtgJsonSet.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -74,6 +82,9 @@
       <Project>{35460aa4-b94a-4b64-9418-7243ec3d2f01}</Project>
       <Name>NerdBot</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Updaters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
