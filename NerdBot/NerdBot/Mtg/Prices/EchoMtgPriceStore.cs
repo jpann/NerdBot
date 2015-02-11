@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using NerdBot.Utilities;
 using SimpleLogging.Core;
 
 namespace NerdBot.Mtg.Prices
@@ -22,11 +23,13 @@ namespace NerdBot.Mtg.Prices
         private readonly MongoServer mServer;
         private readonly MongoDatabase mDatabase;
         private readonly ILoggingService mLoggingService;
+        private readonly SearchUtility mSearchUtility;
 
         public EchoMtgPriceStore(
             string connectionString,
             string databaseName,
-            ILoggingService loggingService)
+            ILoggingService loggingService,
+            SearchUtility searchUtility)
         {
             if (string.IsNullOrEmpty(connectionString))
                 throw new ArgumentException("connectionString");
@@ -37,41 +40,16 @@ namespace NerdBot.Mtg.Prices
             if (loggingService == null)
                 throw new ArgumentNullException("loggingService");
 
+            if (searchUtility == null)
+                throw new ArgumentNullException("searchUtility");
+
             this.mConnectionString = connectionString;
             this.mDatabaseName = databaseName;
             this.mClient = new MongoClient(this.mConnectionString);
             this.mServer = this.mClient.GetServer();
             this.mDatabase = this.mServer.GetDatabase(this.mDatabaseName);
             this.mLoggingService = loggingService;
-        }
-
-        public string GetSearchValue(string text, bool forRegex = false)
-        {
-            Regex rgx = new Regex("[^a-zA-Z0-9.^*]");
-
-            string searchValue = text.ToLower();
-
-            if (forRegex)
-            {
-                // Replace * and % with a regex '*' char
-                searchValue = searchValue.Replace("%", ".*");
-
-                // If the first character of the searchValue is not '*', 
-                // meaning the user does not want to do a contains search,
-                // explicitly use a starts with regex
-                if (!searchValue.StartsWith(".*"))
-                {
-                    searchValue = "^" + searchValue;
-                }
-            }
-
-            // Remove all non a-zA-Z0-9.^ characters
-            searchValue = rgx.Replace(searchValue, "");
-
-            // Remove all spaces
-            searchValue = searchValue.Replace(" ", "");
-
-            return searchValue;
+            this.mSearchUtility = searchUtility;
         }
 
         public CardPrice GetCardPrice(string name)
@@ -79,7 +57,7 @@ namespace NerdBot.Mtg.Prices
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            string searchName = this.GetSearchValue(name, true);
+            string searchName = this.mSearchUtility.GetRegexSearchValue(name);
 
             this.mLoggingService.Debug("Getting price for '{0}' using search name '{1}'...",
                 name,
@@ -112,7 +90,7 @@ namespace NerdBot.Mtg.Prices
             if (string.IsNullOrEmpty(setCode))
                 throw new ArgumentException("setCode");
 
-            string searchName = this.GetSearchValue(name, true);
+            string searchName = this.mSearchUtility.GetRegexSearchValue(name);
 
             this.mLoggingService.Debug("Getting price for '{0}' [{1}] using search name '{2}'...",
                 name,

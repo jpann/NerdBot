@@ -8,6 +8,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using Moq;
 using NerdBot.Mtg.Prices;
+using NerdBot.Utilities;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
@@ -24,25 +25,38 @@ namespace NerdBot.Tests.PriceStore
         private Mock<ILoggingService> loggingServiceMock;
 
         private CardPrice cardPriceToRemove;
+        private Mock<SearchUtility> searchUtilityMock;
 
-        private string GetSearchValue(string text, bool forRegex = false)
+        public string GetSearchValue(string text)
         {
             Regex rgx = new Regex("[^a-zA-Z0-9.^*]");
 
             string searchValue = text.ToLower();
 
-            if (forRegex)
-            {
-                // Replace * and % with a regex '*' char
-                searchValue = searchValue.Replace("%", ".*");
+            // Remove all non a-zA-Z0-9.^ characters
+            searchValue = rgx.Replace(searchValue, "");
 
-                // If the first character of the searchValue is not '*', 
-                // meaning the user does not want to do a contains search,
-                // explicitly use a starts with regex
-                if (!searchValue.StartsWith(".*"))
-                {
-                    searchValue = "^" + searchValue;
-                }
+            // Remove all spaces
+            searchValue = searchValue.Replace(" ", "");
+
+            return searchValue;
+        }
+
+        public string GetRegexSearchValue(string text)
+        {
+            Regex rgx = new Regex("[^a-zA-Z0-9.^*]");
+
+            string searchValue = text.ToLower();
+
+            // Replace * and % with a regex '*' char
+            searchValue = searchValue.Replace("%", ".*");
+
+            // If the first character of the searchValue is not '*', 
+            // meaning the user does not want to do a contains search,
+            // explicitly use a starts with regex
+            if (!searchValue.StartsWith(".*"))
+            {
+                searchValue = "^" + searchValue;
             }
 
             // Remove all non a-zA-Z0-9.^ characters
@@ -71,7 +85,7 @@ namespace NerdBot.Tests.PriceStore
                 PriceLow = "$1.00",
                 PriceMid = "$2.00",
                 PriceFoil = "$3.00",
-                SearchName = this.GetSearchValue("Remove me 1", false),
+                SearchName = this.GetSearchValue("Remove me 1"),
                 Url = testDataTag,
                 LastUpdated = DateTime.Now.AddDays(-5)
             };
@@ -84,7 +98,7 @@ namespace NerdBot.Tests.PriceStore
                 PriceLow = "$12.00",
                 PriceMid = "$22.00",
                 PriceFoil = "$32.00",
-                SearchName = this.GetSearchValue("Remove me 2", false),
+                SearchName = this.GetSearchValue("Remove me 2"),
                 Url = testDataTag,
                 LastUpdated = DateTime.Now.AddDays(-6)
             };
@@ -97,7 +111,7 @@ namespace NerdBot.Tests.PriceStore
                 PriceLow = "$2.00",
                 PriceMid = "$3.00",
                 PriceFoil = "$4.00",
-                SearchName = this.GetSearchValue("Remove me 3", false),
+                SearchName = this.GetSearchValue("Remove me 3"),
                 Url = testDataTag,
                 LastUpdated = DateTime.Now.AddDays(-7)
             };
@@ -110,7 +124,7 @@ namespace NerdBot.Tests.PriceStore
                 PriceLow = "$1.00",
                 PriceMid = "$2.00",
                 PriceFoil = "$3.00",
-                SearchName = this.GetSearchValue("Remove me X", false),
+                SearchName = this.GetSearchValue("Remove me X"),
                 Url = testDataTag,
                 LastUpdated = DateTime.Now.AddDays(-2)
             };
@@ -139,8 +153,19 @@ namespace NerdBot.Tests.PriceStore
         public void TestFixtureSetUp()
         {
             loggingServiceMock = new Mock<ILoggingService>();
+            searchUtilityMock = new Mock<SearchUtility>();
 
-            priceStore = new EchoMtgPriceStore(connectionString, databaseName, loggingServiceMock.Object);
+            searchUtilityMock.Setup(s => s.GetSearchValue(It.IsAny<string>()))
+                .Returns((string s) => this.GetSearchValue(s));
+
+            searchUtilityMock.Setup(s => s.GetRegexSearchValue(It.IsAny<string>()))
+                .Returns((string s) => this.GetRegexSearchValue(s));
+
+            priceStore = new EchoMtgPriceStore(
+                connectionString, 
+                databaseName, 
+                loggingServiceMock.Object,
+                searchUtilityMock.Object);
         }
 
         [SetUp]
@@ -188,7 +213,7 @@ namespace NerdBot.Tests.PriceStore
                 PriceLow = "$1.00",
                 PriceMid = "$2.00",
                 PriceFoil = "$3.00",
-                SearchName = this.GetSearchValue("Remove me", false),
+                SearchName = this.GetSearchValue("Remove me"),
                 Url = testDataTag,
                 LastUpdated = DateTime.Now.AddDays(-5)
             };

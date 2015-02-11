@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Moq;
 using NerdBot.Mtg;
+using NerdBot.Utilities;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
@@ -20,24 +21,61 @@ namespace NerdBot.Tests
 
         private IMtgStore mtgStore;
         private Mock<ILoggingService> loggingServiceMock;
+        private Mock<SearchUtility> searchUtilityMock;
 
         public string GetSearchValue(string text)
         {
+            Regex rgx = new Regex("[^a-zA-Z0-9.^*]");
+
             string searchValue = text.ToLower();
 
-            Regex rgx = new Regex("[^a-zA-Z0-9]");
+            // Remove all non a-zA-Z0-9.^ characters
             searchValue = rgx.Replace(searchValue, "");
+
+            // Remove all spaces
             searchValue = searchValue.Replace(" ", "");
 
             return searchValue;
         }
 
+        public string GetRegexSearchValue(string text)
+        {
+            Regex rgx = new Regex("[^a-zA-Z0-9.^*]");
+
+            string searchValue = text.ToLower();
+
+            // Replace * and % with a regex '*' char
+            searchValue = searchValue.Replace("%", ".*");
+
+            // If the first character of the searchValue is not '*', 
+            // meaning the user does not want to do a contains search,
+            // explicitly use a starts with regex
+            if (!searchValue.StartsWith(".*"))
+            {
+                searchValue = "^" + searchValue;
+            }
+
+            // Remove all non a-zA-Z0-9.^ characters
+            searchValue = rgx.Replace(searchValue, "");
+
+            // Remove all spaces
+            searchValue = searchValue.Replace(" ", "");
+
+            return searchValue;
+        }
         [SetUp]
         public void SetUp()
         {
             loggingServiceMock = new Mock<ILoggingService>();
+            searchUtilityMock = new Mock<SearchUtility>();
 
-            mtgStore = new MtgStore(connectionString, databaseName, loggingServiceMock.Object);
+            searchUtilityMock.Setup(s => s.GetSearchValue(It.IsAny<string>()))
+                .Returns((string s) => this.GetSearchValue(s));
+
+            searchUtilityMock.Setup(s => s.GetRegexSearchValue(It.IsAny<string>()))
+                .Returns((string s) => this.GetRegexSearchValue(s));
+
+            mtgStore = new MtgStore(connectionString, databaseName, loggingServiceMock.Object, searchUtilityMock.Object);
         }
 
         #region CardExists

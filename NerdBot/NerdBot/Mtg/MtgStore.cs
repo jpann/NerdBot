@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using NerdBot.Utilities;
 using SimpleLogging.Core;
 
 namespace NerdBot.Mtg
@@ -25,11 +26,13 @@ namespace NerdBot.Mtg
         private readonly MongoServer mServer;
         private readonly MongoDatabase mDatabase;
         private readonly ILoggingService mLoggingService;
+        private readonly SearchUtility mSearchUtility;
 
         public MtgStore(
             string connectionString, 
             string databaseName,
-            ILoggingService loggingService)
+            ILoggingService loggingService,
+            SearchUtility searchUtility)
         {
             if (string.IsNullOrEmpty(connectionString))
                 throw new ArgumentException("connectionString");
@@ -40,41 +43,16 @@ namespace NerdBot.Mtg
             if (loggingService == null)
                 throw new ArgumentNullException("loggingService");
 
+            if (searchUtility == null)
+                throw new ArgumentNullException("searchUtility");
+
             this.mConnectionString = connectionString;
             this.mDatabaseName = databaseName;
             this.mClient = new MongoClient(this.mConnectionString);
             this.mServer = this.mClient.GetServer();
             this.mDatabase = this.mServer.GetDatabase(this.mDatabaseName);
             this.mLoggingService = loggingService;
-        }
-
-        public string GetSearchValue(string text, bool forRegex = false)
-        {
-            Regex rgx = new Regex("[^a-zA-Z0-9.^*]");
-
-            string searchValue = text.ToLower();
-
-            if (forRegex)
-            {
-                // Replace * and % with a regex '*' char
-                searchValue = searchValue.Replace("%", ".*");
-
-                // If the first character of the searchValue is not '*', 
-                // meaning the user does not want to do a contains search,
-                // explicitly use a starts with regex
-                if (!searchValue.StartsWith(".*"))
-                {
-                    searchValue = "^" + searchValue;
-                }
-            }
-
-            // Remove all non a-zA-Z0-9.^ characters
-            searchValue = rgx.Replace(searchValue, "");
-
-            // Remove all spaces
-            searchValue = searchValue.Replace(" ", "");
-
-            return searchValue;
+            this.mSearchUtility = searchUtility;
         }
 
         #region CardExists
@@ -97,7 +75,7 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            name = this.GetSearchValue(name, false);
+            name = this.mSearchUtility.GetSearchValue(name);
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
@@ -119,8 +97,8 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(setName))
                 throw new ArgumentException("setName");
 
-            name = this.GetSearchValue(name, false);
-            setName = this.GetSearchValue(setName, false);
+            name = this.mSearchUtility.GetSearchValue(name);
+            setName = this.mSearchUtility.GetSearchValue(setName);
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
@@ -144,7 +122,7 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            name = this.GetSearchValue(name, true);
+            name = this.mSearchUtility.GetRegexSearchValue(name);
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
@@ -171,8 +149,8 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(setName))
                 throw new ArgumentException("setName");
 
-            name = this.GetSearchValue(name, true);
-            setName = this.GetSearchValue(setName, true);
+            name = this.mSearchUtility.GetRegexSearchValue(name);
+            setName = this.mSearchUtility.GetRegexSearchValue(setName);
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
@@ -232,7 +210,7 @@ namespace NerdBot.Mtg
 
             List<Card> cards = new List<Card>();
 
-            name = this.GetSearchValue(name, true);
+            name = this.mSearchUtility.GetRegexSearchValue(name);
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
@@ -303,7 +281,7 @@ namespace NerdBot.Mtg
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
-            setName = this.GetSearchValue(setName, false);
+            setName = this.mSearchUtility.GetSearchValue(setName);
 
             var query = Query.Or(
                     Query<Card>.Matches(e => e.SetSearchName, new BsonRegularExpression(setName, "i")),
@@ -496,7 +474,7 @@ namespace NerdBot.Mtg
 
             List<Card> cards = new List<Card>();
 
-            setName = this.GetSearchValue(setName, false);
+            setName = this.mSearchUtility.GetSearchValue(setName);
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
@@ -527,7 +505,7 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            name = this.GetSearchValue(name, false);
+            name = this.mSearchUtility.GetSearchValue(name);
 
             var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 
@@ -579,7 +557,7 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
-            name = this.GetSearchValue(name, true);
+            name = this.mSearchUtility.GetRegexSearchValue(name);
 
             var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 

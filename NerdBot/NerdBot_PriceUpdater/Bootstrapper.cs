@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using NerdBot.Http;
 using NerdBot.Mtg;
 using NerdBot.Mtg.Prices;
+using NerdBot.Utilities;
 using NerdBot_PriceUpdater.PriceUpdaters;
 using Nini.Config;
 using SimpleLogging.Core;
@@ -40,21 +41,24 @@ namespace NerdBot_PriceUpdater
             var mtgStore = new MtgStore(
                 dbConnectionString,
                 mtgDbName,
-                TinyIoCContainer.Current.Resolve<ILoggingService>());
+                TinyIoCContainer.Current.Resolve<ILoggingService>(),
+                TinyIoCContainer.Current.Resolve<SearchUtility>());
             TinyIoCContainer.Current.Register<IMtgStore>(mtgStore);
 
             // Register the instance of ICardPriceStore
             var priceStore = new EchoMtgPriceStore(
                 dbConnectionString,
                 priceDbName,
-                TinyIoCContainer.Current.Resolve<ILoggingService>());
+                TinyIoCContainer.Current.Resolve<ILoggingService>(),
+                TinyIoCContainer.Current.Resolve<SearchUtility>());
             TinyIoCContainer.Current.Register<ICardPriceStore>(priceStore);
 
             // Register the instance of IPriceUpdater
             var priceUpdater = new EchoMtgPriceUpdater(
                 TinyIoCContainer.Current.Resolve<ICardPriceStore>(),
                 TinyIoCContainer.Current.Resolve<IHttpClient>(),
-                TinyIoCContainer.Current.Resolve<ILoggingService>());
+                TinyIoCContainer.Current.Resolve<ILoggingService>(),
+                TinyIoCContainer.Current.Resolve<SearchUtility>());
             TinyIoCContainer.Current.Register<IPriceUpdater>(priceUpdater);
         }
 

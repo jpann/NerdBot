@@ -12,6 +12,7 @@ using NerdBot.Mtg.Prices;
 using NerdBot.Parsers;
 using NerdBot.Statistics;
 using NerdBot.UrlShortners;
+using NerdBot.Utilities;
 using Nini.Config;
 using SimpleLogging.Core;
 using SimpleLogging.NLog;
@@ -78,7 +79,8 @@ namespace NerdBot
             var mtgStore = new MtgStore(
                 dbConnectionString,
                 dbName,
-                container.Resolve<ILoggingService>());
+                container.Resolve<ILoggingService>(),
+                container.Resolve<SearchUtility>());
             container.Register<IMtgStore>(mtgStore);
 
             // Register the instance of IQueryStatisticsStore
@@ -109,7 +111,8 @@ namespace NerdBot
             var priceStore = new EchoMtgPriceStore(
                 dbConnectionString,
                 priceDbName,
-                container.Resolve<ILoggingService>());
+                container.Resolve<ILoggingService>(),
+                container.Resolve<SearchUtility>());
             container.Register<ICardPriceStore>(priceStore);
 
             // Register the instance of IPluginManager

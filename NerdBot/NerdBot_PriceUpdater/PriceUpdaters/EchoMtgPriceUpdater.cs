@@ -9,6 +9,7 @@ using HtmlAgilityPack;
 using NerdBot.Http;
 using NerdBot.Mtg;
 using NerdBot.Mtg.Prices;
+using NerdBot.Utilities;
 using SimpleLogging.Core;
 
 namespace NerdBot_PriceUpdater.PriceUpdaters
@@ -20,11 +21,13 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
         private readonly ICardPriceStore mPriceStore;
         private readonly ILoggingService mLoggingService;
         private readonly IHttpClient mHttpClient;
+        private readonly SearchUtility mSearchUtility;
 
         public EchoMtgPriceUpdater(
             ICardPriceStore priceStore, 
             IHttpClient httpClient,
-            ILoggingService loggingService)
+            ILoggingService loggingService,
+            SearchUtility searchUtility)
         {
             if (priceStore == null)
                 throw new ArgumentNullException("priceStore");
@@ -35,9 +38,13 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
             if (loggingService == null)
                 throw new ArgumentNullException("loggingService");
 
+            if (searchUtility == null)
+                throw new ArgumentNullException("searchUtility");
+
             this.mPriceStore = priceStore;
             this.mHttpClient = httpClient;
             this.mLoggingService = loggingService;
+            this.mSearchUtility = searchUtility;
         }
 
         public void UpdatePrices(Set set)
@@ -84,7 +91,7 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
                 CardPrice price = new CardPrice();
                 price.SetCode = set.Code;
                 price.Name = nameNode.InnerText;
-                price.SearchName = GetSearchValue(price.Name, false);
+                price.SearchName = this.mSearchUtility.GetSearchValue(price.Name);
                 price.PriceDiff = diffNode.InnerText;
                 price.PriceFoil = foilNode.InnerText;
                 price.PriceLow = lowNode.InnerText;
@@ -101,36 +108,6 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
 
                 CardPrice card = this.mPriceStore.FindAndModifyCardPrice(price, true);
             }
-        }
-
-        public string GetSearchValue(string text, bool forRegex = false)
-        {
-            Regex rgx = new Regex("[^a-zA-Z0-9.^]");
-
-            string searchValue = text.ToLower();
-
-            if (forRegex)
-            {
-                // Replace * and % with a regex '.' char
-                searchValue = searchValue.Replace("*", ".");
-                searchValue = searchValue.Replace("%", ".");
-
-                // If the first character of the searchValue is not '.', 
-                // meaning the user does not want to do a contains search,
-                // explicitly use a starts with regex
-                if (!searchValue.StartsWith("."))
-                {
-                    searchValue = "^" + searchValue;
-                }
-            }
-
-            // Remove all non a-zA-Z0-9.^ characters
-            searchValue = rgx.Replace(searchValue, "");
-
-            // Remove all spaces
-            searchValue = searchValue.Replace(" ", "");
-
-            return searchValue;
         }
     }
 }

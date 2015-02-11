@@ -8,8 +8,6 @@ namespace NerdBot.Mtg.Prices
 {
     public interface ICardPriceStore
     {
-        string GetSearchValue(string text, bool forRegex = false);
-
         CardPrice GetCardPrice(string name);
         CardPrice GetCardPrice(string name, string setCode);
         bool RemoveCardPrice(CardPrice cardPrice);

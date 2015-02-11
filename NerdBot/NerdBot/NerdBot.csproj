@@ -122,6 +122,7 @@
     <Compile Include="Statistics\QueryStatisticsStore.cs" />
     <Compile Include="UrlShortners\BitlyUrlShortener.cs" />
     <Compile Include="UrlShortners\IUrlShortener.cs" />
+    <Compile Include="Utilities\SearchUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
