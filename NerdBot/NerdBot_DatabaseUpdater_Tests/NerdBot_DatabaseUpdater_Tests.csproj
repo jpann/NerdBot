@@ -39,6 +39,9 @@
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.2.1502.0911\lib\net40\Moq.dll</HintPath>
     </Reference>
+    <Reference Include="MtgDb.Info.Driver">
+      <HintPath>..\Libs\MtgDb.Info.Driver.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.1.0\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -60,12 +63,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mappers\MtgInfoMapper_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NerdBot\NerdBot.csproj">
       <Project>{35460aa4-b94a-4b64-9418-7243ec3d2f01}</Project>
       <Name>NerdBot</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NerdBot_DatabaseUpdater\NerdBot_DatabaseUpdater.csproj">
+      <Project>{3e730be7-1ded-4b63-a168-2b64286a65ac}</Project>
+      <Name>NerdBot_DatabaseUpdater</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
