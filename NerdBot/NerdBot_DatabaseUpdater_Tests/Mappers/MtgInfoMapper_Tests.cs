@@ -90,12 +90,26 @@ namespace NerdBot_DatabaseUpdater_Tests.Mappers
         [Test]
         public void GetCard()
         {
-            
-            
+            var dbCard = mtgDb.GetCard(1);
+
+            var actual = dataMapper.GetCard(dbCard);
+
+            Assert.AreEqual(dbCard.Name, actual.Name);
+            Assert.AreEqual(dbCard.Id, actual.MultiverseId);
         }
         #endregion
 
         #region GetSet Tests
+
+        [Test]
+        public void GetSet()
+        {
+            var dbSet = mtgDb.GetSet("ZEN");
+
+            var actual = dataMapper.GetSet(dbSet);
+
+            Assert.AreEqual(dbSet.Name, actual.Name);
+        }
         #endregion
     }
 }
