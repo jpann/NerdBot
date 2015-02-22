@@ -22,8 +22,19 @@ namespace NerdBot_DatabaseUpdater.Mappers
 
         public Card GetCard(MtgJsonCard source)
         {
+            throw new NotImplementedException();
+        }
+
+        public Card GetCard(MtgJsonCard source, string setName, string setCode)
+        {
             if (source == null)
                 throw new ArgumentNullException("source");
+
+            if (string.IsNullOrEmpty(setName))
+                throw new ArgumentException("setName");
+
+            if (string.IsNullOrEmpty(setCode))
+                throw new ArgumentException("setCode");
 
             Card card = new Card();
 
@@ -39,9 +50,9 @@ namespace NerdBot_DatabaseUpdater.Mappers
             card.MultiverseId = Convert.ToInt32(source.MultiverseId);
             card.Name = source.Name;
             card.SearchName = this.mSearchUtility.GetSearchValue(source.Name);
-            card.SetId = source.SetId;
-            card.SetName = source.SetName;
-            card.SetSearchName = this.mSearchUtility.GetSearchValue(source.SetName);
+            card.SetId = setCode;
+            card.SetName = setName;
+            card.SetSearchName = this.mSearchUtility.GetSearchValue(setName);
             card.Power = source.Power;
             card.Rarity = source.Rarity;
 

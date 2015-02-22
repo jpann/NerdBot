@@ -66,6 +66,11 @@ namespace NerdBot_DatabaseUpdater.Mappers
             return card;
         }
 
+        public Card GetCard(MtgDb.Info.Card source, string setName, string setCode)
+        {
+            throw new NotImplementedException();
+        }
+
         public Set GetSet(MtgDb.Info.CardSet source)
         {
             if (source == null)

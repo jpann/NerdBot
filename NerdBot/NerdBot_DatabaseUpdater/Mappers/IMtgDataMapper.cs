@@ -10,6 +10,7 @@ namespace NerdBot_DatabaseUpdater.Mappers
     public interface IMtgDataMapper<TCard, TSet>
     {
         Card GetCard(TCard source);
+        Card GetCard(TCard source, string setName, string setCode);
         Set GetSet(TSet source);
     }
 }

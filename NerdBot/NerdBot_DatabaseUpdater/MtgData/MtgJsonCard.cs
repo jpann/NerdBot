@@ -22,8 +22,6 @@ namespace NerdBot_DatabaseUpdater.MtgData
         public string ManaCost { get; set; }
         public string Text { get; set; }
         public string Flavor { get; set; }
-        public string SetName { get; set; }
-        public string SetId { get; set; }
         public int Loyalty { get; set; }
         public int Number { get; set; }
     }
