@@ -8,7 +8,7 @@ using NerdBot_DatabaseUpdater.MtgData;
 
 namespace NerdBot_DatabaseUpdater.Mappers
 {
-    class MtgJsonMapper : IMtgDataMapper<MtgJsonCard, MtgJsonSet>
+    public class MtgJsonMapper : IMtgDataMapper<MtgJsonCard, MtgJsonSet>
     {
         private readonly SearchUtility mSearchUtility;
 
