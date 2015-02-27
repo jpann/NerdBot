@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Nancy.Extensions;
 using Nancy.ModelBinding;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
@@ -31,6 +32,9 @@ namespace NerdBot
 
             Post["/bot/{token}", true] = async (parameters, ct) =>
             {
+                // Get the request's body as a string, for logging
+                string request_string = this.Request.Body.AsString();
+
                 string sentToken = parameters.token;
 
                 // If the passed token segment does not match the secret token, return NotAcceptable status
@@ -39,6 +43,9 @@ namespace NerdBot
                     loggingService.Warning("POST request from {0}: Token '{1}' was invalid.", 
                         this.Request.UserHostAddress,
                         sentToken);
+
+                    loggingService.Warning("REQUEST = {0}",
+                        request_string);
 
                     return HttpStatusCode.NotAcceptable;
                 }
@@ -50,8 +57,12 @@ namespace NerdBot
 
                 if (!ModelValidationResult.IsValid)
                 {
-                    loggingService.Warning("POST request from {0}: Message was invalid.",
-                        this.Request.UserHostAddress);
+                    loggingService.Warning("POST request from {0}: Message was invalid. REQUEST = {1}",
+                        this.Request.UserHostAddress,
+                        request_string);
+
+                    loggingService.Warning("REQUEST = {0}",
+                        request_string);
 
                     return HttpStatusCode.NotAcceptable;
                 }
