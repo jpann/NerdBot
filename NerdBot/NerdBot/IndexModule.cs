@@ -77,7 +77,16 @@ namespace NerdBot
                     if (message.name.ToLower() == messenger.BotName.ToLower())
                         return HttpStatusCode.NotAcceptable;
 
-                    // Parse the command, if any
+                    if (string.IsNullOrEmpty(message.text))
+                    {
+                        loggingService.Debug("POST request from {0}: Message text is empty or null.\nREQUEST = {1}", 
+                            this.Request.UserHostAddress,
+                            request_string);
+
+                        return HttpStatusCode.NotAcceptable;
+                    }
+
+                    // Parse the command
                     var command = commandParser.Parse(message.text);
                     if (command != null)
                     {

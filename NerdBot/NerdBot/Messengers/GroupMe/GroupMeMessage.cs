@@ -14,7 +14,8 @@ namespace NerdBot.Messengers.GroupMe
             RuleFor(msg => msg.id).NotEmpty();
             RuleFor(msg => msg.name).NotEmpty();
             RuleFor(msg => msg.source_guid).NotEmpty();
-            RuleFor(msg => msg.text).NotEmpty();
+            // Removed because image messages do not contain a value in 'text'
+            //RuleFor(msg => msg.text).NotEmpty();
             RuleFor(msg => msg.user_id).NotEmpty();
             RuleFor(msg => msg.created_at).NotEmpty();
         }
