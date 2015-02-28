@@ -10,6 +10,7 @@ using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
 using NerdBot.Parsers;
+using NerdBot.Reporters;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
@@ -26,6 +27,7 @@ namespace NerdBot.Tests
         private Mock<IPluginManager> pluginManagerMock;
         private Mock<IMessenger> messengerMock;
         private Mock<ICommandParser> commandParserMock;
+        private Mock<IReporter> reporterMock;
 
         private List<Card> cardData = new List<Card>();
         private List<Set> setData = new List<Set>();
@@ -290,6 +292,7 @@ namespace NerdBot.Tests
             pluginManagerMock = new Mock<IPluginManager>();
             messengerMock = new Mock<IMessenger>();
             commandParserMock = new Mock<ICommandParser>();
+            reporterMock = new Mock<IReporter>();
 
             // Create a mock set and IMtgStore
             storeMock = new Mock<IMtgStore>();
@@ -317,6 +320,7 @@ namespace NerdBot.Tests
                 with.Dependency<IPluginManager>(pluginManagerMock.Object);
                 with.Dependency<ICommandParser>(commandParserMock.Object);
                 with.Dependency<ILoggingService>(loggerMock.Object);
+                with.Dependency<IReporter>(reporterMock.Object);
                 with.Dependency<BotConfig>(new BotConfig()
                 {
                     SecretToken = secretTokenGood
