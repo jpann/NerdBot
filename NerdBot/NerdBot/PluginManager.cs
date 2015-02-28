@@ -11,6 +11,7 @@ using NerdBot.Messengers;
 using NerdBot.Mtg;
 using NerdBot.Parsers;
 using NerdBot.Plugin;
+using NerdBot.Reporters;
 using SimpleLogging.Core;
 
 namespace NerdBot
@@ -21,6 +22,7 @@ namespace NerdBot
         private readonly IMtgStore mStore;
         private readonly ICommandParser mCommandParser;
         private readonly TinyIoCContainer mContainer;
+        private readonly IReporter mReporter;
         private string mPluginDirectory;
         private List<IPlugin> mPlugins = new List<IPlugin>();
 
@@ -43,7 +45,7 @@ namespace NerdBot
         }
         #endregion
 
-        public PluginManager(ILoggingService logger, IMtgStore store, ICommandParser commandParser, TinyIoCContainer container)
+        public PluginManager(ILoggingService logger, IMtgStore store, ICommandParser commandParser, IReporter reporter, TinyIoCContainer container)
         {
             if (logger == null)
                 throw new ArgumentNullException("logger");
@@ -54,12 +56,16 @@ namespace NerdBot
             if (commandParser == null)
                 throw new ArgumentNullException("commandParser");
 
+            if (reporter == null)
+                throw new ArgumentNullException("reporter");
+
             if (container == null)
                 throw new ArgumentNullException("container");
 
             this.mLogger = logger;
             this.mStore = store;
             this.mCommandParser = commandParser;
+            this.mReporter = reporter;
             this.mContainer = container;
         }
 
@@ -68,6 +74,7 @@ namespace NerdBot
             ILoggingService logger,
             IMtgStore store,
             ICommandParser commandParser,
+             IReporter reporter, 
             TinyIoCContainer container)
         {
             if (string.IsNullOrEmpty(pluginDirectory))
@@ -82,6 +89,9 @@ namespace NerdBot
             if (commandParser == null)
                 throw new ArgumentNullException("commandParser");
 
+            if (reporter == null)
+                throw new ArgumentNullException("reporter");
+
             if (container == null)
                 throw new ArgumentNullException("container");
 
@@ -90,6 +100,7 @@ namespace NerdBot
             this.mStore = store;
             this.mCommandParser = commandParser;
             this.mContainer = container;
+            this.mReporter = reporter;
 
             this.LoadPlugins();
         }
@@ -158,6 +169,7 @@ namespace NerdBot
 
                 Console.WriteLine(msg);
                 this.mLogger.Error(er, msg);
+                this.mReporter.ReportError(msg, er);
             }
         }
 
@@ -197,6 +209,7 @@ namespace NerdBot
 
                 Console.WriteLine(msg);
                 this.mLogger.Error(er, msg);
+                this.mReporter.ReportError(msg, er);
             }
 
             return false;
@@ -260,6 +273,7 @@ namespace NerdBot
 
                 Console.WriteLine(msg);
                 this.mLogger.Error(er, msg);
+                this.mReporter.ReportError(msg, er);
             }
 
             return false;

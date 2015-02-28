@@ -10,6 +10,7 @@ using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
 using NerdBot.Mtg.Prices;
 using NerdBot.Parsers;
+using NerdBot.Reporters;
 using NerdBot.Statistics;
 using NerdBot.UrlShortners;
 using NerdBot.Utilities;
@@ -51,6 +52,8 @@ namespace NerdBot
             string botRouteToken;
             string urlUser;
             string urlKey;
+            string reporterBotId;
+            string reporterBotName;
 
             this.LoadConfiguration(
                 configFile,
@@ -63,7 +66,9 @@ namespace NerdBot
                 out msgrIgnoreNames,
                 out botRouteToken,
                 out urlUser,
-                out urlKey
+                out urlKey,
+                out reporterBotId,
+                out reporterBotName
                 );
 
             // Register the instance of ILoggingService
@@ -97,7 +102,7 @@ namespace NerdBot
             // Register the instance of ICommandParser
             container.Register<ICommandParser, CommandParser>();
 
-            // Register the instance of IMessenger
+            // Register the main instance of IMessenger
             var groupMeMessenger = new GroupMeMessenger(
                 msgrBotId,
                 msgrBotName,
@@ -105,7 +110,20 @@ namespace NerdBot
                 msgrEndPointUrl,
                 container.Resolve<IHttpClient>(),
                 container.Resolve<ILoggingService>());
+
             container.Register<IMessenger>(groupMeMessenger);
+
+            // Register IReporter
+            var reporterMessenger = new GroupMeMessenger(
+                reporterBotId,
+                reporterBotName,
+                msgrIgnoreNames,
+                msgrEndPointUrl,
+                container.Resolve<IHttpClient>(),
+                container.Resolve<ILoggingService>());
+
+            var groupmeReporter = new GroupMeReporter(reporterMessenger);
+            container.Register<IReporter>(groupmeReporter);
 
             // Register the instance of ICardPriceStore
             var priceStore = new EchoMtgPriceStore(
@@ -123,6 +141,7 @@ namespace NerdBot
                 container.Resolve<ILoggingService>(), 
                 container.Resolve<IMtgStore>(), 
                 container.Resolve<ICommandParser>(), 
+                container.Resolve<IReporter>(),
                 container);
 
             container.Register<IPluginManager>(pluginManager);
@@ -144,7 +163,9 @@ namespace NerdBot
             out string[] msgrIgnoreNames,
             out string botRouteToken,
             out string urlUser,
-            out string urlKey)
+            out string urlKey,
+            out string reporterBotId,
+            out string reporterBotName)
         {
             IConfigSource source = new IniConfigSource(fileName);
 
@@ -191,7 +212,14 @@ namespace NerdBot
             urlKey = source.Configs["UrlShorten"].Get("key");
             if (string.IsNullOrEmpty(urlKey))
                 throw new Exception("Configuration file is missing 'user' setting in section 'UrlShorten'.");
-        }
 
+            reporterBotId = source.Configs["Reporter"].Get("botId");
+            if (string.IsNullOrEmpty(reporterBotId))
+                throw new Exception("Configuration file is missing 'botId' setting in section 'Reporter'.");
+
+            reporterBotName = source.Configs["Reporter"].Get("botName");
+            if (string.IsNullOrEmpty(reporterBotName))
+                throw new Exception("Configuration file is missing 'botName' setting in section 'Reporter'.");
+        }
     }
 }
