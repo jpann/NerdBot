@@ -83,6 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandParser_Tests.cs" />
     <Compile Include="PriceStore\EchoMtgPriceStore_FindAndModify_Tests.cs" />
     <Compile Include="PriceStore\EchoMtgPriceStore_Remove_Tests.cs" />
     <Compile Include="PriceStore\EchoMtgPriceStore_Tests.cs" />
