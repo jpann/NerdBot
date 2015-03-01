@@ -20,7 +20,9 @@ namespace NerdBot.Parsers
                 Command cmd = new Command();
                 string command = cmdMatch.Groups["cmd"].Value.ToLower();
 
-                Match argMatch = Regex.Match(text, @"^(?<cmd>[A-Za-z0-9]+) (?:(?<args>[A-Za-z0-9!%&\- ']+),?)+", RegexOptions.IgnoreCase);
+                // Change the argument delimiter to ; so arguments can contain a comma
+                // This allows using arguments like the card name 'shu yun, the silent tempest'
+                Match argMatch = Regex.Match(text, @"^(?<cmd>[A-Za-z0-9]+) (?:(?<args>[A-Za-z0-9!%&\-, ']+);?)+", RegexOptions.IgnoreCase);
 
                 if (argMatch.Success)
                 {
