@@ -51,7 +51,7 @@ namespace NerdBot
                             request_string);
 
                         loggingService.Warning(errMsg);
-                        reporter.ReportWarning(errMsg);
+                        reporter.Warning(errMsg);
 
                         return HttpStatusCode.NotAcceptable;
                     }
@@ -68,7 +68,7 @@ namespace NerdBot
                             request_string);
 
                         loggingService.Warning(errMsg);
-                        reporter.ReportWarning(errMsg);
+                        reporter.Warning(errMsg);
 
                         return HttpStatusCode.NotAcceptable;
                     }
@@ -109,7 +109,7 @@ namespace NerdBot
                 }
                 catch (Exception er)
                 {
-                    reporter.ReportError("MAIN ERROR", er);
+                    reporter.Error("MAIN ERROR", er);
                     loggingService.Error(er, string.Format("** MAIN ERROR: {0}", er.Message));
 
                     return HttpStatusCode.BadGateway;

@@ -169,7 +169,7 @@ namespace NerdBot
 
                 Console.WriteLine(msg);
                 this.mLogger.Error(er, msg);
-                this.mReporter.ReportError(msg, er);
+                this.mReporter.Error(msg, er);
             }
         }
 
@@ -209,7 +209,7 @@ namespace NerdBot
 
                 Console.WriteLine(msg);
                 this.mLogger.Error(er, msg);
-                this.mReporter.ReportError(msg, er);
+                this.mReporter.Error(msg, er);
             }
 
             return false;
@@ -273,7 +273,7 @@ namespace NerdBot
 
                 Console.WriteLine(msg);
                 this.mLogger.Error(er, msg);
-                this.mReporter.ReportError(msg, er);
+                this.mReporter.Error(msg, er);
             }
 
             return false;

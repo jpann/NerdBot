@@ -8,7 +8,8 @@ namespace NerdBot.Reporters
 {
     public interface IReporter
     {
-        void ReportError(string message, Exception er);
-        void ReportWarning(string message);
+        void Message(string message);
+        void Error(string message, Exception er);
+        void Warning(string message);
     }
 }

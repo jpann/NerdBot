@@ -19,7 +19,15 @@ namespace NerdBot.Reporters
             this.mMessenger = messenger;
         }
 
-        public void ReportError(string message, Exception er)
+        public void Message(string message)
+        {
+            if (string.IsNullOrEmpty(message))
+                throw new ArgumentException("message");
+
+            this.mMessenger.SendMessage(message);
+        }
+
+        public void Error(string message, Exception er)
         {
             if (string.IsNullOrEmpty(message))
                 throw new ArgumentException("message");
@@ -31,7 +39,7 @@ namespace NerdBot.Reporters
             this.mMessenger.SendMessage(string.Format("ERROR: {0}", er.Message));
         }
 
-        public void ReportWarning(string message)
+        public void Warning(string message)
         {
             if (string.IsNullOrEmpty(message))
                 throw new ArgumentException("message");
