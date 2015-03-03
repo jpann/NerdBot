@@ -78,11 +78,11 @@ namespace NerdBot_DatabaseUpdater.Mappers
             set.Code = source.Code;
             set.Name = source.Name;
             set.ReleasedOn = source.ReleaseDate;
-            set.BasicLandQty = source.Cards.Count(c => c.Rarity.Contains("Basic Land"));
-            set.CommonQty = source.Cards.Count(c => c.Rarity.Contains("Common"));
-            set.MythicQty = source.Cards.Count(c => c.Rarity.Contains("Mythic"));
-            set.UncommonQty = source.Cards.Count(c => c.Rarity.Contains("Uncommon"));
-            set.RareQty = source.Cards.Count(c => c.Rarity.Contains("Rare"));
+            set.BasicLandQty = source.BasicLandQty;
+            set.CommonQty = source.CommonQty;
+            set.MythicQty = source.MythicQty;
+            set.UncommonQty = source.UncommonQty;
+            set.RareQty = source.RareQty;
             set.SearchName = this.mSearchUtility.GetSearchValue(source.Name);
 
             return set;

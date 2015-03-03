@@ -10,6 +10,7 @@ using NerdBot.Utilities;
 using NerdBot_DatabaseUpdater.Mappers;
 using NerdBot_DatabaseUpdater.MtgData;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 namespace NerdBot_DatabaseUpdater_Tests.Mappers
@@ -21,6 +22,7 @@ namespace NerdBot_DatabaseUpdater_Tests.Mappers
         private Mock<SearchUtility> searchUtilityMock;
 
         private MtgJsonSet testJsonSet; // Contains the deserialized data from the mtg json file
+        private List<MtgJsonCard> testJsonCards;
         private string testJsonFileName = "C14.json";
 
         public string GetSearchValue(string text)
@@ -80,7 +82,58 @@ namespace NerdBot_DatabaseUpdater_Tests.Mappers
 
             MtgJsonSet set = JsonConvert.DeserializeObject<MtgJsonSet>(data, settings);
 
+            // Get rarity quantities
+            JObject cardObject = JObject.Parse(data);
+            IList<JToken> results = cardObject["cards"].Children().ToList();
+
+            foreach (JToken result in results)
+            {
+                string rarity = result["rarity"].ToString();
+
+                switch (rarity.ToLower())
+                {
+                    case "basic land":
+                        set.BasicLandQty += 1;
+                        break;
+                    case "common":
+                        set.CommonQty += 1;
+                        break;
+                    case "mythic":
+                    case "mythic rare":
+                        set.MythicQty += 1;
+                        break;
+                    case "uncommon":
+                        set.UncommonQty += 1;
+                        break;
+                    case "rare":
+                        set.RareQty += 1;
+                        break;
+                }
+            }
+
             return set;
+        }
+
+        private List<MtgJsonCard> DeserializeJsonCards(string fileName)
+        {
+            string data = File.ReadAllText(fileName);
+
+            JObject cardObject = JObject.Parse(data);
+
+            IList<JToken> results = cardObject["cards"].Children().ToList();
+
+            var settings = new JsonSerializerSettings();
+            settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+
+            List<MtgJsonCard> cardData = new List<MtgJsonCard>();
+
+            foreach (JToken result in results)
+            {
+                MtgJsonCard card = JsonConvert.DeserializeObject<MtgJsonCard>(result.ToString(), settings);
+                cardData.Add(card);
+            }
+
+            return cardData;
         }
 
         [TestFixtureSetUp]
@@ -97,6 +150,7 @@ namespace NerdBot_DatabaseUpdater_Tests.Mappers
             // Deserialize test data
             string fileName = Path.Combine(GetTestDataPath(), testJsonFileName);
             testJsonSet = DeserailizeJsonSet(fileName);
+            testJsonCards = DeserializeJsonCards(fileName);
         }
 
         [TestFixtureTearDown]
@@ -121,7 +175,7 @@ namespace NerdBot_DatabaseUpdater_Tests.Mappers
         [Test]
         public void GetCard()
         {
-            var actual = dataMapper.GetCard(testJsonSet.Cards[0], testJsonSet.Name, testJsonSet.Code);
+            var actual = dataMapper.GetCard(testJsonCards[0], testJsonSet.Name, testJsonSet.Code);
 
             Assert.AreEqual("Abyssal Persecutor", actual.Name);
             Assert.AreEqual(389422, actual.MultiverseId);

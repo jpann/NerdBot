@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using NerdBot.Mtg;
 using NerdBot_DatabaseUpdater.Mappers;
 using NerdBot_DatabaseUpdater.MtgData;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SimpleLogging.Core;
 
 namespace NerdBot_DatabaseUpdater.DataReaders
@@ -48,12 +50,66 @@ namespace NerdBot_DatabaseUpdater.DataReaders
 
         public Set ReadSet()
         {
-            throw new NotImplementedException();
+            string data = File.ReadAllText(this.mFileName);
+
+            var settings = new JsonSerializerSettings();
+            settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+
+            MtgJsonSet setData = JsonConvert.DeserializeObject<MtgJsonSet>(data, settings);
+
+            // Get rarity quantities
+            JObject cardObject = JObject.Parse(data);
+            IList<JToken> results = cardObject["cards"].Children().ToList();
+
+            foreach (JToken result in results)
+            {
+                string rarity = result["rarity"].ToString();
+
+                switch (rarity.ToLower())
+                {
+                    case "basic land":
+                        setData.BasicLandQty += 1;
+                        break;
+                    case "common":
+                        setData.CommonQty += 1;
+                        break;
+                    case "mythic":
+                    case "mythic rare":
+                        setData.MythicQty += 1;
+                        break;
+                    case "uncommon":
+                        setData.UncommonQty += 1;
+                        break;
+                    case "rare":
+                        setData.RareQty += 1;
+                        break;
+                }
+            }
+
+            var set = this.mDataMapper.GetSet(setData);
+
+            return set;
         }
 
         public IEnumerable<Card> ReadCards()
         {
-            throw new NotImplementedException();
+            string data = File.ReadAllText(this.mFileName);
+
+            JObject cardObject = JObject.Parse(data);
+
+            IList<JToken> results = cardObject["cards"].Children().ToList();
+
+            var settings = new JsonSerializerSettings();
+            settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+
+            foreach (JToken result in results)
+            {
+                MtgJsonCard cardData = JsonConvert.DeserializeObject<MtgJsonCard>(result.ToString(), settings);
+
+                var card = this.mDataMapper.GetCard(cardData);
+
+                yield return card;
+            }
         }
     }
 }
