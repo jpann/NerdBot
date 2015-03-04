@@ -4,7 +4,6 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using NerdBot.Mtg;
 using NerdBot_DatabaseUpdater.Mappers;
 using NerdBot_DatabaseUpdater.MtgData;
