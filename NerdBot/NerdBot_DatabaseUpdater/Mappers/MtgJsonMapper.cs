@@ -63,6 +63,19 @@ namespace NerdBot_DatabaseUpdater.Mappers
             card.Toughness = source.Toughness;
             card.Type = string.Join(" ", source.Types.ToArray());
 
+            List<Ruling> rulings = new List<Ruling>();
+            foreach (MtgJsonRuling r in source.Rulings)
+            {
+                Ruling ruling = new Ruling()
+                {
+                    ReleasedOn = r.Date,
+                    Rule = r.Text
+                };
+
+                rulings.Add(ruling);
+            }
+            card.Rulings = rulings;
+
             return card;
         }
 

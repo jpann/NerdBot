@@ -24,5 +24,6 @@ namespace NerdBot_DatabaseUpdater.MtgData
         public string Flavor { get; set; }
         public int Loyalty { get; set; }
         public int Number { get; set; }
+        public List<MtgJsonRuling> Rulings { get; set; }
     }
 }

@@ -72,6 +72,7 @@
     <Compile Include="DataReaders\MtgInfoReader.cs" />
     <Compile Include="DataReaders\MtgJsonReader.cs" />
     <Compile Include="MtgData\MtgJsonCard.cs" />
+    <Compile Include="MtgData\MtgJsonRuling.cs" />
     <Compile Include="MtgData\MtgJsonSet.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
