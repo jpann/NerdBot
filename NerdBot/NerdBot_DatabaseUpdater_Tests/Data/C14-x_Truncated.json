@@ -1,0 +1,149 @@
+{ "border" : "black",
+  "cards" : [ { "artist" : "Chippy",
+        "cmc" : 4,
+        "colors" : [ "Black" ],
+        "flavor" : "His slaves crave death more than they desire freedom. He denies them both.",
+        "foreignNames" : [ { "language" : "Chinese Simplified",
+              "name" : "深渊虐�"
+            },
+            { "language" : "French",
+              "name" : "Persécuteur abyssal"
+            },
+            { "language" : "German",
+              "name" : "Höllischer Verfolger"
+            },
+            { "language" : "Italian",
+              "name" : "Persecutore Abissale"
+            },
+            { "language" : "Japanese",
+              "name" : "深淵の迫害者"
+            },
+            { "language" : "Portuguese (Brazil)",
+              "name" : "Perseguidor Abissal"
+            },
+            { "language" : "Russian",
+              "name" : "Преследователь из Бездны"
+            },
+            { "language" : "Spanish",
+              "name" : "Perseguidor abismal"
+            }
+          ],
+        "imageName" : "abyssal persecutor",
+        "layout" : "normal",
+        "legalities" : { "Commander" : "Legal",
+            "Freeform" : "Legal",
+            "Legacy" : "Legal",
+            "Modern" : "Legal",
+            "Prismatic" : "Legal",
+            "Singleton 100" : "Legal",
+            "Tribal Wars Legacy" : "Legal",
+            "Vintage" : "Legal",
+            "Zendikar Block" : "Legal"
+          },
+        "manaCost" : "{2}{B}{B}",
+        "multiverseid" : 389422,
+        "name" : "Abyssal Persecutor",
+        "number" : "132",
+        "originalText" : "Flying, trample\nYou can't win the game and your opponents can't lose the game.",
+        "originalType" : "Creature — Demon",
+        "power" : "6",
+        "printings" : [ "Worldwake",
+            "Commander 2014"
+          ],
+        "rarity" : "Mythic Rare",
+        "rulings" : [ { "date" : "2010-03-01",
+              "text" : "No game effect can cause you to win the game or cause any opponent to lose the game while you control Abyssal Persecutor. It doesn't matter whether an opponent has 0 or less life, an opponent is forced to draw a card while his or her library is empty, an opponent has ten or more poison counters, an opponent is dealt combat damage by Phage the Untouchable, you control Felidar Sovereign and have 40 or more life, or so on. You keep playing."
+            },
+            { "date" : "2010-03-01",
+              "text" : "Other circumstances can still cause an opponent to lose the game, however. An opponent will lose a game if he or she concedes, if that player is penalized with a Game Loss or a Match Loss during a sanctioned tournament due to a DCI rules infraction, or if that player's _Magic Online_(R) game clock runs out of time."
+            },
+            { "date" : "2010-03-01",
+              "text" : "Effects that say the game is a draw, such as the _Legends_(TM) card Divine Intervention, are not affected by Abyssal Persecutor."
+            },
+            { "date" : "2010-03-01",
+              "text" : "Abyssal Persecutor won't preclude an opponent's life total from reaching 0 or less. It will just preclude that player from losing the game as a result."
+            },
+            { "date" : "2010-03-01",
+              "text" : "If Abyssal Persecutor leaves the battlefield while an opponent has 0 or less life, that opponent will lose the game as a state-based action. No player can respond between the time Abyssal Persecutor leaves the battlefield and the time that player loses the game."
+            },
+            { "date" : "2010-03-01",
+              "text" : "Even though your opponents can't lose the game, a player can't pay an amount of life that's greater than his or her life total. If a player's life total is 0 or less, that player can't pay life at all, with one exception: a player may always pay 0 life."
+            },
+            { "date" : "2010-03-01",
+              "text" : "If you control Abyssal Persecutor in a Two-Headed Giant game, your team can't win the game and the opposing team can't lose the game."
+            }
+          ],
+        "subtypes" : [ "Demon" ],
+        "text" : "Flying, trample\nYou can't win the game and your opponents can't lose the game.",
+        "toughness" : "6",
+        "type" : "Creature — Demon",
+        "types" : [ "Creature" ]
+      },
+      { "artist" : "Jeremy Jarvis",
+        "cmc" : 6,
+        "colors" : [ "White" ],
+        "flavor" : "She doesn't escort the dead to the afterlife, but instead raises them to fight and die again.",
+        "foreignNames" : [ { "language" : "Chinese Simplified",
+              "name" : "阿达卡女�神"
+            },
+            { "language" : "French",
+              "name" : "Valkyrie d'Adarkar"
+            },
+            { "language" : "German",
+              "name" : "Adarkarwalküre"
+            },
+            { "language" : "Italian",
+              "name" : "Valchiria dell'Adarkar"
+            },
+            { "language" : "Japanese",
+              "name" : "アダーカーの戦乙女"
+            },
+            { "language" : "Portuguese (Brazil)",
+              "name" : "Valqu�ria de Adarkar"
+            },
+            { "language" : "Russian",
+              "name" : "Адаркарская валькирия"
+            },
+            { "language" : "Spanish",
+              "name" : "Valkiria de Adarkar"
+            }
+          ],
+        "imageName" : "adarkar valkyrie",
+        "layout" : "normal",
+        "legalities" : { "Commander" : "Legal",
+            "Freeform" : "Legal",
+            "Ice Age Block" : "Legal",
+            "Legacy" : "Legal",
+            "Modern" : "Legal",
+            "Prismatic" : "Legal",
+            "Singleton 100" : "Legal",
+            "Tribal Wars Legacy" : "Legal",
+            "Vintage" : "Legal"
+          },
+        "manaCost" : "{4}{W}{W}",
+        "multiverseid" : 389423,
+        "name" : "Adarkar Valkyrie",
+        "number" : "63",
+        "originalText" : "Flying, vigilance\n{T}: When target creature other than Adarkar Valkyrie dies this turn, return that card to the battlefield under your control.",
+        "originalType" : "Snow Creature — Angel",
+        "power" : "4",
+        "printings" : [ "Coldsnap",
+            "Modern Masters",
+            "Commander 2014"
+          ],
+        "rarity" : "Rare",
+        "rulings" : [ { "date" : "2006-07-15",
+              "text" : "Adarkar Valkyrie's ability can target a token creature, but since token creatures cease to exist when they leave the battlefield, it won't be returned to the battlefield."
+            } ],
+        "subtypes" : [ "Angel" ],
+        "supertypes" : [ "Snow" ],
+        "text" : "Flying, vigilance\n{T}: When target creature other than Adarkar Valkyrie dies this turn, return that card to the battlefield under your control.",
+        "toughness" : "5",
+        "type" : "Snow Creature — Angel",
+        "types" : [ "Creature" ]
+      }],
+  "code" : "C14",
+  "name" : "Commander 2014",
+  "releaseDate" : "2014-11-07",
+  "type" : "commander"
+}
