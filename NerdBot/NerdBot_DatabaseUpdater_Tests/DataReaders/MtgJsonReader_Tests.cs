@@ -26,7 +26,7 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
         private Mock<IFileSystem> fileSystemMock;
         private Mock<ILoggingService> loggingServiceMock;
 
-        private string jsonFileName = "C14_Truncated.json";
+        private string jsonFileName = "C14-x_Truncated.json";
 
         #region Test Data Methods
         private string GetTestDataPath()
@@ -227,7 +227,6 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
         }
 
         #region ReadCards Tests
-
         [Test]
         public void ReadCards()
         {
