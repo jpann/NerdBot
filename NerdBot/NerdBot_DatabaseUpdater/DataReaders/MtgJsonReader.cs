@@ -49,7 +49,7 @@ namespace NerdBot_DatabaseUpdater.DataReaders
 
         public Set ReadSet()
         {
-            string data = File.ReadAllText(this.mFileName);
+            string data = this.mFileSystem.File.ReadAllText(this.mFileName);
 
             var settings = new JsonSerializerSettings();
             settings.MissingMemberHandling = MissingMemberHandling.Ignore;
@@ -92,7 +92,7 @@ namespace NerdBot_DatabaseUpdater.DataReaders
 
         public IEnumerable<Card> ReadCards()
         {
-            string data = File.ReadAllText(this.mFileName);
+            string data = this.mFileSystem.File.ReadAllText(this.mFileName);
 
             JObject cardObject = JObject.Parse(data);
 
