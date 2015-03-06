@@ -101,11 +101,14 @@ namespace NerdBot_DatabaseUpdater.DataReaders
             var settings = new JsonSerializerSettings();
             settings.MissingMemberHandling = MissingMemberHandling.Ignore;
 
+            // Read set info
+            MtgJsonSet setData = JsonConvert.DeserializeObject<MtgJsonSet>(data, settings);
+
             foreach (JToken result in results)
             {
                 MtgJsonCard cardData = JsonConvert.DeserializeObject<MtgJsonCard>(result.ToString(), settings);
 
-                var card = this.mDataMapper.GetCard(cardData);
+                var card = this.mDataMapper.GetCard(cardData, setData.Name, setData.Code);
 
                 yield return card;
             }
