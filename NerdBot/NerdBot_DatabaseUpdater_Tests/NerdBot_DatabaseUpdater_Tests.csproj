@@ -71,6 +71,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataReaders\MtgInfoReader_Tests.cs" />
     <Compile Include="DataReaders\MtgJsonReader_Tests.cs" />
     <Compile Include="Mappers\MtgInfoMapper_Tests.cs" />
     <Compile Include="Mappers\MtgJsonMapper_Tests.cs" />
