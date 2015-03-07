@@ -76,33 +76,64 @@ namespace NerdBot.Mtg
             if (card == null)
                 throw new ArgumentNullException("card");
 
-            //var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
-            //// Query for this card
-            //var cardQuery = Query.And(
-            //    Query.EQ("name", card.Name),
-            //    Query.EQ("setId", card.SetId),
-            //    Query.EQ("multiverseId", card.MultiverseId)
-            //    );
+            // Query for this card
+            var cardQuery = Query.And(
+                Query.EQ("name", card.Name),
+                Query.EQ("setId", card.SetId),
+                Query.EQ("multiverseId", card.MultiverseId)
+                );
 
-            //var cardSoryBy = SortBy.Descending("name");
+            var cardSoryBy = SortBy.Descending("name");
 
-            //// Update document
-            //var cardUpdate = Update
-            //        .Set("relatedCardId", card.RelatedCardId)
-            //        .Set("setNumber", card.SetNumber)
-            //        .Set("name", card.Name)
-            //        .Set("searchName", card.SetId)
-            //        .Set("desc", card.Desc)
-            //        .Set("flavor", card.Flavor)
-            //        .Set("colors", card.Colors.ToList()) //TODO Fix this
-            //        .Set("cost", card.Cost)
-            //        .Set("cmc", card.Cmc)
-            //        .Set("setName", card.SetName)
-            //        .Set("setSearchName", card.SetSearchName)
-            //        .Set("type", card.Type)
+            // Create BsonDocumentWrapper for the card's Colors array
+            var colorsDocument = BsonDocumentWrapper.CreateMultiple(card.Colors);
+            var colorsArray = new BsonArray(colorsDocument);
 
-            throw new NotImplementedException();
+            // Create BsonDocumentWrapper for the card's Rulings array
+            var rulingsDocument = BsonDocumentWrapper.CreateMultiple(card.Rulings);
+            var rulingArray = new BsonArray(rulingsDocument);
+
+            // Update document
+            var cardUpdate = Update
+                .Set("relatedCardId", card.RelatedCardId)
+                .Set("setNumber", card.SetNumber)
+                .Set("name", card.Name)
+                .Set("searchName", card.SetId)
+                .Set("desc", card.Desc ?? "")
+                .Set("flavor", card.Flavor ?? "")
+                .Set("colors", colorsArray) // Use BsonArray that contains a BsonDocumentWrapper of the card's colors
+                .Set("cost", card.Cost ?? "")
+                .Set("cmc", card.Cmc)
+                .Set("setName", card.SetName)
+                .Set("setSearchName", card.SetSearchName)
+                .Set("type", card.Type ?? "")
+                .Set("subType", card.SubType ?? "")
+                .Set("power", card.Power ?? "")
+                .Set("toughness", card.Toughness ?? "")
+                .Set("loyalty", card.Loyalty ?? "")
+                .Set("rarity", card.Rarity ?? "")
+                .Set("artist", card.Artist ?? "")
+                .Set("setId", card.SetId)
+                .Set("token", card.Token)
+                .Set("rulings", rulingArray) // Use BsonArray that contains a BsonDocumentWrapper of the card's rulings
+                .Set("img", card.Img ?? "")
+                .Set("imgHires", card.ImgHires ?? "")
+                .Set("multiverseId", card.MultiverseId);
+
+            // Find and modify document. If document doesnt exist, insert it
+            FindAndModifyArgs findModifyArgs = new FindAndModifyArgs();
+            findModifyArgs.SortBy = cardSoryBy;
+            findModifyArgs.Query = cardQuery;
+            findModifyArgs.Upsert = true;
+            findModifyArgs.Update = cardUpdate;
+            findModifyArgs.VersionReturned = FindAndModifyDocumentVersion.Modified;
+
+            var cardResult = collection.FindAndModify(findModifyArgs);
+            var cardModified = cardResult.GetModifiedDocumentAs<Card>();
+
+            return cardModified;
         }
         #endregion
 
@@ -553,12 +584,62 @@ namespace NerdBot.Mtg
         #region AddSet
         public async Task<Set> AddSet(Set set)
         {
-            throw new NotImplementedException();
+            if (set == null)
+                throw new ArgumentNullException("set");
+
+            var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
+
+            var result = collection.Insert(set);
+
+            if (result.Ok)
+                return set;
+            else
+                return null;
         }
 
         public async Task<Set> SetFindAndModify(Set set)
         {
-            throw new NotImplementedException();
+            if (set == null)
+                throw new ArgumentNullException("set");
+
+            var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
+
+            // Query for this set
+            var cardQuery = Query.And(
+                Query.EQ("name", set.Name),
+                Query.EQ("code", set.Code)
+                );
+
+            var setSortBy = SortBy.Descending("name");
+
+            // Update document
+            var setUpdate = Update
+                .Set("name", set.Name)
+                .Set("searchName", set.SearchName)
+                .Set("code", set.Code)
+                .Set("block", set.Block ?? "")
+                .Set("type", set.Type ?? "")
+                .Set("desc", set.Desc ?? "")
+                .Set("commonQty", set.CommonQty)
+                .Set("uncommonQty", set.UncommonQty)
+                .Set("rareQty", set.RareQty)
+                .Set("mythicQty", set.MythicQty)
+                .Set("basicLandQty", set.BasicLandQty)
+                .Set("totalQty", set.TotalQty)
+                .Set("releasedOn", set.ReleasedOn);
+
+            // Find and modify document. If document doesnt exist, insert it
+            FindAndModifyArgs findModifyArgs = new FindAndModifyArgs();
+            findModifyArgs.SortBy = setSortBy;
+            findModifyArgs.Query = cardQuery;
+            findModifyArgs.Upsert = true;
+            findModifyArgs.Update = setUpdate;
+            findModifyArgs.VersionReturned = FindAndModifyDocumentVersion.Modified;
+
+            var setResult = collection.FindAndModify(findModifyArgs);
+            var setModified = setResult.GetModifiedDocumentAs<Set>();
+
+            return setModified;
         }
         #endregion
 
