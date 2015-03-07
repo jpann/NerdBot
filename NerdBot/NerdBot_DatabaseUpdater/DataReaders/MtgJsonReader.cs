@@ -54,9 +54,14 @@ namespace NerdBot_DatabaseUpdater.DataReaders
             var settings = new JsonSerializerSettings();
             settings.MissingMemberHandling = MissingMemberHandling.Ignore;
 
+            this.mLoggingService.Trace("JSON data = {0}", data);
+
+            this.mLoggingService.Debug("Deserializing MtgJsonSet...");
             MtgJsonSet setData = JsonConvert.DeserializeObject<MtgJsonSet>(data, settings);
+            this.mLoggingService.Debug("Deserialized MtgJsonSet!");
 
             // Get rarity quantities
+            this.mLoggingService.Debug("Getting rarity quantities...");
             JObject cardObject = JObject.Parse(data);
             IList<JToken> results = cardObject["cards"].Children().ToList();
 
@@ -85,7 +90,16 @@ namespace NerdBot_DatabaseUpdater.DataReaders
                 }
             }
 
+            this.mLoggingService.Trace("Rarity quantifies: BasicLand = {0}; Common = {1}; Mythic = {2}; Uncommon = {3}; Rare = {4}",
+                setData.BasicLandQty,
+                setData.CommonQty,
+                setData.MythicQty,
+                setData.UncommonQty,
+                setData.RareQty);
+
+            this.mLoggingService.Debug("Mapping data...");
             var set = this.mDataMapper.GetSet(setData);
+            this.mLoggingService.Debug("Data mapped for set '{0}'!", setData.Name);
 
             return set;
         }
@@ -93,6 +107,8 @@ namespace NerdBot_DatabaseUpdater.DataReaders
         public IEnumerable<Card> ReadCards()
         {
             string data = this.mFileSystem.File.ReadAllText(this.mFileName);
+
+            this.mLoggingService.Trace("JSON data = {0}", data);
 
             JObject cardObject = JObject.Parse(data);
 
@@ -106,9 +122,13 @@ namespace NerdBot_DatabaseUpdater.DataReaders
 
             foreach (JToken result in results)
             {
+                this.mLoggingService.Debug("Deserializing MtgJsonCard...");
                 MtgJsonCard cardData = JsonConvert.DeserializeObject<MtgJsonCard>(result.ToString(), settings);
+                this.mLoggingService.Debug("MtgJsonCard deserialized!");
 
+                this.mLoggingService.Debug("Mapping data...");
                 var card = this.mDataMapper.GetCard(cardData, setData.Name, setData.Code);
+                this.mLoggingService.Debug("Data mapped for card '{0}'!", cardData.Name);
 
                 yield return card;
             }
