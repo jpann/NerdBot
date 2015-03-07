@@ -55,6 +55,57 @@ namespace NerdBot.Mtg
             this.mSearchUtility = searchUtility;
         }
 
+        #region AddCard
+        public async Task<Card> AddCard(Card card)
+        {
+            if (card == null)
+                throw new ArgumentNullException("card");
+
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
+
+            var result = collection.Insert(card);
+
+            if (result.Ok)
+                return card;
+            else
+                return null;
+        }
+
+        public async Task<Card> CardFindAndModify(Card card)
+        {
+            if (card == null)
+                throw new ArgumentNullException("card");
+
+            //var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
+
+            //// Query for this card
+            //var cardQuery = Query.And(
+            //    Query.EQ("name", card.Name),
+            //    Query.EQ("setId", card.SetId),
+            //    Query.EQ("multiverseId", card.MultiverseId)
+            //    );
+
+            //var cardSoryBy = SortBy.Descending("name");
+
+            //// Update document
+            //var cardUpdate = Update
+            //        .Set("relatedCardId", card.RelatedCardId)
+            //        .Set("setNumber", card.SetNumber)
+            //        .Set("name", card.Name)
+            //        .Set("searchName", card.SetId)
+            //        .Set("desc", card.Desc)
+            //        .Set("flavor", card.Flavor)
+            //        .Set("colors", card.Colors.ToList()) //TODO Fix this
+            //        .Set("cost", card.Cost)
+            //        .Set("cmc", card.Cmc)
+            //        .Set("setName", card.SetName)
+            //        .Set("setSearchName", card.SetSearchName)
+            //        .Set("type", card.Type)
+
+            throw new NotImplementedException();
+        }
+        #endregion
+
         #region CardExists
         public async Task<bool> CardExists(int multiverseId)
         {
@@ -496,6 +547,18 @@ namespace NerdBot.Mtg
             this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
             return cards;
+        }
+        #endregion
+
+        #region AddSet
+        public async Task<Set> AddSet(Set set)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Set> SetFindAndModify(Set set)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 

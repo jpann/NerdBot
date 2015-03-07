@@ -63,6 +63,7 @@ namespace NerdBot.Tests
 
             return searchValue;
         }
+
         [SetUp]
         public void SetUp()
         {

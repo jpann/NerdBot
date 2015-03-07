@@ -9,6 +9,9 @@ namespace NerdBot.Mtg
 {
     public interface IMtgStore
     {
+        Task<Card> AddCard(Card card);
+        Task<Card> CardFindAndModify(Card card);
+
         Task<bool> CardExists(int multiverseId);
         Task<bool> CardExists(string name);
         Task<bool> CardExists(string name, string setName);
@@ -29,6 +32,9 @@ namespace NerdBot.Mtg
         Task<List<Set>> GetCardOtherSets(int multiverseId);
 
         Task<List<Card>> GetCardsBySet(string setName);
+
+        Task<Set> AddSet(Set set);
+        Task<Set> SetFindAndModify(Set set);
 
         Task<bool> SetExists(string name);
         Task<bool> SetExistsByCode(string code);
