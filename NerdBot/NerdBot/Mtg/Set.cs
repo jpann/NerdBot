@@ -45,8 +45,8 @@ namespace NerdBot.Mtg
         [BsonElement("uncommonQty")]
         public int UncommonQty { get; set; }
 
-        [JsonProperty("setNumber")]
-        [BsonElement("setNumber")]
+        [JsonProperty("rareQty")]
+        [BsonElement("rareQty")]
         public int RareQty { get; set; }
 
         [JsonProperty("mythicQty")]
