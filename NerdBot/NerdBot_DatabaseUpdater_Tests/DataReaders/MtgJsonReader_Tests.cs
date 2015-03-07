@@ -181,6 +181,8 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
             Card[] cards = GetTestCards();
             dataMapperMock = new Mock<IMtgDataMapper<MtgJsonCard, MtgJsonSet>>();
 
+            Set set = GetTestSet();
+
             dataMapperMock.Setup(
                 d => d.GetCard(It.Is<MtgJsonCard>(c => c.Name == "Abyssal Persecutor"), "Commander 2014", "C14"))
                 .Returns(() => cards[0]);
@@ -188,6 +190,10 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
             dataMapperMock.Setup(
                 d => d.GetCard(It.Is<MtgJsonCard>(c => c.Name == "Adarkar Valkyrie"), "Commander 2014", "C14"))
                 .Returns(() => cards[1]);
+
+            dataMapperMock.Setup(
+                d => d.GetSet(It.Is<MtgJsonSet>(s => s.Name == "Commander 2014")))
+                .Returns(() => set);
 
             // IFileSystem Mock
             string fileName = Path.Combine(GetTestDataPath(), jsonFileName);
@@ -232,7 +238,21 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
         {
             var cards = reader.ReadCards();
 
-            Assert.AreEqual(2, cards.Count());
+            List<Card> actualCards = cards.ToList();
+
+            Assert.AreEqual(2, actualCards.Count());
+            Assert.AreEqual("Abyssal Persecutor", actualCards[0].Name);
+            Assert.AreEqual("Adarkar Valkyrie", actualCards[1].Name);
+        }
+        #endregion
+
+        #region ReadSet Tests
+        [Test]
+        public void ReadSet()
+        {
+            var set = reader.ReadSet();
+
+            Assert.AreEqual("Commander 2014", set.Name);
         }
         #endregion
     }
