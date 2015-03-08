@@ -74,7 +74,7 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
                 {
                     Artist = "Chippy",
                     Cmc = 4,
-                    Colors = new string[] { "Black"},
+                    Colors = new List<string>() { "Black"},
                     Cost = "{2}{B}{B}",
                     Flavor = "His slaves crave death more than they desire freedom. He denies them both.",
                     MultiverseId = 389422,
@@ -97,7 +97,7 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
                 {
                     Artist = "Jeremy Jarvis",
                     Cmc = 6,
-                    Colors = new string[] { "White"},
+                    Colors = new List<string>() { "White"},
                     Cost = "{4}{W}{W}",
                     Flavor = "She doesn't escort the dead to the afterlife, but instead raises them to fight and die again.",
                     MultiverseId = 389423,

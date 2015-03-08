@@ -11,6 +11,12 @@ namespace NerdBot.Mtg
 {
     public class Card
     {
+        public Card()
+        {
+            this.Rulings = new List<Ruling>();
+            this.Colors = new List<string>();
+        }
+
         [BsonId(IdGenerator = typeof(ObjectIdGenerator))]
         public ObjectId Id { get; set; }
 
@@ -40,7 +46,7 @@ namespace NerdBot.Mtg
 
         [JsonProperty("colors")]
         [BsonElement("colors")]
-        public string[] Colors { get; set; }
+        public List<string> Colors { get; set; }
 
         [JsonProperty("cost")]
         [BsonElement("cost")]

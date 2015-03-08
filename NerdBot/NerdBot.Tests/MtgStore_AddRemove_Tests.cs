@@ -108,7 +108,7 @@ namespace NerdBot.Tests
                 SearchName = "abyssalpersecutor",
                 Desc = "Flying, trample\nYou can't win the game and your opponents can't lose the game.",
                 Flavor = "His slaves crave death more than they desire freedom. He denies them both.",
-                Colors = new string[] { "Black" },
+                Colors = new List<string>() { "Black" },
                 Cost = "{2}{B}{B}",
                 Cmc = 4,
                 SetName = "Commander 2014",
@@ -173,7 +173,7 @@ namespace NerdBot.Tests
                 SearchName = "abyssalExists",
                 Desc = "Flying, trample\nYou can't win the game and your opponents can't lose the game.",
                 Flavor = "His slaves crave death more than they desire freedom. He denies them both.",
-                Colors = new string[] { "Black" },
+                Colors = new List<string>() { "Black" },
                 Cost = "{2}{B}{B}",
                 Cmc = 4,
                 SetName = "Commander 2014",
@@ -238,7 +238,7 @@ namespace NerdBot.Tests
                 SearchName = "abyssal",
                 Desc = "Flying, trample",
                 Flavor = "His slaves",
-                Colors = new string[] { "Black" },
+                Colors = new List<string>() { "Black" },
                 Cost = "{2}{B}{B}",
                 Cmc = 4,
                 SetName = "Commander 2014",
@@ -335,7 +335,7 @@ namespace NerdBot.Tests
         public void CardFindAndModify_Exists()
         {
             // Modify the colors of the card
-            testCardExists.Colors = new string[] { "Black", "White" };
+            testCardExists.Colors = new List<string>() { "Black", "White" };
 
             var actual = mtgStore.CardFindAndModify(testCardExists).Result;
 

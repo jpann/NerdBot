@@ -100,7 +100,7 @@ namespace NerdBot.Mtg
                 .Set("relatedCardId", card.RelatedCardId)
                 .Set("setNumber", card.SetNumber)
                 .Set("name", card.Name)
-                .Set("searchName", card.SetId)
+                .Set("searchName", card.SearchName)
                 .Set("desc", card.Desc ?? "")
                 .Set("flavor", card.Flavor ?? "")
                 .Set("colors", colorsArray) // Use BsonArray that contains a BsonDocumentWrapper of the card's colors
