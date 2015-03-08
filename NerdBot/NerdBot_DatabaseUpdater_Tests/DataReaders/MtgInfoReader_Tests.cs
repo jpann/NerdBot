@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Abstractions;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Moq;
 using MtgDb.Info.Driver;
@@ -11,7 +7,6 @@ using NerdBot.Mtg;
 using NerdBot.Utilities;
 using NerdBot_DatabaseUpdater.DataReaders;
 using NerdBot_DatabaseUpdater.Mappers;
-using NerdBot_DatabaseUpdater.MtgData;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
@@ -120,7 +115,7 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
 
             List<Card> actualCards = cards.ToList();
 
-            Assert.AreEqual(184, actualCards.Count());
+            Assert.AreEqual(185, actualCards.Count());
             Assert.AreEqual("Ugin, the Spirit Dragon", actualCards[0].Name);
             Assert.AreEqual("Abzan Advantage", actualCards[1].Name);
         }
