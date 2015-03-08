@@ -36,7 +36,9 @@
 	<b>Name:</b> @Model.Name (<a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=true&multiverseid=@Model.MultiverseId">printed</a> / <a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=false&multiverseid=@Model.MultiverseId">oracle</a>)<br />
 	<b>Set:</b> @Model.SetName [@Model.SetId]<br />
 	<b>Type:</b> @Model.Type<br />
+	@If.HasSubType
 	<b>Sub-type:</b> @Model.SubType<br />
+	@EndIf
 	<b>Rarity:</b> @Model.Rarity<br />
 
 	<b>Text:</b><br/>
