@@ -1,29 +1,73 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8" />
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Rulings for @Model.Name</title>
+    
 
-	<style type="text/css">
+    <!-- Bootstrap core CSS -->
+    <link href="@Path['~/Content/css/bootstrap.min.css']" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="@Path['~/Content/css/bootstrap-theme.min.css']" rel="stylesheet">
 
-		body {
-			text-align: left;
-		}
+    <!-- Custom styles for this template -->
+    <link href="theme.css" rel="stylesheet">
 
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="@Path['~/Content/js/ie8-responsive-file-warning.js']"></script><![endif]-->
+    <script src="@Path['~/Content/js/ie-emulation-modes-warning.js']"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+	<style>
+	  body {
+		padding: 30px;
+	  }
 	</style>
+  </head>
+  <body>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
 
-</head>
-<body>
-	<b>Name:</b> @Model.Name<br />
+	<b>Name:</b> @Model.Name (<a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=true&multiverseid=@Model.MultiverseId">printed</a>/ <a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=false&multiverseid=@Model.MultiverseId">oracle</a>)<br />
 	<b>Set:</b> @Model.SetName [@Model.SetId]<br />
+	<b>Type:</b> @Model.Type<br />
+	<b>Sub-type:</b> @Model.SubType<br />
+	<b>Rarity:</b> @Model.Rarity<br />
+
 	<b>Text:</b><br/>
 	@Model.Desc
 	<br /><br />
-	<b>Rulings:</b>
-	<ul>
+	<b>Gatherer Discussion: <a href="http://gatherer.wizards.com/Pages/Card/Discussion.aspx?multiverseid=@Model.MultiverseId">Click here.</a>
+	<br /><br />
+
+	@If.HasRulings
+	<h4>Rulings</h4>
+	<table class="table table-bordered" width="75%">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Ruling</th>
+            </tr>
+        </thead>
+	<tbody>
 	@Each.Rulings
-		<li>@Current.ReleasedOn: @Current.Rule
+		<tr>
+			<td>@Current.ReleasedOn</td>
+			<td>@Current.Rule</td>
+		</tr>
 	@EndEach
-	</ul>
-</body>
+	</tbody>
+	</table>
+	@EndIf
+  </body>
 </html>
+
