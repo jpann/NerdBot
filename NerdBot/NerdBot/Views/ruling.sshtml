@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Rulings for @Model.Name</title>
+
+	<style type="text/css">
+
+		body {
+			text-align: left;
+		}
+
+	</style>
+
+</head>
+<body>
+	<b>Name:</b> @Model.Name<br />
+	<b>Set:</b> @Model.SetName [@Model.SetId]<br />
+	<b>Text:</b><br/>
+	@Model.Desc
+	<br /><br />
+	<b>Rulings:</b>
+	<ul>
+	@Each.Rulings
+		<li>@Current.ReleasedOn: @Current.Rule
+	@EndEach
+	</ul>
+</body>
+</html>

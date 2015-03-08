@@ -2,6 +2,7 @@
 using System.Linq;
 using Nancy.Extensions;
 using Nancy.ModelBinding;
+using Nancy.Routing;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
@@ -31,6 +32,19 @@ namespace NerdBot
                         this.Request.Path);
                 
                 return HttpStatusCode.NotAcceptable;
+            };
+
+            // Ruling route
+            Get["/ruling/{id:int}", true] = async (parameters, ct) =>
+            {
+                int cardMultiverseId = parameters.id;
+
+                var card = await mtgStore.GetCard(cardMultiverseId);
+
+                if (card == null)
+                    return HttpStatusCode.BadRequest;
+
+                return View["ruling.sshtml", card];
             };
 
             Post["/bot/{token}", true] = async (parameters, ct) =>

@@ -199,6 +199,25 @@ namespace NerdBot.Mtg
         #endregion
 
         #region GetCard
+        public async Task<Card> GetCard(int multiverseId)
+        {
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
+
+            var query = Query<Card>.EQ(e => e.MultiverseId, multiverseId);
+            var sortBy = SortBy.Ascending("setName");
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            var card = collection.FindAs<Card>(query).SetSortOrder(sortBy).SetLimit(1);
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return card.FirstOrDefault();
+        }
+
         public async Task<Card> GetCard(string name)
         {
             if (string.IsNullOrEmpty(name))

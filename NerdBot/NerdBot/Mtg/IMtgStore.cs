@@ -16,6 +16,7 @@ namespace NerdBot.Mtg
         Task<bool> CardExists(string name);
         Task<bool> CardExists(string name, string setName);
 
+        Task<Card> GetCard(int multiverseId);
         Task<Card> GetCard(string name);
         Task<Card> GetCard(string name, string setName);
 
