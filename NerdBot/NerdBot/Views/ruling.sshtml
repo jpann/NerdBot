@@ -37,7 +37,7 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
 
-	<b>Name:</b> @Model.Name (<a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=true&multiverseid=@Model.MultiverseId">printed</a>/ <a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=false&multiverseid=@Model.MultiverseId">oracle</a>)<br />
+	<b>Name:</b> @Model.Name (<a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=true&multiverseid=@Model.MultiverseId">printed</a> / <a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=false&multiverseid=@Model.MultiverseId">oracle</a>)<br />
 	<b>Set:</b> @Model.SetName [@Model.SetId]<br />
 	<b>Type:</b> @Model.Type<br />
 	<b>Sub-type:</b> @Model.SubType<br />
@@ -46,7 +46,7 @@
 	<b>Text:</b><br/>
 	@Model.Desc
 	<br /><br />
-	<b>Gatherer Discussion: <a href="http://gatherer.wizards.com/Pages/Card/Discussion.aspx?multiverseid=@Model.MultiverseId">Click here.</a>
+	<b>Gatherer Discussion:</b> <a href="http://gatherer.wizards.com/Pages/Card/Discussion.aspx?multiverseid=@Model.MultiverseId">Click here.</a>
 	<br /><br />
 
 	@If.HasRulings
