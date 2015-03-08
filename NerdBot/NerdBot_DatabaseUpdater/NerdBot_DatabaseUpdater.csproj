@@ -35,7 +35,8 @@
     <Reference Include="FluentCommandLineParser">
       <HintPath>..\packages\FluentCommandLineParser.1.4.0\lib\net35\FluentCommandLineParser.dll</HintPath>
     </Reference>
-    <Reference Include="MtgDb.Info.Driver">
+    <Reference Include="MtgDb.Info.Driver, Version=0.0.5544.34759, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\MtgDb.Info.Driver.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
