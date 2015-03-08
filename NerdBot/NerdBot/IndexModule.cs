@@ -42,7 +42,13 @@ namespace NerdBot
                 var card = await mtgStore.GetCard(cardMultiverseId);
 
                 if (card == null)
-                    return HttpStatusCode.BadRequest;
+                {
+                    string msg = string.Format("No card found using multiverseId '{0}'", cardMultiverseId);
+
+                    loggingService.Error(msg);
+
+                    return msg;
+                }
 
                 return View["ruling.sshtml", card];
             };
