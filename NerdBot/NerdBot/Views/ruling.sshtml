@@ -52,7 +52,7 @@
 	<table class="table table-bordered" width="75%">
         <thead>
             <tr>
-                <th>Date</th>
+                <th width="10%">Date</th>
                 <th>Ruling</th>
             </tr>
         </thead>
