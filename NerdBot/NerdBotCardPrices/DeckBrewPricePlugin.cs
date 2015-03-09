@@ -118,46 +118,10 @@ namespace NerdBotCardPrices
 
                 if (card != null)
                 {
-                    // Remove TCG prices for now.
-                    //var tcg = new DeckBrewPriceFetcher(cUrl, base.HttpClient);
-                    //string[] tcgPrice = tcg.GetPrice(card.MultiverseId);
-
                     var tcgPrice = this.mPriceStore.GetCardPrice(card.Name, card.SetId);
 
                     if (tcgPrice != null)
                     {
-                        // Not all cards have a price from DeckBrew, so check for 0 prices here,
-                        //  to prevent posting of 0.00 prices
-                        //if (tcgPrice[2] == "0.00" && tcgPrice[1] == "0.00" && tcgPrice[0] == "0.00")
-                        //{
-                        //    messenger.SendMessage("Price unavailable using DeckBrew");
-                        //    return true;
-                        //}
-
-                        //string url = this.UrlShortener.ShortenUrl(tcgPrice[3]);
-
-                        //string msg = "";
-
-                        //if (!string.IsNullOrEmpty(url))
-                        //{
-                        //    msg = string.Format("{0} [{1}] - High: {2}; Median: {3}; Low: {4} - {5}",
-                        //        card.Name,
-                        //        card.SetName,
-                        //        tcgPrice[2],
-                        //        tcgPrice[1],
-                        //        tcgPrice[0],
-                        //        url);
-                        //}
-                        //else
-                        //{
-                        //    msg = string.Format("{0} [{1}] - High: {2}; Median: {3}; Low: {4}",
-                        //        card.Name,
-                        //        card.SetName,
-                        //        tcgPrice[2],
-                        //        tcgPrice[1],
-                        //        tcgPrice[0]);
-                        //}
-
                         if (string.IsNullOrEmpty(tcgPrice.PriceFoil) && 
                             string.IsNullOrEmpty(tcgPrice.PriceLow) &&
                             string.IsNullOrEmpty(tcgPrice.PriceMid))
