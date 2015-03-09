@@ -101,8 +101,8 @@ namespace NerdBotCardPrices
                 }
                 else if (command.Arguments.Length == 2)
                 {
-                    string name = command.Arguments[0];
-                    string set = command.Arguments[1];
+                    string name = command.Arguments[1];
+                    string set = command.Arguments[0];
 
                     if (string.IsNullOrEmpty(name))
                         return false;
