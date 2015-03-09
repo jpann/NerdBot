@@ -42,7 +42,6 @@ namespace NerdBot.Tests
                 new Card()
                 {
                     RelatedCardId = 0,
-                    SetNumber =  179,
                     Name = "Boros Charm",
                     SearchName = "boroscharm",
                     Desc = "Choose one - Boros Charm deals 4 damage to target player; or permanents you control gain indestructible until end of turn; or target creature gains double strike until end of turn.",
@@ -68,7 +67,6 @@ namespace NerdBot.Tests
                 new Card()
                 {
                     RelatedCardId = 0,
-                    SetNumber =  148,
                     Name = "Boros Charm",
                     SearchName = "boroscharm",
                     Desc = "Choose one - Boros Charm deals 4 damage to target player; or permanents you control are indestructible this turn; or target creature gains double strike until end of turn.",
@@ -94,7 +92,6 @@ namespace NerdBot.Tests
                 new Card()
                 {
                     RelatedCardId = 0,
-                    SetNumber =  137,
                     Name = "Boros Cluestone",
                     SearchName = "boroscluestone",
                     Desc = "{Tap}: Add {Red} or {White} to your mana pool.\n\r" +
@@ -121,7 +118,6 @@ namespace NerdBot.Tests
                 new Card()
                 {
                     RelatedCardId = 0,
-                    SetNumber =  176,
                     Name = "Spore Cloud",
                     SearchName = "sporecloud",
                     Desc = "Tap all blocking creatures. Prevent all combat damage that would be dealt this turn. Each attacking creature and each blocking creature doesn't untap during its controller's next untap step.",
@@ -147,7 +143,6 @@ namespace NerdBot.Tests
                 new Card()
                 {
                     RelatedCardId = 0,
-                    SetNumber =  80,
                     Name = "Spore Cloud",
                     SearchName = "sporecloud",
                     Desc = "Tap all blocking creatures. Prevent all combat damage that would be dealt this turn. Each attacking creature and each blocking creature doesn't untap during its controller's next untap step.",
@@ -173,7 +168,6 @@ namespace NerdBot.Tests
                 new Card()
                 {
                     RelatedCardId = 0,
-                    SetNumber =  1,
                     Name = "Aerial Maneuver",
                     SearchName = "aerialmaneuver",
                     Desc = "Target creature gets +1/+1 and gains flying and first strike until end of turn.",

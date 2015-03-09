@@ -57,7 +57,6 @@ namespace NerdBot_DatabaseUpdater.Mappers
             card.SetId = source.CardSetId;
             card.SetName = source.CardSetName;
             card.SetSearchName = this.mSearchUtility.GetSearchValue(source.CardSetName);
-            card.SetNumber = source.SetNumber;
             card.SubType = source.SubType;
             card.Token = source.Token;
             card.Toughness = source.Toughness.ToString();

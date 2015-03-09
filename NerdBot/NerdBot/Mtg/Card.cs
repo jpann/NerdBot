@@ -24,10 +24,6 @@ namespace NerdBot.Mtg
         [BsonElement("relatedCardId")]
         public int? RelatedCardId { get; set; }
 
-        [JsonProperty("setNumber")]
-        [BsonElement("setNumber")]
-        public int SetNumber { get; set; }
-
         [JsonProperty("name")]
         [BsonElement("name")]
         public string Name { get; set; }

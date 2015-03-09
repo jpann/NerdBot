@@ -103,7 +103,6 @@ namespace NerdBot.Tests
             testCard = new Card()
             {
                 RelatedCardId = 1,
-                SetNumber = 1,
                 Name = "Abyssal Persecutor",
                 SearchName = "abyssalpersecutor",
                 Desc = "Flying, trample\nYou can't win the game and your opponents can't lose the game.",
@@ -168,7 +167,6 @@ namespace NerdBot.Tests
             testCardExists = new Card()
             {
                 RelatedCardId = 1,
-                SetNumber = 1,
                 Name = "Abyssal Exists",
                 SearchName = "abyssalExists",
                 Desc = "Flying, trample\nYou can't win the game and your opponents can't lose the game.",
@@ -233,7 +231,6 @@ namespace NerdBot.Tests
             testCardDoesntExist = new Card()
             {
                 RelatedCardId = 1,
-                SetNumber = 1,
                 Name = "Abyssal",
                 SearchName = "abyssal",
                 Desc = "Flying, trample",

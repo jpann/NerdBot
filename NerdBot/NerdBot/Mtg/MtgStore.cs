@@ -98,7 +98,6 @@ namespace NerdBot.Mtg
             // Update document
             var cardUpdate = Update
                 .Set("relatedCardId", card.RelatedCardId)
-                .Set("setNumber", card.SetNumber)
                 .Set("name", card.Name)
                 .Set("searchName", card.SearchName)
                 .Set("desc", card.Desc ?? "")
