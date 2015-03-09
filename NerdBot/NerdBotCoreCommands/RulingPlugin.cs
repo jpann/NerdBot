@@ -15,7 +15,7 @@ namespace NerdBotCoreCommands
 {
     public class RulingPlugin : PluginBase
     {
-        private const string cRulingUrl = "http://silencio.ikonzeh.org:3579/ruling/{0}";
+        private const string cRulingUrl = "http://silencio.ikonzeh.org:6001/ruling/{0}";
 
         public override string Name
         {

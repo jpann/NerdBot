@@ -143,7 +143,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("Card ruling: http://silencio.ikonzeh.org:3579/ruling/26660"));
+            messengerMock.Verify(m => m.SendMessage("Card ruling: http://silencio.ikonzeh.org:6001/ruling/26660"));
         }
 
         [Test]
@@ -196,7 +196,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("Card ruling: http://silencio.ikonzeh.org:3579/ruling/394029"));
+            messengerMock.Verify(m => m.SendMessage("Card ruling: http://silencio.ikonzeh.org:6001/ruling/394029"));
         }
 
         [Test]
@@ -279,7 +279,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("Card ruling: http://silencio.ikonzeh.org:3579/ruling/394029"));
+            messengerMock.Verify(m => m.SendMessage("Card ruling: http://silencio.ikonzeh.org:6001/ruling/394029"));
         }
 
         [Test]
