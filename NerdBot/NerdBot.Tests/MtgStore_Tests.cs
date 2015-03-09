@@ -194,7 +194,7 @@ namespace NerdBot.Tests
         [Test]
         public void GetCards()
         {
-            int expectedCount = 24152; // Count with FRF and C14 sets
+            int expectedCount = 24468;
 
             List<Card> cards = mtgStore.GetCards().Result;
 
