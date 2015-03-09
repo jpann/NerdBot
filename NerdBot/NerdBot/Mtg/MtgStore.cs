@@ -250,7 +250,9 @@ namespace NerdBot.Mtg
                 throw new ArgumentException("setName");
 
             name = this.mSearchUtility.GetRegexSearchValue(name);
+            string setCode = setName;
             setName = this.mSearchUtility.GetRegexSearchValue(setName);
+            
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
@@ -259,7 +261,7 @@ namespace NerdBot.Mtg
                 Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i")),
                 Query.Or(
                     Query<Card>.Matches(e => e.SetSearchName, new BsonRegularExpression(setName, "i")),
-                    Query<Card>.Matches(e => e.SetId, new BsonRegularExpression(setName, "i")))
+                    Query<Card>.EQ(e => e.SetId, new BsonRegularExpression(setCode, "i")))
                 );
 
             var sortBy = SortBy.Ascending("setName");
@@ -381,11 +383,12 @@ namespace NerdBot.Mtg
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
+            string setCode = setName;
             setName = this.mSearchUtility.GetSearchValue(setName);
 
             var query = Query.Or(
                     Query<Card>.Matches(e => e.SetSearchName, new BsonRegularExpression(setName, "i")),
-                    Query<Card>.Matches(e => e.SetId, new BsonRegularExpression(setName, "i")));
+                    Query<Card>.EQ(e => e.SetId, new BsonRegularExpression(setCode, "i")));
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
