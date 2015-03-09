@@ -132,12 +132,12 @@ namespace NerdBotCardPrices
 
                         string msg =
                             string.Format(
-                                "{0} [{1}] Low: {2}; Mid: {3}; Foil: {4}. Price difference of {5} since yesterday.",
+                                "{0} [{1}] Low: {2}; Mid: {3}{4}. 7-Day change: {5}.",
                                 priceData.Name,
                                 priceData.SetCode,
                                 priceData.PriceLow,
                                 priceData.PriceMid,
-                                priceData.PriceFoil,
+                                !string.IsNullOrEmpty(priceData.PriceFoil) ? "; Foil: " + priceData.PriceFoil : "",
                                 !string.IsNullOrEmpty(priceData.PriceDiff) ? priceData.PriceDiff : "0%");
                         
                         // Get other sets card is in
