@@ -64,8 +64,11 @@ namespace NerdBot_DatabaseUpdater.DataReaders
             MtgDb.Info.Card[] cardsData = this.mMtgInfoDb.GetSetCards(this.mSetId);
             this.mLoggingService.Debug("Read cards!");
 
+            // Some sets do not contain any cards. For example, 'ATH' from MtgInfoDB contains no cards.
             if (cardsData == null || !cardsData.Any())
-                throw new Exception(string.Format("Cards not found in set '{0}'.", this.mSetId));
+            {
+                this.mLoggingService.Warning("Cards not found in set '{0}'.", this.mSetId);
+            }
 
             this.mLoggingService.Trace("{0} cards found in set '{0}'.", 
                 cardsData.Length,
