@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CardSetsListPlugin_Tests.cs" />
+    <Compile Include="RulingPlugin_Tests.cs" />
     <Compile Include="TappedOutFormatCheckPlugin_Tests.cs" />
     <Compile Include="RandomCardPlugin_Tests.cs" />
     <Compile Include="GetCardStaticAbilityPlugin_Tests.cs" />
