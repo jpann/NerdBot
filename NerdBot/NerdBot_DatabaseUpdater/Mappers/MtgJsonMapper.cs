@@ -40,7 +40,10 @@ namespace NerdBot_DatabaseUpdater.Mappers
 
             card.Artist = source.Artist;
             card.Cmc = source.CMC;
-            card.Colors = source.Colors.ToList();
+
+            if (source.Colors != null)
+                card.Colors = source.Colors.ToList();
+
             card.Cost = source.ManaCost;
             card.Desc = source.Text;
             card.Flavor = source.Flavor;
