@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
+using MtgDb.Info.Driver;
 using NerdBot.Mtg;
 using NerdBot.Utilities;
+using NerdBot_DatabaseUpdater.Mappers;
+using NerdBot_DatabaseUpdater.MtgData;
 using Nini.Config;
 using SimpleLogging.Core;
 using SimpleLogging.NLog;
@@ -36,6 +40,28 @@ namespace NerdBot_DatabaseUpdater
                 TinyIoCContainer.Current.Resolve<ILoggingService>(),
                 TinyIoCContainer.Current.Resolve<SearchUtility>());
             TinyIoCContainer.Current.Register<IMtgStore>(mtgStore);
+
+            // Register the instance of MtgInfoMapper
+            var mtgInfoMapper = new MtgInfoMapper(
+                TinyIoCContainer.Current.Resolve<SearchUtility>());
+
+            TinyIoCContainer.Current.Register<IMtgDataMapper<MtgDb.Info.Card, MtgDb.Info.CardSet>>(mtgInfoMapper,
+                "MtgDbInfo");
+
+            // Register the instance of MtgJsonMapper
+            var mtgJsonMapper = new MtgJsonMapper(
+                TinyIoCContainer.Current.Resolve<SearchUtility>());
+
+            TinyIoCContainer.Current.Register<IMtgDataMapper<MtgJsonCard, MtgJsonSet>>(mtgJsonMapper, 
+                "MtgJson");
+
+            // Register the instance of Db
+            var mtgInfoDb = new Db();
+            TinyIoCContainer.Current.Register<Db>(mtgInfoDb);
+
+            // Register the instance of IFileSystem
+            var fileSystem = new FileSystem();
+            TinyIoCContainer.Current.Register<IFileSystem>(fileSystem);
         }
 
         private static void LoadConfiguration(
@@ -49,9 +75,9 @@ namespace NerdBot_DatabaseUpdater
             if (string.IsNullOrEmpty(dbConnectionString))
                 throw new Exception("Configuration file is missing 'connectionString' setting in section 'Database'.");
 
-            mtgDbName = source.Configs["Database"].Get("mtgDbName");
+            mtgDbName = source.Configs["Database"].Get("dbName");
             if (string.IsNullOrEmpty(mtgDbName))
-                throw new Exception("Configuration file is missing 'mtgDbName' setting in section 'Database'.");
+                throw new Exception("Configuration file is missing 'dbName' setting in section 'Database'.");
         }
     }
 }

@@ -60,7 +60,6 @@ namespace NerdBot_DatabaseUpdater.DataReaders
         public IEnumerable<Card> ReadCards()
         {
             this.mLoggingService.Debug("Reading cards from set '{0}'...", this.mSetId);
-            //TODO This is returning NULL
             MtgDb.Info.Card[] cardsData = this.mMtgInfoDb.GetSetCards(this.mSetId);
             this.mLoggingService.Debug("Read cards!");
 
