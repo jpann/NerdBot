@@ -45,24 +45,29 @@ namespace NerdBot_DatabaseUpdater
                 mLoggingService = TinyIoCContainer.Current.Resolve<ILoggingService>();
                 mMtgStore = TinyIoCContainer.Current.Resolve<IMtgStore>();
 
-                //TODO Not parsing
                 p.Setup<bool>("mtgdbinfo")
                    .Callback(value => isMtgDbInfo = value)
                    .SetDefault(false);
+
+                p.Setup<string>("set")
+                        .Callback(value => mtgDbInfoSet = value)
+                        .Required();
 
                 p.Setup<bool>("mtgjson")
                    .Callback(value => isMtgJson = value)
                    .SetDefault(false);
 
+                p.Setup<string>("file")
+                        .Callback(value => mtgJsonFilename = value)
+                        .Required();
+
+                p.Parse(args);
+
                 if (isMtgJson && isMtgDbInfo)
-                    throw new Exception("Can only use --mtgdbinfo or --mtgjson, but not both.");
+                    throw new Exception("Can only use --mtgdbinfo or --mtgjson, but not both arguments.");
 
                 if (isMtgDbInfo)
                 {
-                    p.Setup<string>("set")
-                        .Callback(value => mtgDbInfoSet = value)
-                        .Required();
-
                     inputName = mtgDbInfoSet;
 
                     mDataReader = new MtgInfoReader(
@@ -72,13 +77,8 @@ namespace NerdBot_DatabaseUpdater
                             "MtgDbInfo"),
                         mLoggingService);
                 }
-
-                if (isMtgJson)
+                else if (isMtgJson)
                 {
-                    p.Setup<string>("file")
-                        .Callback(value => mtgJsonFilename = value)
-                        .Required();
-
                     inputName = mtgJsonFilename;
 
                     mDataReader = new MtgJsonReader(
@@ -86,6 +86,10 @@ namespace NerdBot_DatabaseUpdater
                         TinyIoCContainer.Current.Resolve<IMtgDataMapper<MtgJsonCard, MtgJsonSet>>("MtgJson"),
                         TinyIoCContainer.Current.Resolve<IFileSystem>(),
                         mLoggingService);
+                }
+                else
+                {
+                    throw new Exception("Please provide either --mtgdbinfo or --mtgjson arguments.");
                 }
 
                 // Setup worker
@@ -95,7 +99,6 @@ namespace NerdBot_DatabaseUpdater
                 mUpdaterBackgroundWorker.DoWork += new DoWorkEventHandler(bw_UpdaterDoWork);
                 mUpdaterBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_Completed);
                 mUpdaterBackgroundWorker.ProgressChanged += new ProgressChangedEventHandler(bw_ProgressChanged);
-
             
                 Console.WriteLine("Running worker thread...");
                 mUpdaterBackgroundWorker.RunWorkerAsync(inputName);
