@@ -168,5 +168,29 @@ namespace UrbanDictionaryPlugin_Tests
 
             messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.AtLeastOnce);
         }
+
+        [Test]
+        public void GetDefinition_NoDefinition()
+        {
+            var cmd = new Command()
+            {
+                Cmd = "wtf",
+                Arguments = new string[]
+                {
+                    "is sex pooping"   
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+            bool handled =
+            plugin.OnCommand(
+                cmd,
+                msg,
+                messengerMock.Object
+                ).Result;
+
+            messengerMock.Verify(m => m.SendMessage("There is no definition for that"), Times.AtLeastOnce);
+        }
     }
 }

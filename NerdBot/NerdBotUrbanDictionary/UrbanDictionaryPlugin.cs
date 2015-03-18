@@ -117,7 +117,11 @@ namespace NerdBotUrbanDictionary
                 if (defData != null)
                 {
                     if (defData.ResultType == "no_results")
+                    {
+                        messenger.SendMessage("There is no definition for that");
+
                         return false;
+                    }
 
                     if (defData.Definitions.Any())
                     {
