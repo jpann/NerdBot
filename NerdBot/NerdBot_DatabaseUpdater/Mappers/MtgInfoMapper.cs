@@ -11,6 +11,34 @@ namespace NerdBot_DatabaseUpdater.Mappers
     public class MtgInfoMapper : IMtgDataMapper<MtgDb.Info.Card, MtgDb.Info.CardSet>
     {
         private readonly SearchUtility mSearchUtility;
+        private string mImageUrl;
+        private string mImageHiResUrl;
+
+        #region Properties
+        public string ImageUrl
+        {
+            get { return this.mImageUrl; }
+            set
+            {
+                if (!value.Contains("{0}") && !value.Contains("{1}"))
+                    throw new FormatException("ImageUrl must contain {0} (set code) and {1} (multiverse id) format arguments.");
+
+                this.mImageUrl = value;
+            }
+        }
+
+        public string ImageHiResUrl
+        {
+            get { return this.mImageHiResUrl; }
+            set
+            {
+                if (!value.Contains("{0}") && !value.Contains("{1}"))
+                    throw new FormatException("ImageUrl must contain {0} (set code) and {1} (multiverse id) format arguments.");
+
+                this.mImageHiResUrl = value;
+            }
+        }
+        #endregion
 
         public MtgInfoMapper(SearchUtility searchUtility)
         {

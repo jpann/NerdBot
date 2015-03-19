@@ -11,6 +11,34 @@ namespace NerdBot_DatabaseUpdater.Mappers
     public class MtgJsonMapper : IMtgDataMapper<MtgJsonCard, MtgJsonSet>
     {
         private readonly SearchUtility mSearchUtility;
+        private string mImageUrl;
+        private string mImageHiResUrl;
+
+        #region Properties
+        public string ImageUrl
+        {
+            get { return this.mImageUrl; }
+            set
+            {
+                if (!value.Contains("{0}") && !value.Contains("{1}"))
+                    throw new FormatException("ImageUrl must contain {0} (set code) and {1} (multiverse id) format arguments.");
+
+                this.mImageUrl = value;
+            }
+        }
+
+        public string ImageHiResUrl
+        {
+            get { return this.mImageHiResUrl; }
+            set
+            {
+                if (!value.Contains("{0}") && !value.Contains("{1}"))
+                    throw new FormatException("ImageUrl must contain {0} (set code) and {1} (multiverse id) format arguments.");
+
+                this.mImageHiResUrl = value;
+            }
+        }
+        #endregion
 
         public MtgJsonMapper(SearchUtility searchUtility)
         {
@@ -47,8 +75,8 @@ namespace NerdBot_DatabaseUpdater.Mappers
             card.Cost = source.ManaCost;
             card.Desc = source.Text;
             card.Flavor = source.Flavor;
-            card.Img = string.Format("http://mtgimage.com/multiverseid/{0}.jpg", source.MultiverseId);
-            card.ImgHires = string.Format("http://mtgimage.com/multiverseid/{0}.jpg", source.MultiverseId);
+            card.Img = string.Format(this.mImageUrl, setCode, source.MultiverseId);
+            card.ImgHires = string.Format(this.ImageHiResUrl, setCode, source.MultiverseId);
             card.Loyalty = source.Loyalty.ToString();
             card.MultiverseId = Convert.ToInt32(source.MultiverseId);
             card.Name = source.Name;

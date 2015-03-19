@@ -187,3 +187,4 @@ NerdBot/NerdBot/NerdBot.ini
 *.userprefs
 
 NerdBot/NerdBot_PriceUpdater/NerdBotPriceUpdater.ini
+NerdBot/NerdBot_DatabaseUpdater/DatabaseUpdater.ini

@@ -27,8 +27,10 @@ namespace NerdBot_DatabaseUpdater
 
             string dbConnectionString = null;
             string mtgDbName = null;
+            string imgUrl = null;
+            string imgHiResUrl = null;
 
-            LoadConfiguration(configFile, out dbConnectionString, out mtgDbName);
+            LoadConfiguration(configFile, out dbConnectionString, out mtgDbName, out imgUrl, out imgHiResUrl);
 
             // Register the instance of ILoggingService
             TinyIoCContainer.Current.Register<ILoggingService>((c, p) => new NLogLoggingService());
@@ -52,6 +54,9 @@ namespace NerdBot_DatabaseUpdater
             var mtgJsonMapper = new MtgJsonMapper(
                 TinyIoCContainer.Current.Resolve<SearchUtility>());
 
+            mtgJsonMapper.ImageUrl = imgUrl;
+            mtgJsonMapper.ImageHiResUrl = imgHiResUrl;
+
             TinyIoCContainer.Current.Register<IMtgDataMapper<MtgJsonCard, MtgJsonSet>>(mtgJsonMapper, 
                 "MtgJson");
 
@@ -67,7 +72,9 @@ namespace NerdBot_DatabaseUpdater
         private static void LoadConfiguration(
             string fileName,
             out string dbConnectionString,
-            out string mtgDbName)
+            out string mtgDbName,
+            out string imgUrl,
+            out string imgHiResUrl)
         {
             IConfigSource source = new IniConfigSource(fileName);
 
@@ -78,6 +85,14 @@ namespace NerdBot_DatabaseUpdater
             mtgDbName = source.Configs["Database"].Get("dbName");
             if (string.IsNullOrEmpty(mtgDbName))
                 throw new Exception("Configuration file is missing 'dbName' setting in section 'Database'.");
+
+            imgUrl = source.Configs["DataMapper"].Get("img_url");
+            if (string.IsNullOrEmpty(imgUrl))
+                throw new Exception("Configuration file is missing 'img_url' setting in section 'DataMapper'.");
+
+            imgHiResUrl = source.Configs["DataMapper"].Get("imghires_url");
+            if (string.IsNullOrEmpty(imgHiResUrl))
+                throw new Exception("Configuration file is missing 'imghires_url' setting in section 'DataMapper'.");
         }
     }
 }

@@ -162,6 +162,9 @@ namespace NerdBot_DatabaseUpdater_Tests.Mappers
         public void SetUp()
         {
             dataMapper = new MtgJsonMapper(searchUtilityMock.Object);
+
+            dataMapper.ImageUrl = "http://localhost/{0}/{1}.jpg";
+            dataMapper.ImageHiResUrl = "http://localhost/{0}/{1}.jpg";
         }
 
         [TearDown]
