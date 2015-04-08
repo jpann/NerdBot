@@ -142,7 +142,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage(It.Is<string>(c => c.StartsWith("https://api.mtgdb.info/content/card_images/"))), Times.Once);
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(c => c.Contains("/images/"))), Times.Once);
         }
     }
 }

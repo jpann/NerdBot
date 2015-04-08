@@ -144,7 +144,7 @@ namespace NerdBotCardImagePlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("https://api.mtgdb.info/content/hi_res_card_images/3278.jpg"));
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith("3278.jpg"))));
         }
 
         [Test]
@@ -168,7 +168,7 @@ namespace NerdBotCardImagePlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("https://api.mtgdb.info/content/hi_res_card_images/3734.jpg"));
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith("3734.jpg"))));
         }
         #endregion
 
@@ -193,7 +193,7 @@ namespace NerdBotCardImagePlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("https://api.mtgdb.info/content/hi_res_card_images/1922.jpg"));
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith("1922.jpg"))));
         }
 
         [Test]
@@ -246,7 +246,7 @@ namespace NerdBotCardImagePlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("https://api.mtgdb.info/content/hi_res_card_images/1922.jpg"));
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith("1922.jpg"))));
         }
 
         [Test]
@@ -330,7 +330,7 @@ namespace NerdBotCardImagePlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("https://api.mtgdb.info/content/hi_res_card_images/1922.jpg"));
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith("1922.jpg"))));
         }
 
         [Test]
