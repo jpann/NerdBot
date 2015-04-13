@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using SimpleLogging.Core;
 
@@ -12,6 +11,8 @@ namespace NerdBot.Http
 {
     public class SimpleHttpClient : IHttpClient
     {
+        private const int cTimeOut = 10000;
+
         private readonly ILoggingService mLogger;
 
         public SimpleHttpClient(ILoggingService logger)
@@ -42,6 +43,7 @@ namespace NerdBot.Http
 
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
 
+                httpWebRequest.Timeout = cTimeOut;
                 httpWebRequest.ContentType = "text/json";
                 httpWebRequest.Method = "POST";
 
