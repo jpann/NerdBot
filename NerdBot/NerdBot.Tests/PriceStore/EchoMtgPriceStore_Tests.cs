@@ -98,12 +98,12 @@ namespace NerdBot.Tests.PriceStore
         [Test]
         public void GetCardPrice_ByName()
         {
-            string name = "Goblin War Paint";
+            string name = "Dragonlord Ojutai";
 
             CardPrice actual = priceStore.GetCardPrice(name);
 
             Assert.AreEqual(name, actual.Name);
-            Assert.AreEqual("https://www.echomtg.com/card/79653/goblin-war-paint/", actual.Url);
+            Assert.AreEqual("https://www.echomtg.com/card/95965/dragonlord-ojutai/", actual.Url);
         }
 
         [Test]
@@ -119,13 +119,13 @@ namespace NerdBot.Tests.PriceStore
         [Test]
         public void GetCardPrice_ByNameSet()
         {
-            string name = "Goblin War Paint";
-            string setCode = "ZEN";
+            string name = "Dragonlord Ojutai";
+            string setCode = "DTK";
 
             CardPrice actual = priceStore.GetCardPrice(name, setCode);
 
             Assert.AreEqual(name, actual.Name);
-            Assert.AreEqual("https://www.echomtg.com/card/58811/goblin-war-paint/", actual.Url);
+            Assert.AreEqual("https://www.echomtg.com/card/95965/dragonlord-ojutai/", actual.Url);
         }
 
         [Test]
