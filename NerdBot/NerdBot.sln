@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBot_DatabaseUpdater", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBot_DatabaseUpdater_Tests", "NerdBot_DatabaseUpdater_Tests\NerdBot_DatabaseUpdater_Tests.csproj", "{01E62BE4-EF64-40CC-AA67-0DB1C343512E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotCardPricesPlugin_Tests", "NerdBotCardPricesPlugin_Tests\NerdBotCardPricesPlugin_Tests.csproj", "{A5A993B5-2153-49DB-B67C-9DDC596AAE33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{01E62BE4-EF64-40CC-AA67-0DB1C343512E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01E62BE4-EF64-40CC-AA67-0DB1C343512E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01E62BE4-EF64-40CC-AA67-0DB1C343512E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5A993B5-2153-49DB-B67C-9DDC596AAE33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5A993B5-2153-49DB-B67C-9DDC596AAE33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5A993B5-2153-49DB-B67C-9DDC596AAE33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5A993B5-2153-49DB-B67C-9DDC596AAE33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
