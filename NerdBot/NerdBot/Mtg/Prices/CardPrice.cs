@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
+using Nancy.Json;
 using Newtonsoft.Json;
 
 namespace NerdBot.Mtg.Prices
@@ -13,6 +14,7 @@ namespace NerdBot.Mtg.Prices
     public class CardPrice
     {
         [BsonId(IdGenerator = typeof(ObjectIdGenerator))]
+        [ScriptIgnore]
         public ObjectId Id { get; set; }
 
         [JsonProperty("name")]
