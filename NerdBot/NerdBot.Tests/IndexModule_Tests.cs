@@ -9,6 +9,7 @@ using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
+using NerdBot.Mtg.Prices;
 using NerdBot.Parsers;
 using NerdBot.Reporters;
 using NUnit.Framework;
@@ -28,6 +29,7 @@ namespace NerdBot.Tests
         private Mock<IMessenger> messengerMock;
         private Mock<ICommandParser> commandParserMock;
         private Mock<IReporter> reporterMock;
+        private Mock<ICardPriceStore> priceStoreMock;
 
         private List<Card> cardData = new List<Card>();
         private List<Set> setData = new List<Set>();
@@ -287,7 +289,8 @@ namespace NerdBot.Tests
             messengerMock = new Mock<IMessenger>();
             commandParserMock = new Mock<ICommandParser>();
             reporterMock = new Mock<IReporter>();
-
+            priceStoreMock = new Mock<ICardPriceStore>();
+            
             // Create a mock set and IMtgStore
             storeMock = new Mock<IMtgStore>();
 
@@ -315,6 +318,7 @@ namespace NerdBot.Tests
                 with.Dependency<ICommandParser>(commandParserMock.Object);
                 with.Dependency<ILoggingService>(loggerMock.Object);
                 with.Dependency<IReporter>(reporterMock.Object);
+                with.Dependency<ICardPriceStore>(priceStoreMock.Object);
                 with.Dependency<BotConfig>(new BotConfig()
                 {
                     SecretToken = secretTokenGood

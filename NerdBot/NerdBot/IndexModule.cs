@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using MongoDB.Bson;
 using Nancy.Extensions;
 using Nancy.ModelBinding;
 using Nancy.Routing;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
+using NerdBot.Mtg.Prices;
 using NerdBot.Parsers;
 using NerdBot.Reporters;
 using SimpleLogging.Core;
@@ -18,20 +21,41 @@ namespace NerdBot
     {
         public IndexModule(
             BotConfig botConfig,
-            IMtgStore mtgStore, 
-            IMessenger messenger, 
+            IMtgStore mtgStore,
+            IMessenger messenger,
             IPluginManager pluginManager,
             ICommandParser commandParser,
             ILoggingService loggingService,
-            IReporter reporter)
+            IReporter reporter,
+            ICardPriceStore priceStore)
         {
             Get["/"] = parameters =>
             {
                 loggingService.Warning("GET request from {0}: Path '{1}' was invalid.",
                         this.Request.UserHostAddress,
                         this.Request.Path);
-                
+
                 return HttpStatusCode.NotAcceptable;
+            };
+
+            // PriceInc route
+            Get["/priceinc/"] = parameters =>
+            {
+                int limit = 10;
+
+                List<CardPrice> prices = priceStore.GetCardsByPriceIncrease(limit);
+
+                return Response.AsJson<List<CardPrice>>(prices);
+            };
+
+            // PriceDec route
+            Get["/pricedec/"] = parameters =>
+            {
+                int limit = 10;
+
+                List<CardPrice> prices = priceStore.GetCardsByPriceDecrease(limit);
+
+                return Response.AsJson<List<CardPrice>>(prices);
             };
 
             // Ruling route
@@ -99,7 +123,7 @@ namespace NerdBot
 
                     if (string.IsNullOrEmpty(message.text))
                     {
-                        loggingService.Debug("POST request from {0}: Message text is empty or null.\nREQUEST = {1}", 
+                        loggingService.Debug("POST request from {0}: Message text is empty or null.\nREQUEST = {1}",
                             this.Request.UserHostAddress,
                             request_string);
 
