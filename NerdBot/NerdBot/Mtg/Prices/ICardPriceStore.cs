@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NerdBot.Mtg.Prices
 {
@@ -13,5 +10,7 @@ namespace NerdBot.Mtg.Prices
         bool RemoveCardPrice(CardPrice cardPrice);
         int RemoveCardPricesOnOrBefore(DateTime date);
         CardPrice FindAndModifyCardPrice(CardPrice cardPrice, bool upsert = true);
+        List<CardPrice> GetCardsByPriceIncrease(int limit = 10);
+        List<CardPrice> GetCardsByPriceDecrease(int limit = 10);
     }
 }

@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
@@ -171,6 +168,7 @@ namespace NerdBot.Mtg.Prices
                 .Set("lastUpdated", cardPrice.LastUpdated)
                 .Set("setCode", cardPrice.SetCode)
                 .Set("priceDiff", cardPrice.PriceDiff)
+                .Set("priceDiffValue", cardPrice.PriceDiffValue)
                 .Set("priceMid", cardPrice.PriceMid)
                 .Set("priceLow", cardPrice.PriceLow)
                 .Set("priceFoil", cardPrice.PriceFoil);
@@ -187,6 +185,62 @@ namespace NerdBot.Mtg.Prices
             var cardModified = cardResult.GetModifiedDocumentAs<CardPrice>();
 
             return cardModified;
+        }
+
+        public List<CardPrice> GetCardsByPriceIncrease(int limit = 10)
+        {
+            List<CardPrice> prices = new List<CardPrice>();
+
+            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cPriceCollectionName);
+
+            var cardQuery = Query.GT("priceDiffValue", 0);
+            var sortBy = SortBy.Descending("priceDiffValue");
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            MongoCursor<CardPrice> cursor = cardPriceCollection.FindAs<CardPrice>(cardQuery)
+                .SetSortOrder(sortBy)
+                .SetLimit(limit);
+
+            foreach (CardPrice price in cursor)
+            {
+                prices.Add(price);
+            }
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return prices;
+        }
+
+        public List<CardPrice> GetCardsByPriceDecrease(int limit = 10)
+        {
+            List<CardPrice> prices = new List<CardPrice>();
+
+            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cPriceCollectionName);
+
+            var cardQuery = Query.LT("priceDiffValue", 0);
+            var sortBy = SortBy.Ascending("priceDiffValue");
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            MongoCursor<CardPrice> cursor = cardPriceCollection.FindAs<CardPrice>(cardQuery)
+                .SetSortOrder(sortBy)
+                .SetLimit(limit);
+
+            foreach (CardPrice price in cursor)
+            {
+                prices.Add(price);
+            }
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return prices;
         }
     }
 }

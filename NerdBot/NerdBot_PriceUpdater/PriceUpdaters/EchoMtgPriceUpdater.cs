@@ -92,7 +92,26 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
                 price.SetCode = set.Code;
                 price.Name = nameNode.InnerText;
                 price.SearchName = this.mSearchUtility.GetSearchValue(price.Name);
+
                 price.PriceDiff = diffNode.InnerText;
+                price.PriceDiffValue = 0;
+
+                // Try to parse PriceDiffValue from PriceDiff
+                if (!string.IsNullOrEmpty(price.PriceDiff))
+                {
+                    if (price.PriceDiff.IndexOf("%") > 0)
+                    {
+                        try
+                        {
+                            price.PriceDiffValue = Convert.ToInt32(price.PriceDiff.Substring(0, price.PriceDiff.IndexOf("%")));
+                        }
+                        catch (Exception)
+                        {
+                            this.mLoggingService.Warning("Price diff for card '{0}' was not NULL (priceDiff: {5})but did not contain a correct integer.", price.PriceDiff);
+                        }
+                    }
+                }
+
                 price.PriceFoil = foilNode.InnerText;
                 price.PriceLow = lowNode.InnerText;
                 price.PriceMid = midNode.InnerText;

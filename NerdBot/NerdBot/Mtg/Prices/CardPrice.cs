@@ -31,6 +31,10 @@ namespace NerdBot.Mtg.Prices
         [BsonElement("priceDiff")]
         public string PriceDiff { get; set; }
 
+        [JsonProperty("priceDiffValue")]
+        [BsonElement("priceDiffValue")]
+        public int PriceDiffValue { get; set; }
+
         [JsonProperty("priceMid")]
         [BsonElement("priceMid")]
         public string PriceMid { get; set; }

@@ -160,5 +160,29 @@ namespace NerdBot.Tests.PriceStore
         #region FindAndModifyCardPrice
 
         #endregion
+
+        #region GetCardsByPriceIncrease
+        [Test]
+        public void GetCardsByPriceIncrease()
+        {
+            int limit = 10;
+
+            List<CardPrice> prices = priceStore.GetCardsByPriceIncrease(limit);
+
+            Assert.AreEqual(limit, prices.Count);
+        }
+        #endregion
+
+        #region GetCardsByPriceDecrease
+        [Test]
+        public void GetCardsByPriceDecrease()
+        {
+            int limit = 10;
+
+            List<CardPrice> prices = priceStore.GetCardsByPriceDecrease(limit);
+
+            Assert.AreEqual(limit, prices.Count);
+        }
+        #endregion
     }
 }
