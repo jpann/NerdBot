@@ -54,6 +54,7 @@
     <Compile Include="PriceFetchers\EbayPriceFetcher.cs" />
     <Compile Include="EbayPricePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WhatsHotPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NerdBot\NerdBot.csproj">
