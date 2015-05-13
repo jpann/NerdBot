@@ -21,12 +21,12 @@ namespace NerdBotCardPrices
 
         public override string Description
         {
-            get { return "Returns the cards that had their price increase the most.";  }
+            get { return "Returns the cards that had their price increased the most.";  }
         }
 
         public override string ShortDescription
         {
-            get { return "Returns the cards that had their price increase the most.";  }
+            get { return "Returns the cards that had their price increased the most.";  }
         }
 
         public override string Command
