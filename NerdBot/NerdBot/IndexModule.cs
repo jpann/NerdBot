@@ -38,8 +38,8 @@ namespace NerdBot
                 return HttpStatusCode.NotAcceptable;
             };
 
-            // PriceInc route
-            Get["/priceinc/"] = parameters =>
+            // priceincreases route
+            Get["/priceincreases/"] = parameters =>
             {
                 int limit = 10;
 
@@ -48,8 +48,8 @@ namespace NerdBot
                 return Response.AsJson<List<CardPrice>>(prices);
             };
 
-            // PriceDec route
-            Get["/pricedec/"] = parameters =>
+            // pricedecreases route
+            Get["/pricedecreases/"] = parameters =>
             {
                 int limit = 10;
 
