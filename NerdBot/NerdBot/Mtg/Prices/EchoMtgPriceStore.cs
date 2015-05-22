@@ -193,7 +193,13 @@ namespace NerdBot.Mtg.Prices
 
             var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cPriceCollectionName);
 
-            var cardQuery = Query.GT("priceDiffValue", 0);
+            var cardQuery = Query.And(
+                Query.GT("priceDiffValue", 0),
+                Query.NE("priceMid", ""),
+                Query.NE("priceLow", ""),
+                Query.NE("priceFoil", "")
+                );
+
             var sortBy = SortBy.Descending("priceDiffValue");
 
             Stopwatch watch = new Stopwatch();
@@ -221,7 +227,13 @@ namespace NerdBot.Mtg.Prices
 
             var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cPriceCollectionName);
 
-            var cardQuery = Query.LT("priceDiffValue", 0);
+            var cardQuery = Query.And(
+                Query.LT("priceDiffValue", 0),
+                Query.NE("priceMid", ""),
+                Query.NE("priceLow", ""),
+                Query.NE("priceFoil", "")
+                );
+
             var sortBy = SortBy.Ascending("priceDiffValue");
 
             Stopwatch watch = new Stopwatch();
