@@ -154,7 +154,7 @@ namespace NerdBotCardPrices
                     }
                     else
                     {
-                        messenger.SendMessage("Price unavailable using DeckBrew");
+                        messenger.SendMessage("Price unavailable");
 
                         return true;
                     }
