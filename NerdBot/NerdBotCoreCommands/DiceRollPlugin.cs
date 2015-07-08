@@ -87,21 +87,72 @@ namespace NerdBotCoreCommands
             if (messenger == null)
                 throw new ArgumentNullException("messenger");
 
-            int max = 6;
+            int maxDieSides = 6;
+            int dieCount = 1;
 
             // Roll 1 through argument value, if argument is an integer
             if (command.Arguments.Length == 1)
             {
+                string argument = command.Arguments[0].ToLower();
+
                 int n;
-                bool isNumeric = int.TryParse(command.Arguments[0], out n);
+                bool isNumeric = int.TryParse(argument, out n);
 
                 if (isNumeric)
-                    max = n;
+                    maxDieSides = n;
+                else
+                {
+                    // If it isn't a numeric, lets see if a die count was provided
+                    if (argument.IndexOf('x') > 0)
+                    {
+                        // A die count was provided in the form of 'x#'
+
+                        // Get the die sides as seen before the die count's 'x'
+                        string tmpDieSides = argument.Substring(0, argument.IndexOf('x'));
+
+                        // Get the die count as seen after the die count's 'x'
+                        string tmpDieCount = argument.Substring(argument.IndexOf('x') + 1);
+
+                        // Make sure we're not working with and empty die sides value
+                        if (!string.IsNullOrEmpty(tmpDieSides))
+                        {
+                            int m;
+                            bool isSidesNumeric = int.TryParse(tmpDieSides.Trim(), out m);
+
+                            // If it is numerc, set maxSides to this value
+                            if (isSidesNumeric)
+                                maxDieSides = m;
+                        }
+
+                        // Make sure we're not working with an empty die count value
+                        if (!string.IsNullOrEmpty(tmpDieCount))
+                        {
+                            int m;
+                            bool isDieCountNumeric = int.TryParse(tmpDieCount.Trim(), out m);
+
+                            // If it is numeric, set dieCount to this value
+                            if (isDieCountNumeric)
+                                dieCount = m;
+                        }
+                    }
+                }
             }
 
-            int roll = this.mRandom.Next(1, max);
+            // Define rolls array
+            int[] rolls = new int[dieCount];
 
-            messenger.SendMessage(string.Format("Roll 1-{0}: {1}", max, roll));
+            // Roll the dice
+            for (int i = 0; i < dieCount; i++)
+            {
+                int roll = this.mRandom.Next(1, maxDieSides);
+
+                rolls[i] = roll;
+            }
+
+            messenger.SendMessage(string.Format("Roll 1-{0} x{1}: {2}",
+                maxDieSides,
+                dieCount,
+                string.Join(", ", rolls)));
 
             return true;
         }
