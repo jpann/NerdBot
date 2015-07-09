@@ -144,7 +144,7 @@ namespace NerdBotCoreCommands
             // Roll the dice
             for (int i = 0; i < dieCount; i++)
             {
-                int roll = this.mRandom.Next(1, maxDieSides);
+                int roll = this.mRandom.Next(1, maxDieSides + 1);
 
                 rolls[i] = roll;
             }
