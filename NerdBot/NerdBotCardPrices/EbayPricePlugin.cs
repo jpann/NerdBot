@@ -43,7 +43,7 @@ namespace NerdBotCardPrices
 
         public override string HelpDescription
         {
-            get { return string.Format("{0} example usage: 'ebay spore clou%'", this.Command); }
+            get { return string.Format("{0} example usage: 'ebay spore clou%' or 'ebay mm2;noble%'", this.Command); }
         }
 
         public EbayPricePlugin(

@@ -44,7 +44,7 @@ namespace NerdBotCoreCommands
 
         public override string HelpDescription
         {
-            get { return string.Format("{0} example usage: 'roll' or 'roll 100'", this.Command); }
+            get { return string.Format("{0} example usage: 'roll' or 'roll 100' or 'roll 20 x5'", this.Command); }
         }
 
         public DiceRollPlugin(

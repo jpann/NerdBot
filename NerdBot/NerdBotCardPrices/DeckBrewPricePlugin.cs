@@ -45,7 +45,7 @@ namespace NerdBotCardPrices
 
         public override string HelpDescription
         {
-            get { return string.Format("{0} example usage: 'tcg spore clou%'", this.Command); }
+            get { return string.Format("{0} example usage: 'tcg spore clou%' or 'tcg mm2;noble%'", this.Command); }
         }
 
         public DeckBrewPricePlugin(
