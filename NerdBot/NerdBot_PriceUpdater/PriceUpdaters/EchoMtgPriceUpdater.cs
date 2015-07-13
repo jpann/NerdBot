@@ -66,7 +66,11 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
             HtmlNode cardsNode = htmlDoc.DocumentNode.SelectSingleNode(@"/html/body/div[2]/div[2]/div[1]/div[2]/div/table/tbody");
 
             if (cardsNode == null)
+            {
+                this.mLoggingService.Warning("CardsNode is NULL for '{0}'.", url);
+
                 return;
+            }
 
             if (cardsNode.SelectSingleNode("tr") == null)
             {
