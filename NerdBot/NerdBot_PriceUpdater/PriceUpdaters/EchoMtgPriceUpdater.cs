@@ -58,10 +58,10 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
                 set.Code,
                 url);
 
-            string pageSoruce = this.mHttpClient.GetPageSource(url);
+            string pageSource = this.mHttpClient.GetPageSource(url);
 
             HtmlDocument htmlDoc = new HtmlDocument();
-            htmlDoc.LoadHtml(pageSoruce);
+            htmlDoc.LoadHtml(pageSource);
 
             HtmlNode cardsNode = htmlDoc.DocumentNode.SelectSingleNode(@"/html/body/div[2]/div[2]/div[1]/div[2]/div/table/tbody");
 
