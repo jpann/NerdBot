@@ -88,9 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="DatabaseUpdater.ini">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="DatabaseUpdater.ini" />
     <None Include="DatabaseUpdater-Example.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
