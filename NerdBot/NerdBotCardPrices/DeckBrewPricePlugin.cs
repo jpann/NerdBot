@@ -120,6 +120,12 @@ namespace NerdBotCardPrices
                 {
                     var tcgPrice = this.mPriceStore.GetCardPrice(card.Name, card.SetId);
 
+                    // If price is null, check again without using set code
+                    if (tcgPrice == null)
+                    {
+                        tcgPrice = this.mPriceStore.GetCardPrice(card.Name);
+                    }
+
                     if (tcgPrice != null)
                     {
                         if (string.IsNullOrEmpty(tcgPrice.PriceFoil) && 
