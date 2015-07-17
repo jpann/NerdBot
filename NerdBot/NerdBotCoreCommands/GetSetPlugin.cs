@@ -109,10 +109,10 @@ namespace NerdBotCoreCommands
                 if (set != null)
                 {
                     string msg =
-                        string.Format("Set '{0}' [{1}] in block '{2}' was released on {3} and contains {4} cards.", 
+                        string.Format("Set '{0}' [{1}] {2}was released on {3} and contains {4} cards.", 
                             set.Name,
                             set.Code,
-                            set.Block,
+                            !string.IsNullOrEmpty(set.Block) ? string.Format(" in block '{0}' ", set.Block) : "",
                             set.ReleasedOn.ToString("MM-dd-yyyy"),
                             set.TotalQty);
 
