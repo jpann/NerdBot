@@ -225,11 +225,17 @@ namespace NerdBot
 
             // If no arguments were used, return false because the command wasn't handled
             if (!command.Arguments.Any())
+            {
+                this.mLogger.Trace("Command '{0}' had no arguments provided.", command.Cmd);
+
                 return false;
+            }
 
             try
             {
-                string argument = command.Arguments[0];
+                string argument = command.Arguments[0].ToLower().Trim();
+
+                this.mLogger.Debug("Help argument: {0}", argument);
 
                 foreach (IPlugin plugin in this.mPlugins)
                 {
@@ -261,6 +267,8 @@ namespace NerdBot
 
                         msg = string.Format("Available commands: {0}", availableCommands);
                     }
+
+                    this.mLogger.Trace("Available commands: {0}", msg);
 
                     messenger.SendMessage(msg);
 

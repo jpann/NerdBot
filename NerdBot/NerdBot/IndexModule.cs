@@ -136,6 +136,8 @@ namespace NerdBot
                     {
                         if (!string.IsNullOrEmpty(command.Cmd))
                         {
+                            loggingService.Trace("Received command: {0}", command.Cmd);
+
                             if (command.Cmd.ToLower() == "help")
                             {
                                 bool helpHandled = await pluginManager.HandledHelpCommand(command, messenger);
