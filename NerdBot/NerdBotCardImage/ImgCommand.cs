@@ -97,6 +97,8 @@ namespace NerdBotCardImage
                     if (string.IsNullOrEmpty(name))
                         return false;
 
+                    this.mLoggingService.Trace("Using Name: {0}", name);
+
                     // Get card using only name
                     card = await this.Store.GetCard(name);
                 }
@@ -111,12 +113,18 @@ namespace NerdBotCardImage
                     if (string.IsNullOrEmpty(set))
                         return false;
 
+                    this.mLoggingService.Trace("Using Name: {0}; Set: {1}", name, set);
+
                     // Get card using name and set name or code
                     card = await this.Store.GetCard(name, set);
                 }
 
                 if (card != null)
                 {
+                    this.mLoggingService.Trace("Found card '{0}' in set '{1}'.",
+                        card.Name,
+                        card.SetName);
+
                     // Default to high resolution image.
                     string imgUrl = card.ImgHires;
                     if (string.IsNullOrEmpty(imgUrl))
@@ -126,6 +134,14 @@ namespace NerdBotCardImage
 
                     return true;
                 }
+                else
+                {
+                    this.mLoggingService.Warning("Couldn't find card using arguments.");
+                }
+            }
+            else
+            {
+                this.mLoggingService.Warning("No arguments provided.");
             }
 
             return false;
