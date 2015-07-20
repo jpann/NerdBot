@@ -130,6 +130,11 @@ namespace NerdBot
                         return HttpStatusCode.NotAcceptable;
                     }
 
+                    loggingService.Trace("MSG: From: {0} [UID: {1}]; Body: {2}", 
+                        message.name,
+                        message.user_id,
+                        message.text);
+
                     // Parse the command
                     var command = commandParser.Parse(message.text);
                     if (command != null)
