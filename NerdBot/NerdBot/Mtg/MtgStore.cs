@@ -200,6 +200,8 @@ namespace NerdBot.Mtg
         #region GetCard
         public async Task<Card> GetCard(int multiverseId)
         {
+            this.mLoggingService.Trace("Getting card by id '{0}'...", multiverseId);
+
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             var query = Query<Card>.EQ(e => e.MultiverseId, multiverseId);
@@ -208,13 +210,27 @@ namespace NerdBot.Mtg
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            var card = collection.FindAs<Card>(query).SetSortOrder(sortBy).SetLimit(1);
+            var cardResult = collection.FindAs<Card>(query).SetSortOrder(sortBy).SetLimit(1);
 
             watch.Stop();
 
             this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
-            return card.FirstOrDefault();
+            var card = cardResult.FirstOrDefault();
+
+            if (card == null)
+            {
+                this.mLoggingService.Warning("No card found using '{0}'.", multiverseId);
+            }
+            else
+            {
+                this.mLoggingService.Trace("Card found using '{0}': {1} [{2}]", 
+                    multiverseId, 
+                    card.Name, 
+                    card.SetName);
+            }
+
+            return card;
         }
 
         public async Task<Card> GetCard(string name)
@@ -222,7 +238,11 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
 
+            this.mLoggingService.Trace("Getting card by name '{0}'...", name);
+
             name = this.mSearchUtility.GetRegexSearchValue(name);
+
+            this.mLoggingService.Trace("Search name for '{0}'.", name);
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
@@ -232,13 +252,27 @@ namespace NerdBot.Mtg
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            var card = collection.FindAs<Card>(query).SetSortOrder(sortBy).SetLimit(1);
+            var cardResult = collection.FindAs<Card>(query).SetSortOrder(sortBy).SetLimit(1);
 
             watch.Stop();
 
             this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
-            return card.FirstOrDefault();
+            var card = cardResult.FirstOrDefault();
+
+            if (card == null)
+            {
+                this.mLoggingService.Warning("No card found using '{0}'.", name);
+            }
+            else
+            {
+                this.mLoggingService.Trace("Card found using '{0}': {1} [{2}]",
+                    name,
+                    card.Name,
+                    card.SetName);
+            }
+
+            return card;
         }
 
         public async Task<Card> GetCard(string name, string setName)
@@ -249,11 +283,14 @@ namespace NerdBot.Mtg
             if (string.IsNullOrEmpty(setName))
                 throw new ArgumentException("setName");
 
+            this.mLoggingService.Trace("Getting card by name '{0}' in set '{1}'...", name, setName);
+
             name = this.mSearchUtility.GetRegexSearchValue(name);
             string setCode = setName;
             setName = this.mSearchUtility.GetRegexSearchValue(setName);
-            
 
+            this.mLoggingService.Trace("Search name for '{0}' and set '{1}'.", name, setName);
+            
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             // Search both the set's search name and set id
@@ -269,13 +306,28 @@ namespace NerdBot.Mtg
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            var card = collection.FindAs<Card>(query).SetSortOrder(sortBy).SetLimit(1);
+            var cardResult = collection.FindAs<Card>(query).SetSortOrder(sortBy).SetLimit(1);
 
             watch.Stop();
             
             this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
-            return card.FirstOrDefault();
+            var card = cardResult.FirstOrDefault();
+
+            if (card == null)
+            {
+                this.mLoggingService.Warning("No card found using '{0}' in '{1}'.", name, setName);
+            }
+            else
+            {
+                this.mLoggingService.Trace("Card found using '{0}' in '{1}': {2} [{3}]",
+                    name,
+                    setName,
+                    card.Name,
+                    card.SetName);
+            }
+
+            return card;
         }
 
         #endregion
