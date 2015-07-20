@@ -139,7 +139,11 @@ namespace NerdBotCardImage
                     this.mLoggingService.Warning("Couldn't find card using arguments.");
 
                     // Try a second time, this time adding in wildcards
-                    string name = command.Arguments[0];
+                    string name = "";
+                    if (command.Arguments.Length == 1)
+                        name = command.Arguments[0];
+                    else
+                        name = command.Arguments[1];
 
                     name = name.Replace(" ", "%");
 
