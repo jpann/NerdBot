@@ -304,7 +304,7 @@ namespace NerdBotCardImagePlugin_Tests
 
             // Verify that the messenger's SendMessenger was never called 
             //  because no message should be sent when a card was not found
-            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.Never);
+            messengerMock.Verify(m => m.SendMessage("Did you mean 'Spore Cloud'?"), Times.Once);
 
             Assert.False(handled);
         }
@@ -388,7 +388,7 @@ namespace NerdBotCardImagePlugin_Tests
 
             // Verify that the messenger's SendMessenger was never called 
             //  because no message should be sent when a card was not found
-            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.Never);
+            messengerMock.Verify(m => m.SendMessage("Did you mean 'Spore Cloud'?"), Times.Once);
 
             Assert.False(handled);
         }
