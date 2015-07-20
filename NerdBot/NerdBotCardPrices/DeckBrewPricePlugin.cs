@@ -165,6 +165,25 @@ namespace NerdBotCardPrices
                         return true;
                     }
                 }
+                else
+                {
+                    this.mLoggingService.Warning("Couldn't find card using arguments.");
+
+                    // Try a second time, this time adding in wildcards
+                    string name = command.Arguments[0];
+
+                    name = name.Replace(" ", "%");
+
+                    card = await this.Store.GetCard(name);
+                    if (card != null)
+                    {
+                        LoggingService.Trace("Second try using '{0}' returned a card. Suggesting '{0}'...", name, card.Name);
+
+                        string msg = string.Format("Did you mean '{0}'?", card.Name);
+
+                        messenger.SendMessage(msg);
+                    }
+                }
             }
 
             return false;
