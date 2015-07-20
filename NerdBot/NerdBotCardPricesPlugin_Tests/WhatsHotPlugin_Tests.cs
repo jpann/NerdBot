@@ -116,6 +116,8 @@ namespace NerdBotCardPricesPlugin_Tests
                 commandParserMock.Object,
                 httpClientMock.Object,
                 urlShortenerMock.Object);
+
+            plugin.LoggingService = loggingServiceMock.Object;
         }
 
         [Test]

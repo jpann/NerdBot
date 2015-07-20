@@ -110,6 +110,8 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 httpClientMock.Object,
                 urlShortenerMock.Object);
 
+            plugin.LoggingService = loggingServiceMock.Object;
+
             plugin.OnLoad();
         }
 

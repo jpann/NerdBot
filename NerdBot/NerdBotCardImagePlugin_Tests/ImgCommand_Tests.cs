@@ -119,6 +119,8 @@ namespace NerdBotCardImagePlugin_Tests
                 commandParserMock.Object,
                 httpClientMock.Object,
                 urlShortenerMock.Object);
+
+            imgCommandPlugin.LoggingService = loggingServiceMock.Object;
         }
 
         #region Tests for cards that failed in live testing

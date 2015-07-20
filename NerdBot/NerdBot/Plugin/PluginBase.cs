@@ -9,6 +9,7 @@ using NerdBot.Mtg;
 using NerdBot.Mtg.Prices;
 using NerdBot.Parsers;
 using NerdBot.UrlShortners;
+using SimpleLogging.Core;
 
 namespace NerdBot.Plugin
 {
@@ -19,6 +20,7 @@ namespace NerdBot.Plugin
         protected ICommandParser mCommandParser;
         protected IHttpClient mHttpClient;
         protected IUrlShortener mUrlShortener;
+        protected ILoggingService mLoggingService;
 
         public PluginBase(
             IMtgStore store,
@@ -110,6 +112,12 @@ namespace NerdBot.Plugin
             }
 
             get { return this.mUrlShortener; }
+        }
+
+        public ILoggingService LoggingService
+        {
+            get { return this.mLoggingService; }
+            set { this.mLoggingService = value; }
         }
 
         public abstract string Name { get; }

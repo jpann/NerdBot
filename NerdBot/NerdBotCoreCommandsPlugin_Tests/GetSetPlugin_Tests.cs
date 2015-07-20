@@ -120,6 +120,8 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 commandParserMock.Object,
                 httpClientMock.Object,
                 urlShortenerMock.Object);
+
+            plugin.LoggingService = loggingServiceMock.Object;
         }
 
         [Test]
@@ -143,7 +145,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("Set 'Fallen Empires' [FEM] in block '' was released on 11-01-1994 and contains 187 cards."));
+            messengerMock.Verify(m => m.SendMessage("Set 'Fallen Empires' [FEM] was released on 11-01-1994 and contains 187 cards."));
         }
 
         [Test]
@@ -195,7 +197,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("Set 'Fallen Empires' [FEM] in block '' was released on 11-01-1994 and contains 187 cards."));
+            messengerMock.Verify(m => m.SendMessage("Set 'Fallen Empires' [FEM] was released on 11-01-1994 and contains 187 cards."));
         }
 
         [Test]

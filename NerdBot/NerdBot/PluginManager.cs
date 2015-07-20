@@ -132,6 +132,8 @@ namespace NerdBot
 
                     IPlugin plugin = (IPlugin)this.mContainer.Resolve(type);
 
+                    this.mContainer.BuildUp(plugin);
+
                     plugin.OnLoad();
 
                     this.mLogger.Debug("Loaded plugin '{0}'!",

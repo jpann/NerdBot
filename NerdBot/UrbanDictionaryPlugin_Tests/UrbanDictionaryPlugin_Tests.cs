@@ -119,6 +119,8 @@ namespace UrbanDictionaryPlugin_Tests
                 commandParserMock.Object,
                 httpClient,
                 urlShortenerMock.Object);
+
+            plugin.LoggingService = loggingServiceMock.Object;
         }
 
         [Test]
