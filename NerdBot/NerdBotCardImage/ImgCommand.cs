@@ -132,6 +132,16 @@ namespace NerdBotCardImage
 
                     messenger.SendMessage(imgUrl);
 
+                    // Get other sets card is in
+                    List<Set> otherSets = await base.Store.GetCardOtherSets(card.MultiverseId);
+                    if (otherSets.Any())
+                    {
+                        string msg = string.Format("Also in sets: {0}",
+                            string.Join(", ", otherSets.Select(s => s.Code).Take(10).ToArray()));
+                        
+                        messenger.SendMessage(msg);
+                    }
+
                     return true;
                 }
                 else
