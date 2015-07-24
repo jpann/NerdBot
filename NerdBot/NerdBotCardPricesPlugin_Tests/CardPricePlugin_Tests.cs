@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Moq;
 using NerdBot.Http;
 using NerdBot.Messengers;
@@ -16,13 +20,13 @@ using SimpleLogging.Core;
 namespace NerdBotCardPricesPlugin_Tests
 {
     [TestFixture]
-    public class MarketPricePlugin_Tests
+    public class CardPricePlugin_Tests
     {
         private const string connectionString = "mongodb://localhost";
         private const string databaseName = "mtgdb";
 
         private IMtgStore mtgStore;
-        private MarketPricePlugin plugin;
+        private CardPricePlugin plugin;
 
         private Mock<ICommandParser> commandParserMock;
         private Mock<IHttpClient> httpClientMock;
@@ -110,28 +114,33 @@ namespace NerdBotCardPricesPlugin_Tests
             // Setup IMessenger Mocks
             messengerMock = new Mock<IMessenger>();
 
-            plugin = new MarketPricePlugin(
-                mtgStore,
-                priceStoreMock.Object,
-                commandParserMock.Object,
-                httpClientMock.Object,
-                urlShortenerMock.Object);
+            plugin = new CardPricePlugin(
+               mtgStore,
+               priceStoreMock.Object,
+               commandParserMock.Object,
+               httpClientMock.Object,
+               urlShortenerMock.Object);
 
             plugin.LoggingService = loggingServiceMock.Object;
         }
 
         [Test]
-        public void GetPrice_EmptyLow_EmptyMid()
+        public void GetPrice_SetNotAvailableFallbackToJustName()
         {
-            string name = "Kiki-Jiki, Mirror Breaker";
-            string setCode = "CHK";
+            string name = "Inquisition of Kozilek";
+            string setCode = "MD1";
 
+            // Setup mock to return NULL for this card and set
             priceStoreMock.Setup(ps => ps.GetCardPrice(name, setCode))
+                .Returns(() => null);
+
+            // Setup mock to return a price when falling back to just name
+            priceStoreMock.Setup(ps => ps.GetCardPrice(name))
                 .Returns(() => new CardPrice()
                 {
                     Name = name,
                     SearchName = this.GetSearchValue(name),
-                    SetCode = setCode,
+                    SetCode = "ROE",
                     PriceFoil = "$100",
                     PriceDiff = "10%"
                 });
@@ -141,7 +150,7 @@ namespace NerdBotCardPricesPlugin_Tests
                 Cmd = "tcg",
                 Arguments = new string[]
                 {
-                    "Kiki-Jiki, Mirror Breaker"   
+                    "Inquisition of Kozilek"   
                 }
             };
 
@@ -153,8 +162,9 @@ namespace NerdBotCardPricesPlugin_Tests
                     messengerMock.Object
                     ).Result;
 
-            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("Kiki-Jiki, Mirror Breaker [CHK] Foil: $100. 7-Day change: 10%."))),
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("Inquisition of Kozilek [ROE] Foil: $100. 7-Day change: 10%.. Also appears in sets: ROE"))),
                 Times.Once);
         }
+
     }
 }

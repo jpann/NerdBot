@@ -60,9 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MarketPricePlugin.cs" />
-    <Compile Include="DeckBrewPricePlugin.cs" />
-    <Compile Include="PriceFetchers\DeckBrewPriceFetcher.cs" />
+    <Compile Include="CardPricePlugin.cs" />
     <Compile Include="PriceFetchers\EbayPriceFetcher.cs" />
     <Compile Include="EbayPricePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

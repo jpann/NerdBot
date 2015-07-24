@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using NerdBot.Http;
 using NerdBot.Messengers;
@@ -10,45 +9,42 @@ using NerdBot.Mtg.Prices;
 using NerdBot.Parsers;
 using NerdBot.Plugin;
 using NerdBot.UrlShortners;
-using NerdBotCardPrices.PriceFetchers;
 
 namespace NerdBotCardPrices
 {
-    public class MarketPricePlugin : PluginBase
+    public class CardPricePlugin: PluginBase
     {
-        private const string cUrl = "https://api.deckbrew.com/mtg";
-
         public override string Name
         {
-            get { return "price Command"; }
+            get { return "tcg Command"; }
         }
 
         public override string Description
         {
-            get { return "Returns a card's market price from EchoMtg";  }
+            get { return "Returns a card's price from EchoMTG";  }
         }
 
         public override string ShortDescription
         {
-            get { return "Returns a card's market price from EchoMtg"; }
+            get { return "Returns a card's price from EchoMTG"; }
         }
 
         public override string Command
         {
-            get { return "price"; }
+            get { return "tcg"; }
         }
 
         public override string HelpCommand
         {
-            get { return "help price"; }
+            get { return "help tcg"; }
         }
 
         public override string HelpDescription
         {
-            get { return string.Format("{0} example usage: 'price spore clou%' or 'price mm2;noble%'", this.Command); }
+            get { return string.Format("{0} example usage: 'tcg spore clou%' or 'tcg mm2;noble%'", this.Command); }
         }
 
-        public MarketPricePlugin(
+        public CardPricePlugin(
                 IMtgStore store,
                 ICardPriceStore priceStore,
                 ICommandParser commandParser,
@@ -118,19 +114,19 @@ namespace NerdBotCardPrices
 
                 if (card != null)
                 {
-                    var priceData = this.mPriceStore.GetCardPrice(card.Name, card.SetId);
+                    var tcgPrice = this.mPriceStore.GetCardPrice(card.Name, card.SetId);
 
                     // If price is null, check again without using set code
-                    if (priceData == null)
+                    if (tcgPrice == null)
                     {
-                        priceData = this.mPriceStore.GetCardPrice(card.Name);
+                        tcgPrice = this.mPriceStore.GetCardPrice(card.Name);
                     }
 
-                    if (priceData != null)
+                    if (tcgPrice != null)
                     {
-                        if (string.IsNullOrEmpty(priceData.PriceFoil) &&
-                            string.IsNullOrEmpty(priceData.PriceLow) &&
-                            string.IsNullOrEmpty(priceData.PriceMid))
+                        if (string.IsNullOrEmpty(tcgPrice.PriceFoil) && 
+                            string.IsNullOrEmpty(tcgPrice.PriceLow) &&
+                            string.IsNullOrEmpty(tcgPrice.PriceMid))
                         {
                             messenger.SendMessage("Price unavailable");
                             return true;
@@ -139,19 +135,19 @@ namespace NerdBotCardPrices
                         string msg =
                             string.Format(
                                 "{0} [{1}] {2}{3}{4}. 7-Day change: {5}.",
-                                priceData.Name,
-                                priceData.SetCode,
-                                !string.IsNullOrEmpty(priceData.PriceLow) ? "Low: " + priceData.PriceLow + "; " : "",
-                                !string.IsNullOrEmpty(priceData.PriceMid) ? "Mid: " + priceData.PriceMid + "; " : "",
-                                !string.IsNullOrEmpty(priceData.PriceFoil) ? "Foil: " + priceData.PriceFoil : "",
-                                !string.IsNullOrEmpty(priceData.PriceDiff) ? priceData.PriceDiff : "0%");
-                        
+                                tcgPrice.Name,
+                                tcgPrice.SetCode,
+                                !string.IsNullOrEmpty(tcgPrice.PriceLow) ? "Low: " + tcgPrice.PriceLow + "; " : "",
+                                !string.IsNullOrEmpty(tcgPrice.PriceMid) ? "Mid: " + tcgPrice.PriceMid + "; " : "",
+                                !string.IsNullOrEmpty(tcgPrice.PriceFoil) ? "Foil: " + tcgPrice.PriceFoil : "",
+                                !string.IsNullOrEmpty(tcgPrice.PriceDiff) ? tcgPrice.PriceDiff : "0%");
+
                         // Get other sets card is in
                         List<Set> otherSets = await base.Store.GetCardOtherSets(card.MultiverseId);
                         if (otherSets.Any())
                         {
-                            msg += string.Format(" Also appears in sets: {0}",
-                                string.Join(", ", otherSets.Select(s => s.Code).Take(5).ToArray()));
+                            msg += string.Format(". Also appears in sets: {0}",
+                                string.Join(", ", otherSets.Select(s => s.Code).Take(10).ToArray()));
                         }
 
                         messenger.SendMessage(msg);
@@ -160,9 +156,32 @@ namespace NerdBotCardPrices
                     }
                     else
                     {
-                        messenger.SendMessage("Market price unavailable.");
+                        messenger.SendMessage("Price unavailable");
 
                         return true;
+                    }
+                }
+                else
+                {
+                    this.mLoggingService.Warning("Couldn't find card using arguments.");
+
+                    // Try a second time, this time adding in wildcards
+                    string name = "";
+                    if (command.Arguments.Length == 1)
+                        name = command.Arguments[0];
+                    else
+                        name = command.Arguments[1];
+
+                    name = name.Replace(" ", "%");
+
+                    card = await this.Store.GetCard(name);
+                    if (card != null)
+                    {
+                        LoggingService.Trace("Second try using '{0}' returned a card. Suggesting '{0}'...", name, card.Name);
+
+                        string msg = string.Format("Did you mean '{0}'?", card.Name);
+
+                        messenger.SendMessage(msg);
                     }
                 }
             }
