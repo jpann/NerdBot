@@ -509,6 +509,39 @@ namespace NerdBot.Mtg
 
             return card;
         }
+
+        public async Task<Card> GetRandomCardWithDescription(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                throw new ArgumentException("text");
+
+            text = text.Replace("%", ".*");
+
+            if (!text.EndsWith(".*"))
+                text = text + ".*";
+
+            text = ".*" + text;
+
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
+
+            var query = Query<Card>.Matches(e => e.Desc, new BsonRegularExpression(text, "i"));
+            var sortBy = SortBy.Ascending("multiverseId");
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            int count = (int)collection.Find(query).Count();
+
+            var rand = new Random();
+            var r = rand.Next(count);
+            var card = collection.Find(query).SetSortOrder(sortBy).Skip(r).FirstOrDefault();
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return card;
+        }
         #endregion
 
         #region GetCardSets

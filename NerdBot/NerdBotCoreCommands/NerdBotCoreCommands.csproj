@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="CardSetsListPlugin.cs" />
     <Compile Include="CoinFlipPlugin.cs" />
+    <Compile Include="GetRandomCardByDescriptionPlugin.cs" />
     <Compile Include="RandomCardPlugin.cs" />
     <Compile Include="GetCardStaticAbilityPlugin.cs" />
     <Compile Include="DiceRollPlugin.cs" />
