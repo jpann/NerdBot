@@ -30,6 +30,7 @@ namespace NerdBot.Http
 
             if (string.IsNullOrEmpty(json))
                 throw new ArgumentException("json");
+
             try
             {
                 // For Mono builds that decline HTTPS connections by default
@@ -53,12 +54,13 @@ namespace NerdBot.Http
                     streamWriter.Flush();
                     streamWriter.Close();
 
-                    var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-
-                    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                    using (var httpResponse = (HttpWebResponse) httpWebRequest.GetResponse())
                     {
-                        var result = streamReader.ReadToEnd();
-                        return result;
+                        using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                        {
+                            var result = streamReader.ReadToEnd();
+                            return result;
+                        }
                     }
                 }
             }
