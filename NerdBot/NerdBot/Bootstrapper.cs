@@ -137,6 +137,7 @@ namespace NerdBot
             string pluginDirectory = Path.Combine(Environment.CurrentDirectory, "plugins");
 
             var pluginManager = new PluginManager(
+                msgrBotName,
                 pluginDirectory,
                 container.Resolve<ILoggingService>(), 
                 container.Resolve<IMtgStore>(), 

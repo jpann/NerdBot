@@ -105,6 +105,8 @@
     <Compile Include="Mtg\Prices\CardPrice.cs" />
     <Compile Include="Mtg\Prices\EchoMtgPriceStore.cs" />
     <Compile Include="Mtg\Prices\ICardPriceStore.cs" />
+    <Compile Include="Plugin\IMessagePlugin.cs" />
+    <Compile Include="Plugin\MessagePluginBase.cs" />
     <Compile Include="Reporters\GroupMeReporter.cs" />
     <Compile Include="Reporters\IReporter.cs" />
     <Compile Include="Statistics\CardQueryStat.cs" />

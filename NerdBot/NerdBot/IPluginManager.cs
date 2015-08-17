@@ -11,8 +11,10 @@ namespace NerdBot
 {
     public interface IPluginManager
     {
+        string BotName { get; set; }
         string PluginDirectory { get; set; }
         List<IPlugin> Plugins { get; }
+        List<IMessagePlugin> MessagePlugins { get; }
 
         void LoadPlugins();
         void UnloadPlugins();

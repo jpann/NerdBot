@@ -152,6 +152,9 @@ namespace NerdBot
                                 // If a message is in a command format '<cmd>\s[message]', 
                                 //  have the plugin manager see if any loaded plugins are set to respond to that command
                                 bool handled = await pluginManager.HandleCommand(command, message, messenger);
+
+                                if (!handled)
+                                    pluginManager.SendMessage(message, messenger);
                             }
                         }
                     }

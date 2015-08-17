@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Nancy.TinyIoc;
 using NerdBot.Extensions;
@@ -25,8 +24,16 @@ namespace NerdBot
         private readonly IReporter mReporter;
         private string mPluginDirectory;
         private List<IPlugin> mPlugins = new List<IPlugin>();
+        private List<IMessagePlugin> mMessagePlugins = new List<IMessagePlugin>();
+        private string mBotName;
 
         #region Properties
+        public string BotName
+        {
+            set { this.mBotName = value; }
+            get { return this.mBotName; }
+        }
+
         public string PluginDirectory
         {
             get { return this.mPluginDirectory; }
@@ -42,6 +49,11 @@ namespace NerdBot
         public List<IPlugin> Plugins
         {
             get { return this.mPlugins; }
+        }
+
+        public List<IMessagePlugin> MessagePlugins
+        {
+            get { return this.mMessagePlugins; }
         }
         #endregion
 
@@ -70,13 +82,17 @@ namespace NerdBot
         }
 
         public PluginManager(
+            string botName,
             string pluginDirectory,
             ILoggingService logger,
             IMtgStore store,
             ICommandParser commandParser,
-             IReporter reporter, 
+            IReporter reporter, 
             TinyIoCContainer container)
         {
+            if (string.IsNullOrEmpty(botName))
+                throw new ArgumentException("botName");
+
             if (string.IsNullOrEmpty(pluginDirectory))
                 throw new ArgumentException("pluginDirectory");
 
@@ -95,6 +111,7 @@ namespace NerdBot
             if (container == null)
                 throw new ArgumentNullException("container");
 
+            this.mBotName = botName;
             this.mPluginDirectory = pluginDirectory;
             this.mLogger = logger;
             this.mStore = store;
@@ -144,6 +161,40 @@ namespace NerdBot
             }
 
             this.mLogger.Debug("Loaded {0} plugins.", this.Plugins.Count);
+
+            // Load IMessagePlugin plugins
+            this.mLogger.Debug("Loading message plugins from {0}...", this.mPluginDirectory);
+
+            DirectoryInfo mpInfo = new DirectoryInfo(this.mPluginDirectory);
+
+            foreach (FileInfo fileInfo in mpInfo.GetFiles("*.dll"))
+            {
+                Assembly currentAssembly = Assembly.LoadFile(fileInfo.FullName);
+
+                foreach (Type type in currentAssembly.GetTypes())
+                {
+                    if (!type.ImplementsInterface(typeof(IMessagePlugin)))
+                        continue;
+
+                    this.mLogger.Debug("Loading message plugin '{0}' from '{1}'...",
+                        type.ToString(),
+                        currentAssembly.GetName());
+
+                    IMessagePlugin plugin = (IMessagePlugin)this.mContainer.Resolve(type);
+
+                    this.mContainer.BuildUp(plugin);
+
+                    plugin.BotName = this.mBotName;
+                    plugin.OnLoad();
+
+                    this.mLogger.Debug("Loaded message plugin '{0}'!",
+                        type.ToString());
+
+                    this.mMessagePlugins.Add(plugin);
+                }
+            }
+
+            this.mLogger.Debug("Loaded {0} message plugins.", this.MessagePlugins.Count);
         }
 
         public void UnloadPlugins()
@@ -154,13 +205,20 @@ namespace NerdBot
 
                 this.mPlugins.Remove(plugin);
             }
+
+            foreach (IMessagePlugin plugin in this.mMessagePlugins)
+            {
+                plugin.OnUnload();
+
+                this.mMessagePlugins.Remove(plugin);
+            }
         }
 
         public async void SendMessage(IMessage message, IMessenger messenger)
         {
             try
             {
-                foreach (IPlugin plugin in this.mPlugins)
+                foreach (IMessagePlugin plugin in this.mMessagePlugins)
                 {
                     bool handled = await plugin.OnMessage(message, messenger);
                 }
