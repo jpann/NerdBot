@@ -63,7 +63,8 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
             HtmlDocument htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(pageSource);
 
-            HtmlNode cardsNode = htmlDoc.DocumentNode.SelectSingleNode(@"/html/body/div[4]/div[1]/div[2]/div[1]/table/tbody");
+            //HtmlNode cardsNode = htmlDoc.DocumentNode.SelectSingleNode(@"/html/body/div[4]/div[1]/div[2]/div[1]/table/tbody");
+            HtmlNode cardsNode = htmlDoc.DocumentNode.SelectSingleNode(@"/html/body/div[4]/div/div[5]/table/tbody");
 
             if (cardsNode == null)
             {
