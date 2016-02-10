@@ -85,11 +85,16 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
 
             foreach (HtmlNode row in cardsNode.SelectNodes("tr"))
             {
-                string href = row.Attributes["href"].Value.Trim();
+                //string href = row.Attributes["href"].Value.Trim();
 
-                HtmlNode nameNode = row.SelectSingleNode("td[2]");
-                HtmlNode diffNode = row.SelectSingleNode("td[3]");
-                HtmlNode midNode = row.SelectSingleNode("td[4]");
+                //HtmlNode nameNode = row.SelectSingleNode("td[2]");
+                //HtmlNode diffNode = row.SelectSingleNode("td[3]");
+                //HtmlNode midNode = row.SelectSingleNode("td[4]");
+                //HtmlNode lowNode = row.SelectSingleNode("td[5]");
+                //HtmlNode foilNode = row.SelectSingleNode("td[6]");
+
+                HtmlNode nameNode = row.SelectSingleNode("td[3]");
+                HtmlNode diffNode = row.SelectSingleNode("td[4]");
                 HtmlNode lowNode = row.SelectSingleNode("td[5]");
                 HtmlNode foilNode = row.SelectSingleNode("td[6]");
 
@@ -117,10 +122,26 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
                     }
                 }
 
+                string tempPrice = lowNode.InnerText;
+                price.PriceLow = "$0";
+                price.PriceMid = "$0";
+                price.PriceFoil = "$0";
+
+                if (tempPrice.Split('/').Any())
+                {
+                    string[] lmPrices = tempPrice.Split('/');
+
+                    price.PriceMid = lmPrices[0].Trim();
+
+                    if (lmPrices.Count() == 2)
+                    {
+                        price.PriceLow = lmPrices[1].Trim();
+                    }
+                }
+
                 price.PriceFoil = foilNode.InnerText;
-                price.PriceLow = lowNode.InnerText;
-                price.PriceMid = midNode.InnerText;
-                price.Url = "https://www.echomtg.com" + href;
+                //price.Url = "https://www.echomtg.com" + href;
+                price.Url = "NULL";
                 price.LastUpdated = DateTime.Now;
 
                 string msg = string.Format("Inserting '{0}' from '{1}'... ",
