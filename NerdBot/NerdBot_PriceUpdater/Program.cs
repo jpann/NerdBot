@@ -85,8 +85,10 @@ namespace NerdBot_PriceUpdater
                         er.Message);
 
                     mLoggingService.Error(er, msg);
+					mLoggingService.Error (er.StackTrace);
 
                     Console.WriteLine(msg);
+					Console.WriteLine (er.StackTrace);
                 }
             }
         }

@@ -60,11 +60,17 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
 
             string pageSource = this.mHttpClient.GetPageSource(url);
 
+			this.mLoggingService.Debug (pageSource);
+
             HtmlDocument htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(pageSource);
 
+			this.mLoggingService.Debug ("Loaded page into memory");
+
             //HtmlNode cardsNode = htmlDoc.DocumentNode.SelectSingleNode(@"/html/body/div[4]/div[1]/div[2]/div[1]/table/tbody");
             HtmlNode cardsNode = htmlDoc.DocumentNode.SelectSingleNode(@"/html/body/div[4]/div/div[5]/table/tbody");
+
+			this.mLoggingService.Debug ("Parsed cards node");
 
             if (cardsNode == null)
             {
@@ -85,6 +91,11 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
 
             foreach (HtmlNode row in cardsNode.SelectNodes("tr"))
             {
+				if (row == null) 
+				{
+					this.mLoggingService.Warning ("Row is NULL");
+				}
+
                 //string href = row.Attributes["href"].Value.Trim();
 
                 //HtmlNode nameNode = row.SelectSingleNode("td[2]");
@@ -94,9 +105,28 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
                 //HtmlNode foilNode = row.SelectSingleNode("td[6]");
 
                 HtmlNode nameNode = row.SelectSingleNode("td[3]");
+				if (nameNode == null) 
+				{
+					this.mLoggingService.Warning ("nameNode is NULL");
+				}
+
                 HtmlNode diffNode = row.SelectSingleNode("td[4]");
+				if (diffNode == null) 
+				{
+					this.mLoggingService.Warning ("diffNode is NULL");
+				}
+
                 HtmlNode lowNode = row.SelectSingleNode("td[5]");
+				if (lowNode == null) 
+				{
+					this.mLoggingService.Warning ("lowNode is NULL");
+				}
+
                 HtmlNode foilNode = row.SelectSingleNode("td[6]");
+				if (nameNode == null) 
+				{
+					this.mLoggingService.Warning ("foilNode is NULL");
+				}
 
                 CardPrice price = new CardPrice();
                 price.SetCode = set.Code;
@@ -105,6 +135,9 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
 
                 price.PriceDiff = diffNode.InnerText;
                 price.PriceDiffValue = 0;
+
+				this.mLoggingService.Debug ("Card={0}; Set={1}; PriceDiff={2}; PriceDiffVal={3}",
+					price.Name, price.SetCode, price.PriceDiff, price.PriceDiffValue);
 
                 // Try to parse PriceDiffValue from PriceDiff
                 if (!string.IsNullOrEmpty(price.PriceDiff))
@@ -127,6 +160,13 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
                 price.PriceMid = "$0";
                 price.PriceFoil = "$0";
 
+				this.mLoggingService.Debug ("TempPrice={0}", tempPrice);
+
+				if (string.IsNullOrEmpty (tempPrice)) 
+				{
+					this.mLoggingService.Debug ("TempPrice is NULL");
+				}
+
                 if (tempPrice.Split('/').Any())
                 {
                     string[] lmPrices = tempPrice.Split('/');
@@ -144,6 +184,9 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
                 price.Url = "NULL";
                 price.LastUpdated = DateTime.Now;
 
+				this.mLoggingService.Debug ("PriceFoil={0}; PriceLow={1}; PriceMid={2}",
+					price.PriceFoil, price.PriceLow, price.PriceMid);
+
                 string msg = string.Format("Inserting '{0}' from '{1}'... ",
                     price.Name,
                     price.SetCode);
@@ -152,6 +195,8 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
                 this.mLoggingService.Debug(msg);
 
                 CardPrice card = this.mPriceStore.FindAndModifyCardPrice(price, true);
+
+				this.mLoggingService.Debug ("Saved price for card '{0}'.", card.Name);
             }
         }
     }
