@@ -134,7 +134,7 @@ namespace NerdBot
             container.Register<ICardPriceStore>(priceStore);
 
             // Register the instance of IPluginManager
-            string pluginDirectory = Path.Combine(Environment.CurrentDirectory, ".");
+            string pluginDirectory = Path.Combine(Environment.CurrentDirectory, Environment.CurrentDirectory);
 
             var pluginManager = new PluginManager(
                 msgrBotName,
