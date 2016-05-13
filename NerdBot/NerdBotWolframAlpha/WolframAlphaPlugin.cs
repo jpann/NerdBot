@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using NerdBot.Http;
@@ -9,7 +10,6 @@ using NerdBot.Mtg.Prices;
 using NerdBot.Parsers;
 using NerdBot.Plugin;
 using NerdBot.UrlShortners;
-using NerdBotWolframAlpha.Properties;
 using Nini.Config;
 using WolframAlphaNET;
 using WolframAlphaNET.Misc;
@@ -19,7 +19,6 @@ namespace NerdBotWolframAlpha
 {
     public class WolframAlphaPlugin : PluginBase
     {
-        private string mAPPID;
         private WolframAlpha mWolframAlpha;
 
         public override string Name
@@ -65,12 +64,7 @@ namespace NerdBotWolframAlpha
                 httpClient,
                 urlShortener)
         {
-            //TODO This is bleh
-            string configFile =
-                System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase) +
-                "\\Wolfram.ini";
-
-            configFile = configFile.Replace("file:\\", "");
+            string configFile = Path.Combine(Environment.CurrentDirectory, "Wolfram.ini");
 
             string appId = LoadConfig(configFile);
 
