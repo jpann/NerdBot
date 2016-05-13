@@ -134,7 +134,7 @@ namespace NerdBot
             container.Register<ICardPriceStore>(priceStore);
 
             // Register the instance of IPluginManager
-            string pluginDirectory = Path.Combine(Environment.CurrentDirectory, "plugins");
+            string pluginDirectory = Path.Combine(Environment.CurrentDirectory, ".");
 
             var pluginManager = new PluginManager(
                 msgrBotName,
@@ -149,7 +149,10 @@ namespace NerdBot
 
             // Register BotConfig
             string secretToken = botRouteToken;
-            var botConfig = new BotConfig() { SecretToken = secretToken };
+            var botConfig = new BotConfig()
+            {
+                SecretToken = secretToken
+            };
             container.Register(botConfig);
         }
 
