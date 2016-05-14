@@ -19,6 +19,9 @@ namespace NerdBotWolframAlpha
 {
     public class WolframAlphaPlugin : PluginBase
     {
+        private const int cSubPodTakeCount = 3; // The number of sub pods to take
+        private const float cScanTimeout = 3.0f; // How long should the query scan timeout be. The larger this value is, the longer it will take for a response
+
         private WolframAlpha mWolframAlpha;
 
         public override string Name
@@ -69,7 +72,7 @@ namespace NerdBotWolframAlpha
             string appId = LoadConfig(configFile);
 
             this.mWolframAlpha = new WolframAlpha(appId);
-            this.mWolframAlpha.ScanTimeout = 0.1f;
+            this.mWolframAlpha.ScanTimeout = cScanTimeout;
         }
 
         public override void OnLoad()
@@ -116,9 +119,25 @@ namespace NerdBotWolframAlpha
                         {
                             if (primaryPod.SubPods.HasElements())
                             {
-                                foreach (SubPod subPod in primaryPod.SubPods.Take(3))
+                                foreach (SubPod subPod in primaryPod.SubPods.Take(cSubPodTakeCount))
                                 {
                                     messenger.SendMessage(subPod.Plaintext);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // If there was no primary pod, get the 2nd pod which should have the main information.
+                            if (result.Pods.Count() >= 2)
+                            {
+                                var nextPod = result.Pods[1];
+
+                                if (nextPod != null)
+                                {
+                                    foreach (SubPod subPod in nextPod.SubPods.Take(cSubPodTakeCount))
+                                    {
+                                        messenger.SendMessage(subPod.Plaintext);
+                                    }
                                 }
                             }
                         }
