@@ -161,6 +161,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Views\search.sshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Views\ruling.sshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

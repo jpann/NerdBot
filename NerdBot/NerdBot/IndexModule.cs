@@ -77,6 +77,36 @@ namespace NerdBot
                 return View["ruling.sshtml", card];
             };
 
+            // Get search results
+            Get["/search/{name}", true] = async (parameters, ct) =>
+            {
+                int limit = 50;
+
+                string name = parameters.name;
+
+                if (string.IsNullOrEmpty(name))
+                {
+                    return HttpStatusCode.Accepted;
+                }
+
+                var cards = await mtgStore.GetCards(name, limit);
+
+                if (cards == null)
+                {
+                    string msg = string.Format("No cards found using name '{0}'", name);
+
+                    loggingService.Error(msg);
+
+                    return msg;
+                }
+
+                return View["search.sshtml", new
+                {
+                    SearchTerm = name, 
+                    Cards = cards
+                }];
+            };
+
             Post["/bot/{token}", true] = async (parameters, ct) =>
             {
                 try

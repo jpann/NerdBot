@@ -357,7 +357,7 @@ namespace NerdBot.Mtg
             return cards;
         }
 
-        public async Task<List<Card>> GetCards(string name)
+        public async Task<List<Card>> GetCards(string name, int limit = 0)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name");
@@ -375,6 +375,9 @@ namespace NerdBot.Mtg
 
             MongoCursor<Card> cursor = collection.Find(query)
                 .SetSortOrder("searchName");
+
+            if (limit > 0)
+                cursor.SetLimit(limit);
 
             foreach (Card card in cursor)
             {

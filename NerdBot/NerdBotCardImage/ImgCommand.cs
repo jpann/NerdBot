@@ -15,6 +15,8 @@ namespace NerdBotCardImage
 {
     public class ImgCommand : PluginBase
     {
+        private const string cSearchUrl = "http://silencio.ikonzeh.org:6001/search/{0}";
+
         public override string Name
         {
             get { return "img command"; }
@@ -155,16 +157,26 @@ namespace NerdBotCardImage
                     else
                         name = command.Arguments[1];
 
-                    name = name.Replace(" ", "%");
+                    string wildCardName = name.Replace(" ", "%");
 
-                    card = await this.Store.GetCard(name);
+                    card = await this.Store.GetCard(wildCardName);
                     if (card != null)
                     {
-                        LoggingService.Trace("Second try using '{0}' returned a card. Suggesting '{0}'...", name, card.Name);
+                        LoggingService.Trace("Second try using '{0}' returned a card. Suggesting '{0}'...", wildCardName, card.Name);
 
                         string msg = string.Format("Did you mean '{0}'?", card.Name);
 
                         messenger.SendMessage(msg);
+
+                        string url = string.Format(cSearchUrl, name);
+
+                        messenger.SendMessage(string.Format("Or try seeing if your card is here: {0}", url));
+                    }
+                    else
+                    {
+                        string url = string.Format(cSearchUrl, name);
+
+                        messenger.SendMessage(string.Format("Or try seeing if your card is here: {0}", url));
                     }
                 }
             }
