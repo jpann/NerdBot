@@ -205,7 +205,7 @@ namespace NerdBot.Mtg
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             var query = Query<Card>.EQ(e => e.MultiverseId, multiverseId);
-            var sortBy = SortBy.Ascending("setName");
+            var sortBy = SortBy.Ascending("searchName");
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -247,7 +247,7 @@ namespace NerdBot.Mtg
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             var query = Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i"));
-            var sortBy = SortBy.Ascending("setName");
+            var sortBy = SortBy.Ascending("searchName");
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -301,7 +301,7 @@ namespace NerdBot.Mtg
                     Query<Card>.EQ(e => e.SetId, new BsonRegularExpression(setCode, "i")))
                 );
 
-            var sortBy = SortBy.Ascending("setName");
+            var sortBy = SortBy.Ascending("searchName");
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -343,7 +343,7 @@ namespace NerdBot.Mtg
             watch.Start();
 
             MongoCursor <Card> cursor = collection.FindAll()
-                .SetSortOrder("name");
+                .SetSortOrder("searchName");
 
             foreach (Card card in cursor)
             {
@@ -374,7 +374,7 @@ namespace NerdBot.Mtg
             var query = Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i"));
 
             MongoCursor<Card> cursor = collection.Find(query)
-                .SetSortOrder("name");
+                .SetSortOrder("searchName");
 
             foreach (Card card in cursor)
             {
