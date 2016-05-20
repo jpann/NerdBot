@@ -97,6 +97,8 @@ namespace NerdBotCoreCommands
                     if (string.IsNullOrEmpty(name))
                         return false;
 
+                    name = Uri.EscapeDataString(name);
+
                     string url = string.Format(cSearchUrl, name);
 
                     messenger.SendMessage(string.Format("Card search: {0}", url));
