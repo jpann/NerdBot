@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Moq;
+using NerdBot;
 using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
@@ -110,7 +111,7 @@ namespace NerdBotCardImagePlugin_Tests
 
             // Setup IUrlShortener Mocks
             urlShortenerMock = new Mock<IUrlShortener>();
-
+            
             // Setup IMessenger Mocks
             messengerMock = new Mock<IMessenger>();
             imgCommandPlugin = new ImgCommand(
@@ -118,7 +119,8 @@ namespace NerdBotCardImagePlugin_Tests
                 priceStoreMock.Object,
                 commandParserMock.Object,
                 httpClientMock.Object,
-                urlShortenerMock.Object);
+                urlShortenerMock.Object,
+                new BotConfig());
 
             imgCommandPlugin.LoggingService = loggingServiceMock.Object;
         }

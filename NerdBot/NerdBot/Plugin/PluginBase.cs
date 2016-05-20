@@ -21,13 +21,15 @@ namespace NerdBot.Plugin
         protected IHttpClient mHttpClient;
         protected IUrlShortener mUrlShortener;
         protected ILoggingService mLoggingService;
+        protected BotConfig mBotConfig;
 
         public PluginBase(
             IMtgStore store,
             ICardPriceStore priceStore,
             ICommandParser commandParser,
             IHttpClient httpClient,
-            IUrlShortener urlShortener)
+            IUrlShortener urlShortener,
+            BotConfig config)
         {
             if (store == null)
                 throw new ArgumentNullException("store");
@@ -44,11 +46,15 @@ namespace NerdBot.Plugin
             if (urlShortener == null)
                 throw new ArgumentNullException("urlShortener");
 
+            if (config == null)
+                throw new ArgumentNullException("config");
+
             this.mStore = store;
             this.mPriceStore = priceStore;
             this.mCommandParser = commandParser;
             this.mHttpClient = httpClient;
             this.mUrlShortener = urlShortener;
+            this.mBotConfig = config;
         }
 
         #region Properties
@@ -119,6 +125,8 @@ namespace NerdBot.Plugin
             get { return this.mLoggingService; }
             set { this.mLoggingService = value; }
         }
+
+        public BotConfig Config { get; set; }
 
         public abstract string Name { get; }
         public abstract string Description { get; }

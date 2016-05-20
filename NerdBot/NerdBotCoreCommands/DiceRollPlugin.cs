@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NerdBot;
 using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
@@ -52,13 +53,16 @@ namespace NerdBotCoreCommands
                 ICardPriceStore priceStore,
                 ICommandParser commandParser,
                 IHttpClient httpClient,
-                IUrlShortener urlShortener)
+                IUrlShortener urlShortener,
+                BotConfig config
+            )
             : base(
                 store,
                 priceStore,
                 commandParser,
                 httpClient,
-                urlShortener)
+                urlShortener,
+                config)
         {
         }
 

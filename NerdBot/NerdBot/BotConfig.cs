@@ -9,5 +9,6 @@ namespace NerdBot
     public class BotConfig
     {
         public string SecretToken { get; set; }
+        public string HostUrl { get; set; }
     }
 }

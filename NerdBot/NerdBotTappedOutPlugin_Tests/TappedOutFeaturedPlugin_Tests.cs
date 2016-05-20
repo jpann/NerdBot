@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Moq;
+using NerdBot;
 using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
@@ -162,7 +163,8 @@ namespace NerdBotTappedOutPlugin_Tests
                 priceStoreMock.Object,
                 commandParserMock.Object,
                 httpClientMock.Object,
-                urlShortenerMock.Object);
+                urlShortenerMock.Object,
+                new BotConfig());
 
             plugin.LoggingService = loggingServiceMock.Object;
         }

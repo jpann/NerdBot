@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NerdBot;
 using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
@@ -15,7 +16,7 @@ namespace NerdBotCoreCommands
 {
     public class RulingPlugin : PluginBase
     {
-        private const string cRulingUrl = "http://silencio.ikonzeh.org:6001/ruling/{0}";
+        private const string cRulingUrl = "{0}/ruling/{1}";
 
         public override string Name
         {
@@ -52,13 +53,16 @@ namespace NerdBotCoreCommands
                 ICardPriceStore priceStore,
                 ICommandParser commandParser,
                 IHttpClient httpClient,
-                IUrlShortener urlShortener)
+                IUrlShortener urlShortener,
+                BotConfig config
+            )
             : base(
                 store,
                 priceStore,
                 commandParser,
                 httpClient,
-                urlShortener)
+                urlShortener,
+                config)
         {
         }
 
@@ -119,7 +123,7 @@ namespace NerdBotCoreCommands
                 {
                     if (card.Rulings.Any())
                     {
-                        string url = string.Format(cRulingUrl, card.MultiverseId);
+                        string url = string.Format(cRulingUrl, this.Config.HostUrl, card.MultiverseId);
 
                         messenger.SendMessage(string.Format("Card ruling: {0}", url));
                     }

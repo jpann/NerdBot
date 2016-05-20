@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using NerdBot;
 using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
@@ -59,13 +60,15 @@ namespace NerdBotWolframAlpha
                 ICardPriceStore priceStore,
                 ICommandParser commandParser,
                 IHttpClient httpClient,
-                IUrlShortener urlShortener)
+                IUrlShortener urlShortener,
+                BotConfig config)
             : base(
                 store,
                 priceStore,
                 commandParser,
                 httpClient,
-                urlShortener)
+                urlShortener,
+                config)
         {
             string configFile = Path.Combine(Environment.CurrentDirectory, "Wolfram.ini");
 

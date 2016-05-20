@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Moq;
+using NerdBot;
 using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
@@ -118,7 +119,8 @@ namespace UrbanDictionaryPlugin_Tests
                 priceStoreMock.Object,
                 commandParserMock.Object,
                 httpClient,
-                urlShortenerMock.Object);
+                urlShortenerMock.Object,
+                new BotConfig());
 
             plugin.LoggingService = loggingServiceMock.Object;
         }

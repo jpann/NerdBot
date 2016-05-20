@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NerdBot;
 using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Mtg;
@@ -48,17 +49,20 @@ namespace NerdBotCardImage
         }
 
         public ImgCommand(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener)
+            IMtgStore store,
+            ICardPriceStore priceStore,
+            ICommandParser commandParser,
+            IHttpClient httpClient,
+            IUrlShortener urlShortener,
+            BotConfig config
+            )
             : base(
                 store,
                 priceStore,
                 commandParser,
                 httpClient,
-                urlShortener)
+                urlShortener,
+                config)
         {
         }
 

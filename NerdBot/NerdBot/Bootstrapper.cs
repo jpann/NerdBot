@@ -54,6 +54,7 @@ namespace NerdBot
             string urlKey;
             string reporterBotId;
             string reporterBotName;
+            string hostUrl;
 
             this.LoadConfiguration(
                 configFile,
@@ -68,7 +69,8 @@ namespace NerdBot
                 out urlUser,
                 out urlKey,
                 out reporterBotId,
-                out reporterBotName
+                out reporterBotName,
+                out hostUrl
                 );
 
             // Register the instance of ILoggingService
@@ -133,6 +135,15 @@ namespace NerdBot
                 container.Resolve<SearchUtility>());
             container.Register<ICardPriceStore>(priceStore);
 
+            // Register BotConfig
+            string secretToken = botRouteToken;
+            var botConfig = new BotConfig()
+            {
+                SecretToken = secretToken,
+                HostUrl = hostUrl
+            };
+            container.Register(botConfig);
+
             // Register the instance of IPluginManager
             string pluginDirectory = Environment.CurrentDirectory;
 
@@ -146,14 +157,6 @@ namespace NerdBot
                 container);
 
             container.Register<IPluginManager>(pluginManager);
-
-            // Register BotConfig
-            string secretToken = botRouteToken;
-            var botConfig = new BotConfig()
-            {
-                SecretToken = secretToken
-            };
-            container.Register(botConfig);
         }
 
         private void LoadConfiguration(
@@ -169,7 +172,8 @@ namespace NerdBot
             out string urlUser,
             out string urlKey,
             out string reporterBotId,
-            out string reporterBotName)
+            out string reporterBotName,
+            out string hostUrl)
         {
             IConfigSource source = new IniConfigSource(fileName);
 
@@ -224,6 +228,10 @@ namespace NerdBot
             reporterBotName = source.Configs["Reporter"].Get("botName");
             if (string.IsNullOrEmpty(reporterBotName))
                 throw new Exception("Configuration file is missing 'botName' setting in section 'Reporter'.");
+
+            hostUrl = source.Configs["App"].Get("url");
+            if (string.IsNullOrEmpty(hostUrl))
+                throw new Exception("Configuration file is missing 'url' setting in section 'App'.");
         }
     }
 }

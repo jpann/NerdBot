@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using Moq;
+using NerdBot;
 using NerdBot.Http;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
@@ -108,7 +109,8 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 priceStoreMock.Object,
                 commandParserMock.Object,
                 httpClientMock.Object,
-                urlShortenerMock.Object);
+                urlShortenerMock.Object,
+                new BotConfig());
 
             plugin.LoggingService = loggingServiceMock.Object;
 

@@ -19,6 +19,7 @@ namespace NerdBot.Plugin
         IHttpClient HttpClient { get; set; }
         IUrlShortener UrlShortener { get; set; }
         ICardPriceStore PriceStore { get; set; }
+        BotConfig Config { get; set; }
 
         string Name { get; }
         string Description { get; }
