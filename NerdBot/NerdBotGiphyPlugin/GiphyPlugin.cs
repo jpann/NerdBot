@@ -91,27 +91,34 @@ namespace NerdBotGiphyPlugin
 
             string url = "http://api.giphy.com/v1/gifs/random?tag={0}&api_key=dc6zaTOxFJmzC";
 
-            var giphyFetcher = new GiphyFetcher(url, base.HttpClient);
+			try
+			{
+	            var giphyFetcher = new GiphyFetcher(url, base.HttpClient);
 
-            if (command.Arguments.Any())
-            {
-                string giphyUrl = null;
+	            if (command.Arguments.Any())
+	            {
+	                string giphyUrl = null;
 
-                if (command.Arguments.Length == 1)
-                {
-                    string keyword = command.Arguments[0];
+	                if (command.Arguments.Length == 1)
+	                {
+	                    string keyword = command.Arguments[0];
 
-                    if (!string.IsNullOrEmpty(keyword))
-                        giphyUrl = await giphyFetcher.GetGiphyGif(keyword);
-                }
+	                    if (!string.IsNullOrEmpty(keyword))
+	                        giphyUrl = await giphyFetcher.GetGiphyGif(keyword);
+	                }
 
-                if (!string.IsNullOrEmpty(giphyUrl))
-                {
-                    messenger.SendMessage(giphyUrl);
-                }
-            }
+	                if (!string.IsNullOrEmpty(giphyUrl))
+	                {
+	                    messenger.SendMessage(giphyUrl);
+	                }
+	            }
 
-            return false;
+				return false;
+			}
+			catch (Exception er) 
+			{
+				return false;
+			}
         }
     }
 }
