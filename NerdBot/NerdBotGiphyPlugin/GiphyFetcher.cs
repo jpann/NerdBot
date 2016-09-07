@@ -39,7 +39,7 @@ namespace NerdBotGiphyPlugin
 
                 JObject giphy = JObject.Parse(latestJson);
 
-                string url = (string)giphy["data"]["image_url"];
+				string url = (string)giphy["data"]["images"]["original"]["url"];
 
                 return url;
             }

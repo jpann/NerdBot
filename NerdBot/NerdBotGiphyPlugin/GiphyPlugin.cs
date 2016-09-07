@@ -89,7 +89,7 @@ namespace NerdBotGiphyPlugin
             if (messenger == null)
                 throw new ArgumentNullException("messenger");
 
-            string url = "http://api.giphy.com/v1/gifs/random?tag={0}&api_key=dc6zaTOxFJmzC";
+			string url = "http://api.giphy.com/v1/gifs/translate?s={0}&api_key=dc6zaTOxFJmzC";
 
 			try
 			{
