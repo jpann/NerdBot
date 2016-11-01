@@ -15,6 +15,8 @@ namespace NerdBotCardPrices
 {
     public class CardPricePlugin: PluginBase
     {
+		private const string cSearchUrl = "{0}/search/{1}";
+
         public override string Name
         {
             get { return "tcg Command"; }
@@ -179,14 +181,22 @@ namespace NerdBotCardPrices
                     name = name.Replace(" ", "%");
 
                     card = await this.Store.GetCard(name);
-                    if (card != null)
-                    {
-                        LoggingService.Trace("Second try using '{0}' returned a card. Suggesting '{0}'...", name, card.Name);
+					if (card != null)
+					{
+						LoggingService.Trace("Second try using '{0}' returned a card. Suggesting '{0}'...", name, card.Name);
 
-                        string msg = string.Format("Did you mean '{0}'?", card.Name);
+						string msg = string.Format("Did you mean '{0}'?", card.Name);
 
-                        messenger.SendMessage(msg);
-                    }
+						messenger.SendMessage(msg);
+					}
+					else
+					{
+						name = Uri.EscapeDataString(name);
+
+						string url = string.Format(cSearchUrl, this.Config.HostUrl, name);
+
+						messenger.SendMessage(string.Format("Or try seeing if your card is here: {0}", url));
+					}
                 }
             }
 

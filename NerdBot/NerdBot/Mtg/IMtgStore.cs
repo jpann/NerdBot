@@ -22,6 +22,7 @@ namespace NerdBot.Mtg
 
         Task<List<Card>> GetCards();
         Task<List<Card>> GetCards(string name, int limit = 0);
+		Task<List<Card>> SearchCards(string name, int limit = 0);
 
         Task<Card> GetRandomCardByArtist(string artist);
         Task<Card> GetRandomCardInSet(string setName);

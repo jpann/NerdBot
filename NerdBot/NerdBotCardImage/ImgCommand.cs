@@ -16,7 +16,7 @@ namespace NerdBotCardImage
 {
     public class ImgCommand : PluginBase
     {
-        private const string cSearchUrl = "http://silencio.ikonzeh.org:6001/search/{0}";
+		private const string cSearchUrl = "{0}/search/{1}";
 
         public override string Name
         {
@@ -178,7 +178,9 @@ namespace NerdBotCardImage
                     }
                     else
                     {
-                        string url = string.Format(cSearchUrl, name);
+						name = Uri.EscapeDataString(name);
+
+						string url = string.Format(cSearchUrl, this.Config.HostUrl, name);
 
                         messenger.SendMessage(string.Format("Or try seeing if your card is here: {0}", url));
                     }

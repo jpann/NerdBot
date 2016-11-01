@@ -80,7 +80,7 @@ namespace NerdBot
             // Get search results
             Get["/search/{name}", true] = async (parameters, ct) =>
             {
-                int limit = 50;
+                int limit = 100;
 
                 string name = parameters.name;
 
@@ -89,7 +89,7 @@ namespace NerdBot
                     return HttpStatusCode.Accepted;
                 }
 
-                var cards = await mtgStore.GetCards(name, limit);
+                var cards = await mtgStore.SearchCards(name, limit);
 
                 if (cards == null)
                 {

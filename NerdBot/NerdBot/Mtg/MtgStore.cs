@@ -370,7 +370,7 @@ namespace NerdBot.Mtg
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
-
+				                
             var query = Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i"));
 
             MongoCursor<Card> cursor = collection.Find(query)
@@ -390,6 +390,59 @@ namespace NerdBot.Mtg
 
             return cards;
         }
+
+		public async Task<List<Card>> SearchCards(string name, int limit = 0)
+		{
+			if (string.IsNullOrEmpty(name))
+				throw new ArgumentException("name");
+
+			List<Card> cards = new List<Card>();
+
+			string regex_name = this.mSearchUtility.GetRegexSearchValue(name);
+
+			var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
+
+			Stopwatch watch = new Stopwatch();
+			watch.Start();
+
+			IMongoQuery query = null;
+			MongoCursor<Card> cursor = null;
+
+			string[] names = name.Split(' ');
+			if (names.Length > 1)
+			{
+				List<IMongoQuery> nameQueries = new List<IMongoQuery>();
+
+				foreach (string n in names)
+				{
+					nameQueries.Add(Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(n, "i")));
+				}
+
+				cursor = collection.Find(Query.Or(nameQueries))
+					.SetSortOrder("searchName");
+			}
+			else
+			{
+				query = Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(regex_name, "i"));
+
+				cursor = collection.Find(query)
+					.SetSortOrder("searchName");
+			}
+
+			if (limit > 0)
+				cursor.SetLimit(limit);
+
+			foreach (Card card in cursor)
+			{
+				cards.Add(card);
+			}
+
+			watch.Stop();
+
+			this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+			return cards;
+		}
         #endregion
 
         #region GetRandomCards
