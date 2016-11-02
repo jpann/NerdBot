@@ -7,4 +7,4 @@ Each command that the bot can use will be written as plugins.
 
 Builds in Visual Studio 2012 and Xamarin Studio 5.7.
 
-Tested on Windows 7 x64 and Ubuntu 14.04 x86_64
+Tested on Windows 7, Windows 10 x64 and Ubuntu 14.04, 15.04 x86_64 using Mono 3.2.8.
