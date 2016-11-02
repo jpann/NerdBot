@@ -37,6 +37,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotWolframAlpha", "Nerd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotGiphyPlugin", "NerdBotGiphyPlugin\NerdBotGiphyPlugin.csproj", "{DF8F97A0-AFA5-4949-9C91-DD80475C4BEF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotWhatsInStandardPlugin", "NerdBotWhatsInStandardPlugin\NerdBotWhatsInStandardPlugin.csproj", "{C2E52DE1-CD34-4AA6-A4C1-DBC8E9DBF35F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotWhatsInStandardPlugin_Tests", "NerdBotWhatsInStandardPlugin_Tests\NerdBotWhatsInStandardPlugin_Tests.csproj", "{DD7585CC-D697-4CC5-8E2B-0B263494C88B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +119,14 @@ Global
 		{DF8F97A0-AFA5-4949-9C91-DD80475C4BEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF8F97A0-AFA5-4949-9C91-DD80475C4BEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF8F97A0-AFA5-4949-9C91-DD80475C4BEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2E52DE1-CD34-4AA6-A4C1-DBC8E9DBF35F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2E52DE1-CD34-4AA6-A4C1-DBC8E9DBF35F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2E52DE1-CD34-4AA6-A4C1-DBC8E9DBF35F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2E52DE1-CD34-4AA6-A4C1-DBC8E9DBF35F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD7585CC-D697-4CC5-8E2B-0B263494C88B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD7585CC-D697-4CC5-8E2B-0B263494C88B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD7585CC-D697-4CC5-8E2B-0B263494C88B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD7585CC-D697-4CC5-8E2B-0B263494C88B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
