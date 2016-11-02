@@ -20,6 +20,13 @@ namespace NerdBot_DatabaseUpdater.DataReaders
         private readonly IFileSystem mFileSystem;
         private readonly ILoggingService mLoggingService;
 
+        private bool mSkipTokens = true;
+
+        public bool SkipTokens
+        {
+            set { this.mSkipTokens = value; }
+        }
+
         public MtgJsonReader(
             string fileName, 
             IMtgDataMapper<MtgJsonCard, MtgJsonSet> dataMapper,
@@ -125,6 +132,16 @@ namespace NerdBot_DatabaseUpdater.DataReaders
                 this.mLoggingService.Debug("Deserializing MtgJsonCard...");
                 MtgJsonCard cardData = JsonConvert.DeserializeObject<MtgJsonCard>(result.ToString(), settings);
                 this.mLoggingService.Debug("MtgJsonCard deserialized!");
+
+                if (this.mSkipTokens)
+                {
+                    if (cardData.Layout.ToLower() == "token")
+                    {
+                        this.mLoggingService.Debug("Card is a token, skipping...");
+
+                        continue;
+                    }
+                }
 
                 this.mLoggingService.Debug("Mapping data...");
                 var card = this.mDataMapper.GetCard(cardData, setData.Name, setData.Code);

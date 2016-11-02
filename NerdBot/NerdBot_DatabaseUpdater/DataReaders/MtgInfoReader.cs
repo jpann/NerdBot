@@ -17,6 +17,13 @@ namespace NerdBot_DatabaseUpdater.DataReaders
         private readonly Db mMtgInfoDb;
         private readonly string mSetId;
 
+        private bool mSkipTokens = true;
+
+        public bool SkipTokens
+        {
+            set { this.mSkipTokens = value; }
+        }
+
         public MtgInfoReader(
             string setId,
             Db mtgInfoDb,

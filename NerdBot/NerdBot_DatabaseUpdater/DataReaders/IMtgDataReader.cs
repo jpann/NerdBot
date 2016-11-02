@@ -11,5 +11,7 @@ namespace NerdBot_DatabaseUpdater.DataReaders
     {
         Set ReadSet();
         IEnumerable<Card> ReadCards();
+
+        bool SkipTokens { set; }
     }
 }

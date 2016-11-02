@@ -38,6 +38,7 @@ namespace NerdBot_DatabaseUpdater
             string mtgDbInfoSet = null;
             bool isMtgJson = false;
             string mtgJsonFilename = null;
+            bool skipTokens = true;
 
             try
             {
@@ -60,6 +61,10 @@ namespace NerdBot_DatabaseUpdater
                 p.Setup<string>("file")
                         .Callback(value => mtgJsonFilename = value)
                         .Required();
+
+                p.Setup<bool>("skiptokens")
+                   .Callback(value => skipTokens = value)
+                   .SetDefault(true);
 
                 p.Parse(args);
 
@@ -91,6 +96,8 @@ namespace NerdBot_DatabaseUpdater
                 {
                     throw new Exception("Please provide either --mtgdbinfo or --mtgjson arguments.");
                 }
+
+                mDataReader.SkipTokens = skipTokens;
 
                 // Setup worker
                 mUpdaterBackgroundWorker = new BackgroundWorker();

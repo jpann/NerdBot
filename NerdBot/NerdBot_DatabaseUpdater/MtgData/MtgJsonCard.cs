@@ -8,6 +8,7 @@ namespace NerdBot_DatabaseUpdater.MtgData
 {
     public class MtgJsonCard
     {
+        public string Layout { get; set; } // Contains layout of card, e.g. layout: "token" or layout: "normal"
         public string Name { get; set; }
         public string MultiverseId { get; set; }
         public int CMC { get; set; }
