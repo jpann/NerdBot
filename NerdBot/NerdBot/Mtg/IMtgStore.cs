@@ -29,6 +29,8 @@ namespace NerdBot.Mtg
         Task<Card> GetRandomCard();
         Task<Card> GetRandomCardWithStaticAbility(string text);
         Task<Card> GetRandomCardWithDescription(string text);
+        Task<string> GetRandomFlavorText();
+
 
         Task<List<Set>> GetCardSets(int multiverseId, int limit = 8);
 

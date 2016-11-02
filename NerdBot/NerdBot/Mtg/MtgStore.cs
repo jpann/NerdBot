@@ -598,6 +598,38 @@ namespace NerdBot.Mtg
 
             return card;
         }
+
+        public async Task<string> GetRandomFlavorText()
+        {
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            int count = (int)collection.Count();
+            var random = new Random();
+            var r = random.Next(count);
+            Card card = collection.FindAll().Skip(r).FirstOrDefault();
+
+            if (card == null)
+            {
+                int maxTries = 5;
+                int tries = 0;
+
+                do
+                {
+                    var randomNum = random.Next(count);
+                    card = collection.FindAll().Skip(randomNum).FirstOrDefault();
+                } 
+                while (card == null && tries < maxTries);
+            }
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return card.Flavor;
+        }
         #endregion
 
         #region GetCardSets
