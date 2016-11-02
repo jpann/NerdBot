@@ -33,6 +33,8 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
 
+	<img src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=@Model.MultiverseId&type=card" /><br/><br/>
+
 	<b>Name:</b> @Model.Name (<a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=true&multiverseid=@Model.MultiverseId">printed</a> / <a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=false&multiverseid=@Model.MultiverseId">oracle</a>)<br />
 	<b>Set:</b> @Model.SetName [@Model.SetId]<br />
 	<b>Type:</b> @Model.Type<br />
