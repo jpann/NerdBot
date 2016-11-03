@@ -16,7 +16,7 @@ namespace NerdBotRedditTopCommentResponsePlugin
     public class RedditTopCommentPlugin : MessagePluginBase
     {
         private const string cSubReddit = "r/RoastMe";
-        private const int cReplyChance = 2;
+        private const int cReplyChance = 5;
 
         private RedditTopFetcher mFetcher;
         private Random mRandom;
