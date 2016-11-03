@@ -93,7 +93,7 @@ namespace NerdBotRedditTopCommentResponsePlugin
             }
             else
             {
-                if (this.mRandom.Next(0, 100) < cReplyChance)
+                if (this.mRandom.Next(1, 101) <= cReplyChance)
                 {
                     string reply = await this.mFetcher.GetTopCommentFromSubreddit(cSubReddit);
 
