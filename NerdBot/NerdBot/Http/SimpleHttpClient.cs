@@ -120,7 +120,7 @@ namespace NerdBot.Http
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "GET";
                 request.UserAgent = "NerdBot/1.0";
-                request.Timeout = 20;
+                //request.Timeout = 20;
 
                 var response = request.GetResponse();
                 var stream = response.GetResponseStream();
