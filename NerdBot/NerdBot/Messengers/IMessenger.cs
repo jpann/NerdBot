@@ -12,5 +12,6 @@ namespace NerdBot.Messengers
         string[] IgnoreNames { get; }
 
         bool SendMessage(string message);
+        bool SendMessageWithMention(string message, string mentionId, int start, int end);
     }
 }

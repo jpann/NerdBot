@@ -81,7 +81,14 @@ namespace NerdBotRedditTopCommentResponsePlugin
 
                 if (!string.IsNullOrEmpty(reply))
                 {
-                    messenger.SendMessage(string.Format("@{0} {1}", message.name, reply));
+                    string name = "@" + message.name;
+
+                    string msg = string.Format("{0} {1}", name, reply);
+
+                    int start = 0;
+                    int end = msg.IndexOf(name) + name.Length;
+
+                    messenger.SendMessageWithMention(msg, (string)message.user_id, start, end);
                 }
             }
             else
@@ -99,7 +106,14 @@ namespace NerdBotRedditTopCommentResponsePlugin
 
                     if (!string.IsNullOrEmpty(reply))
                     {
-                        messenger.SendMessage(string.Format("@{0} {1}", message.name, reply));
+                        string name = "@" + message.name;
+
+                        string msg = string.Format("{0} {1}", name, reply);
+
+                        int start = 0;
+                        int end = msg.IndexOf(name) + name.Length;
+
+                        messenger.SendMessageWithMention(msg, (string)message.user_id, start, end);
                     }
                 }
             }

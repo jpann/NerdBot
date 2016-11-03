@@ -91,5 +91,49 @@ namespace NerdBot.Messengers.GroupMe
                 return false;
             }
         }
+
+        public bool SendMessageWithMention(string message, string mentionId, int start, int end)
+        {
+            if (string.IsNullOrEmpty(message))
+                throw new ArgumentException("message");
+
+            string json = new JavaScriptSerializer().Serialize(new
+            {
+                text = message,
+                bot_id = this.mBotId,
+                attachments = new [] {
+                    new
+                    {
+                        loci = new[]
+                        {
+                            new []
+                            {
+                                start, end
+                            }
+                        },
+                        type = "mentions",
+                        user_ids = new []
+                        {
+                            mentionId
+                        }
+                    }
+                }
+            });
+
+            try
+            {
+                this.mLogger.Trace("Sending message '{0}' using botId '{1}'...", message, this.mBotId);
+
+                string result = this.mHttpClient.Post(this.mEndpointUrl, json);
+
+                return true;
+            }
+            catch (Exception er)
+            {
+                this.mLogger.Error(er, string.Format("Error sending groupme message: {0}", message));
+
+                return false;
+            }
+        }
     }
 }

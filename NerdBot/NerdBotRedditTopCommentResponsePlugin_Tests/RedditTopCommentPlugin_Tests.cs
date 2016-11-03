@@ -121,11 +121,13 @@ namespace NerdBotRedditTopCommentResponsePlugin_Tests
                 httpClient,
                 urlShortenerMock.Object);
 
+            plugin.BotName = "TEST";
+
             plugin.LoggingService = loggingServiceMock.Object;
         }
 
         [Test]
-        public void GetDefinition_IsA()
+        public void RoastMe()
         {
             var msg = new GroupMeMessage();
             msg.text = "hey, roast me!";
