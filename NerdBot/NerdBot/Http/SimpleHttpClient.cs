@@ -112,5 +112,31 @@ namespace NerdBot.Http
 		        return null;
 	        }
         }
+
+        public string GetResponseAsString(string url)
+        {
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "GET";
+                request.UserAgent = "NerdBot/1.0";
+                request.Timeout = 20;
+
+                var response = request.GetResponse();
+                var stream = response.GetResponseStream();
+
+                var data = new StreamReader(stream).ReadToEnd();
+                stream.Close();
+
+
+                return data;
+            }
+            catch (Exception er)
+            {
+                this.mLogger.Error(er, string.Format("Error getting response from '{0}'", url));
+
+                return null;
+            }
+        }
     }
 }

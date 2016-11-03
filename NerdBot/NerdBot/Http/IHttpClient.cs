@@ -11,5 +11,6 @@ namespace NerdBot.Http
         string Post(string url, string json);
         string GetPageSource(string url);
         Task<string> GetAsJson(string url);
+        string GetResponseAsString(string url);
     }
 }
