@@ -16,7 +16,7 @@ namespace NerdBot_DatabaseUpdater.DataReaders
     public class MtgJsonReader : IMtgDataReader
     {
         private readonly IMtgDataMapper<MtgJsonCard, MtgJsonSet> mDataMapper;
-        private readonly string mFileName;
+        private string mFileName;
         private readonly IFileSystem mFileSystem;
         private readonly ILoggingService mLoggingService;
 
@@ -25,6 +25,15 @@ namespace NerdBot_DatabaseUpdater.DataReaders
         public bool SkipTokens
         {
             set { this.mSkipTokens = value; }
+        }
+
+        public string FileName
+        {
+            get { return this.mFileName; }
+            set
+            {
+                this.mFileName = value;
+            }
         }
 
         public MtgJsonReader(
@@ -54,8 +63,30 @@ namespace NerdBot_DatabaseUpdater.DataReaders
             this.mLoggingService = loggingService;
         }
 
+        public MtgJsonReader(
+            IMtgDataMapper<MtgJsonCard, MtgJsonSet> dataMapper,
+            IFileSystem fileSystem,
+            ILoggingService loggingService)
+        {
+            if (dataMapper == null)
+                throw new ArgumentNullException("dataMapper");
+
+            if (fileSystem == null)
+                throw new ArgumentNullException("fileSystem");
+
+            if (loggingService == null)
+                throw new ArgumentNullException("loggingService");
+
+            this.mDataMapper = dataMapper;
+            this.mFileSystem = fileSystem;
+            this.mLoggingService = loggingService;
+        }
+
         public Set ReadSet()
         {
+            if (!this.mFileSystem.File.Exists(this.mFileName))
+                throw new FileNotFoundException(this.mFileName);
+
             string data = this.mFileSystem.File.ReadAllText(this.mFileName);
 
             var settings = new JsonSerializerSettings();
@@ -113,6 +144,9 @@ namespace NerdBot_DatabaseUpdater.DataReaders
 
         public IEnumerable<Card> ReadCards()
         {
+            if (!this.mFileSystem.File.Exists(this.mFileName))
+                throw new FileNotFoundException(this.mFileName);
+
             string data = this.mFileSystem.File.ReadAllText(this.mFileName);
 
             this.mLoggingService.Trace("JSON data = {0}", data);

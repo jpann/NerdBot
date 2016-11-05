@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using NerdBot.Mtg;
 
 namespace NerdBot_DatabaseUpdater.DataReaders
@@ -13,5 +9,6 @@ namespace NerdBot_DatabaseUpdater.DataReaders
         IEnumerable<Card> ReadCards();
 
         bool SkipTokens { set; }
+        string FileName { get; set; }
     }
 }

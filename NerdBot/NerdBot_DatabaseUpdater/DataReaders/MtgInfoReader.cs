@@ -24,6 +24,8 @@ namespace NerdBot_DatabaseUpdater.DataReaders
             set { this.mSkipTokens = value; }
         }
 
+        public string FileName { get; set; }
+
         public MtgInfoReader(
             string setId,
             Db mtgInfoDb,

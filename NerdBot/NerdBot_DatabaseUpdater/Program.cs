@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.IO.Abstractions;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using NerdBot.Mtg;
 using NerdBot_DatabaseUpdater.DataReaders;
 using NerdBot_DatabaseUpdater.Mappers;
 using SimpleLogging.Core;
 using TinyIoC;
 using Fclp;
-using MtgDb.Info.Driver;
 using NerdBot_DatabaseUpdater.MtgData;
 
 namespace NerdBot_DatabaseUpdater
@@ -25,6 +21,12 @@ namespace NerdBot_DatabaseUpdater
         private static BackgroundWorker mUpdaterBackgroundWorker;
         private static Stopwatch mStopwatch;
         private static IMtgDataReader mDataReader;
+
+        internal class WorkArgs
+        {
+            internal bool ImportByFile { get; set; }
+            internal string InputName { get; set; }
+        }
 
         static void Main(string[] args)
         {
@@ -39,6 +41,8 @@ namespace NerdBot_DatabaseUpdater
             bool isMtgJson = false;
             string mtgJsonFilename = null;
             bool skipTokens = true;
+            string mtgJsonDirectory = null;
+            bool importByFile = true;
 
             try
             {
@@ -46,9 +50,10 @@ namespace NerdBot_DatabaseUpdater
                 mLoggingService = TinyIoCContainer.Current.Resolve<ILoggingService>();
                 mMtgStore = TinyIoCContainer.Current.Resolve<IMtgStore>();
 
-                p.Setup<bool>("mtgdbinfo")
-                   .Callback(value => isMtgDbInfo = value)
-                   .SetDefault(false);
+                // No longer use MtgDBInfo
+                //p.Setup<bool>("mtgdbinfo")
+                //   .Callback(value => isMtgDbInfo = value)
+                //   .SetDefault(false);
 
                 p.Setup<string>("set")
                         .Callback(value => mtgDbInfoSet = value)
@@ -56,11 +61,13 @@ namespace NerdBot_DatabaseUpdater
 
                 p.Setup<bool>("mtgjson")
                    .Callback(value => isMtgJson = value)
-                   .SetDefault(false);
+                   .SetDefault(true);
 
                 p.Setup<string>("file")
-                        .Callback(value => mtgJsonFilename = value)
-                        .Required();
+                    .Callback(value => mtgJsonFilename = value);
+
+                p.Setup<string>("dir")
+                    .Callback(value => mtgJsonDirectory = value);
 
                 p.Setup<bool>("skiptokens")
                    .Callback(value => skipTokens = value)
@@ -68,26 +75,47 @@ namespace NerdBot_DatabaseUpdater
 
                 p.Parse(args);
 
-                if (isMtgJson && isMtgDbInfo)
-                    throw new Exception("Can only use --mtgdbinfo or --mtgjson, but not both arguments.");
+                //if (isMtgJson && isMtgDbInfo)
+                //    throw new Exception("Can only use --mtgdbinfo or --mtgjson, but not both arguments.");
 
-                if (isMtgDbInfo)
-                {
-                    inputName = mtgDbInfoSet;
+                // Make sure we have either --file or --dir
+                if (string.IsNullOrEmpty(mtgJsonDirectory) && string.IsNullOrEmpty(mtgJsonFilename))
+                    throw new Exception("You must either use --file or --dir.");
 
-                    mDataReader = new MtgInfoReader(
-                        mtgDbInfoSet,
-                        TinyIoCContainer.Current.Resolve<Db>(),
-                        TinyIoCContainer.Current.Resolve<IMtgDataMapper<MtgDb.Info.Card, MtgDb.Info.CardSet>>(
-                            "MtgDbInfo"),
-                        mLoggingService);
-                }
-                else if (isMtgJson)
+                if (!string.IsNullOrEmpty(mtgJsonDirectory))
+                    importByFile = false;
+
+                //if (isMtgDbInfo)
+                //{
+                //    inputName = mtgDbInfoSet;
+
+                //    mDataReader = new MtgInfoReader(
+                //        mtgDbInfoSet,
+                //        TinyIoCContainer.Current.Resolve<Db>(),
+                //        TinyIoCContainer.Current.Resolve<IMtgDataMapper<MtgDb.Info.Card, MtgDb.Info.CardSet>>(
+                //            "MtgDbInfo"),
+                //        mLoggingService);
+                //}
+                //else 
+
+                if (isMtgJson && importByFile)
                 {
                     inputName = mtgJsonFilename;
 
                     mDataReader = new MtgJsonReader(
                         mtgJsonFilename,
+                        TinyIoCContainer.Current.Resolve<IMtgDataMapper<MtgJsonCard, MtgJsonSet>>("MtgJson"),
+                        TinyIoCContainer.Current.Resolve<IFileSystem>(),
+                        mLoggingService);
+                }
+                else if (isMtgJson && !importByFile)
+                {
+                    inputName = mtgJsonDirectory;
+
+                    if (!Directory.Exists(inputName))
+                        throw new DirectoryNotFoundException(inputName);
+
+                    mDataReader = new MtgJsonReader(
                         TinyIoCContainer.Current.Resolve<IMtgDataMapper<MtgJsonCard, MtgJsonSet>>("MtgJson"),
                         TinyIoCContainer.Current.Resolve<IFileSystem>(),
                         mLoggingService);
@@ -108,7 +136,7 @@ namespace NerdBot_DatabaseUpdater
                 mUpdaterBackgroundWorker.ProgressChanged += new ProgressChangedEventHandler(bw_ProgressChanged);
             
                 Console.WriteLine("Running worker thread...");
-                mUpdaterBackgroundWorker.RunWorkerAsync(inputName);
+                mUpdaterBackgroundWorker.RunWorkerAsync(new WorkArgs { ImportByFile = importByFile, InputName = inputName });
             }
             catch (Exception er)
             {
@@ -124,47 +152,71 @@ namespace NerdBot_DatabaseUpdater
             }
         }
 
+        //private static void bw_UpdaterDoWork(object sender, DoWorkEventArgs e)
+        //{
+        //    BackgroundWorker worker = sender as BackgroundWorker;
+        //    string inputName = e.Argument.ToString();
+
+        //    mLoggingService.Debug("Reading set from '{0}'...", inputName);
+        //    var set = mDataReader.ReadSet();
+
+        //    if (set == null)
+        //        throw new Exception("Set not found! Aborting.");
+
+        //    mLoggingService.Debug("Inserting set '{0}' [{1}]...", 
+        //        set.Name,
+        //        set.Code);
+
+        //    var setInserted = mMtgStore.SetFindAndModify(set).Result;
+
+        //    if (setInserted == null)
+        //        throw new Exception(string.Format("Set '{0}' not inserted!", set.Name));
+
+        //    mLoggingService.Debug("Reading cards from set '{0}'...", inputName);
+        //    var cards = mDataReader.ReadCards();
+
+        //    foreach (Card card in cards)
+        //    {
+        //        mLoggingService.Debug("Read card '{0}'...", card.Name);
+
+        //        var cardInserted = mMtgStore.CardFindAndModify(card).Result;
+
+        //        if (cardInserted == null)
+        //        {
+        //            mLoggingService.Warning("Card '{0}' in set '{1}' not inserted!",
+        //                card.Name,
+        //                set.Name);
+
+        //            continue;
+        //        }
+
+        //        mLoggingService.Debug("Inserted card '{0}' in set '{1}'!",
+        //            cardInserted.Name,
+        //            set.Name);
+        //    }
+        //}
+
         private static void bw_UpdaterDoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
-            string inputName = e.Argument.ToString();
+            WorkArgs args = e.Argument as WorkArgs;
 
-            mLoggingService.Debug("Reading set from '{0}'...", inputName);
-            var set = mDataReader.ReadSet();
+            string inputName = args.InputName;
+            bool importByFile = args.ImportByFile;
 
-            if (set == null)
-                throw new Exception("Set not found! Aborting.");
-
-            mLoggingService.Debug("Inserting set '{0}' [{1}]...", 
-                set.Name,
-                set.Code);
-
-            var setInserted = mMtgStore.SetFindAndModify(set).Result;
-
-            if (setInserted == null)
-                throw new Exception(string.Format("Set '{0}' not inserted!", set.Name));
-
-            mLoggingService.Debug("Reading cards from set '{0}'...", inputName);
-            var cards = mDataReader.ReadCards();
-
-            foreach (Card card in cards)
+            if (importByFile)
             {
-                mLoggingService.Debug("Read card '{0}'...", card.Name);
+                ImportFile(inputName);
+            }
+            else
+            {
+                string[] files = Directory.GetFiles(inputName, "*.json");
 
-                var cardInserted = mMtgStore.CardFindAndModify(card).Result;
-
-                if (cardInserted == null)
+                foreach (string file in files)
                 {
-                    mLoggingService.Warning("Card '{0}' in set '{1}' not inserted!",
-                        card.Name,
-                        set.Name);
-
-                    continue;
+                    ImportFile(file);
                 }
 
-                mLoggingService.Debug("Inserted card '{0}' in set '{1}'!",
-                    cardInserted.Name,
-                    set.Name);
             }
         }
 
@@ -199,6 +251,51 @@ namespace NerdBot_DatabaseUpdater
 
         private static void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
+        }
+
+        private static void ImportFile(string file)
+        {
+            mDataReader.FileName = file;
+
+            mLoggingService.Debug("Reading set from '{0}'...", file);
+            var set = mDataReader.ReadSet();
+
+            if (set == null)
+                throw new Exception("Set not found! Aborting.");
+
+            mLoggingService.Debug("Inserting set '{0}' [{1}]...",
+                set.Name,
+                set.Code);
+
+            var setInserted = mMtgStore.SetFindAndModify(set).Result;
+
+            if (setInserted == null)
+                throw new Exception(string.Format("Set '{0}' not inserted!", set.Name));
+
+            mLoggingService.Debug("Reading cards from set '{0}'...", file);
+            var cards = mDataReader.ReadCards();
+
+            foreach (Card card in cards)
+            {
+                mLoggingService.Debug("Read card '{0}'...", card.Name);
+
+                var cardInserted = mMtgStore.CardFindAndModify(card).Result;
+
+                if (cardInserted == null)
+                {
+                    mLoggingService.Warning("Card '{0}' in set '{1}' not inserted!",
+                        card.Name,
+                        set.Name);
+
+                    continue;
+                }
+
+                mLoggingService.Debug("Inserted card '{0}' in set '{1}'!",
+                    cardInserted.Name,
+                    set.Name);
+            }
+
+            mLoggingService.Debug("Done reading cards from set '{0}'!", file);
         }
     }
 }
