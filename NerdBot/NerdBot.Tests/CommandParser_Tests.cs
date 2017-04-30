@@ -171,6 +171,19 @@ namespace NerdBot.Tests
             Assert.AreEqual("frf", cmd.Arguments[0]);
             Assert.AreEqual("shu yun, the % tempest", cmd.Arguments[1]);
         }
+
+		[Test]
+		public void ImageCommand_WithSetCodeContainsUnderscore()
+		{
+			string message = "img mps_akh;Diabolic Intent";
+
+			var cmd = commandParser.Parse(message);
+
+			Assert.AreEqual("img", cmd.Cmd);
+			Assert.AreEqual(2, cmd.Arguments.Length);
+			Assert.AreEqual("mps_akh", cmd.Arguments[0]);
+			Assert.AreEqual("Diabolic Intent", cmd.Arguments[1]);
+		}
         #endregion
     }
 }

@@ -13,7 +13,7 @@ namespace NerdBot.Parsers
             if (string.IsNullOrEmpty(text))
                 throw new ArgumentException("text");
 
-            Match cmdMatch = Regex.Match(text, @"^(?<cmd>[A-Za-z0-9]+)", RegexOptions.IgnoreCase);
+            Match cmdMatch = Regex.Match(text, @"^(?<cmd>[A-Za-z0-9_]+)", RegexOptions.IgnoreCase);
 
             if (cmdMatch.Success)
             {
