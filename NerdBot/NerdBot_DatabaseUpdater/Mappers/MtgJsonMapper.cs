@@ -77,7 +77,7 @@ namespace NerdBot_DatabaseUpdater.Mappers
             card.Flavor = source.Flavor;
             card.Img = string.Format(this.mImageUrl, setCode, source.MultiverseId);
             card.ImgHires = string.Format(this.ImageHiResUrl, setCode, source.MultiverseId);
-            card.Loyalty = source.Loyalty.ToString();
+            card.Loyalty = source.Loyalty;
             card.MultiverseId = Convert.ToInt32(source.MultiverseId);
             card.Name = source.Name;
             card.SearchName = this.mSearchUtility.GetSearchValue(source.Name);

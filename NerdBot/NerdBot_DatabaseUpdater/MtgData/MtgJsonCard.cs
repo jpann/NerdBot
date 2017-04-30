@@ -23,7 +23,7 @@ namespace NerdBot_DatabaseUpdater.MtgData
         public string ManaCost { get; set; }
         public string Text { get; set; }
         public string Flavor { get; set; }
-        public int Loyalty { get; set; }
+        public string Loyalty { get; set; }
         public string Number { get; set; }
         public List<MtgJsonRuling> Rulings { get; set; }
     }
