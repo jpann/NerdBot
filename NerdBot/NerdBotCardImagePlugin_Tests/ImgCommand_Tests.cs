@@ -199,34 +199,7 @@ namespace NerdBotCardImagePlugin_Tests
 
             messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith("1922.jpg"))));
         }
-
-        [Test]
-        public void ImgCommand_ByName_NameDoesntExist()
-        {
-            var cmd = new Command()
-            {
-                Cmd = "img",
-                Arguments = new string[]
-                {
-                    "Bore Cloud"   
-                }
-            };
-
-            var msg = new GroupMeMessage();
-
-
-            bool handled = imgCommandPlugin.OnCommand(
-                cmd,
-                msg,
-                messengerMock.Object
-                ).Result;
-
-            // Verify that the messenger's SendMessenger was never called 
-            //  because no message should be sent when a card was not found
-            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.Never);
-
-            Assert.False(handled);
-        }
+        
 
         [Test]
         public void ImgCommand_ByNameAndSet()
@@ -277,40 +250,10 @@ namespace NerdBotCardImagePlugin_Tests
 
             // Verify that the messenger's SendMessenger was never called 
             //  because no message should be sent when a card was not found
-            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.Never);
+            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.AtLeastOnce);
 
             Assert.False(handled);
         }
-
-        [Test]
-        public void ImgCommand_ByNameAndSet_SetDoesntExist()
-        {
-            var cmd = new Command()
-            {
-                Cmd = "img",
-                Arguments = new string[]
-                {
-                    "Callen Empires",
-                    "Spore Cloud"
-                }
-            };
-
-            var msg = new GroupMeMessage();
-
-
-            bool handled = imgCommandPlugin.OnCommand(
-                cmd,
-                msg,
-                messengerMock.Object
-                ).Result;
-
-            // Verify that the messenger's SendMessenger was never called 
-            //  because no message should be sent when a card was not found
-            messengerMock.Verify(m => m.SendMessage("Did you mean 'Spore Cloud'?"), Times.Once);
-
-            Assert.False(handled);
-        }
-
 
         [Test]
         public void ImgCommand_ByNameAndSetCode()
@@ -335,64 +278,6 @@ namespace NerdBotCardImagePlugin_Tests
                 ).Result;
 
             messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith("1922.jpg"))));
-        }
-
-        [Test]
-        public void ImgCommand_ByNameAndSetCode_NameDoesntExist()
-        {
-            var cmd = new Command()
-            {
-                Cmd = "img",
-                Arguments = new string[]
-                {
-                    "FEM",
-                    "Bore Cloud"
-                }
-            };
-
-            var msg = new GroupMeMessage();
-
-
-            bool handled = imgCommandPlugin.OnCommand(
-                cmd,
-                msg,
-                messengerMock.Object
-                ).Result;
-
-            // Verify that the messenger's SendMessenger was never called 
-            //  because no message should be sent when a card was not found
-            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.Never);
-
-            Assert.False(handled);
-        }
-
-        [Test]
-        public void ImgCommand_ByNameAndSetCode_SetDoesntExist()
-        {
-            var cmd = new Command()
-            {
-                Cmd = "img",
-                Arguments = new string[]
-                {
-                    "XXX",
-                    "Spore Cloud"
-                }
-            };
-
-            var msg = new GroupMeMessage();
-
-
-            bool handled = imgCommandPlugin.OnCommand(
-                cmd,
-                msg,
-                messengerMock.Object
-                ).Result;
-
-            // Verify that the messenger's SendMessenger was never called 
-            //  because no message should be sent when a card was not found
-            messengerMock.Verify(m => m.SendMessage("Did you mean 'Spore Cloud'?"), Times.Once);
-
-            Assert.False(handled);
         }
     }
 }

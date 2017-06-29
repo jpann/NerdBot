@@ -103,7 +103,6 @@ namespace NerdBot.Tests.PriceStore
             CardPrice actual = priceStore.GetCardPrice(name);
 
             Assert.AreEqual(name, actual.Name);
-            Assert.AreEqual("https://www.echomtg.com/card/95965/dragonlord-ojutai/", actual.Url);
         }
 
         [Test]
@@ -125,7 +124,6 @@ namespace NerdBot.Tests.PriceStore
             CardPrice actual = priceStore.GetCardPrice(name, setCode);
 
             Assert.AreEqual(name, actual.Name);
-            Assert.AreEqual("https://www.echomtg.com/card/95965/dragonlord-ojutai/", actual.Url);
         }
 
         [Test]

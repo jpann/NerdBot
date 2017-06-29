@@ -115,13 +115,16 @@ namespace NerdBotCoreCommandsPlugin_Tests
             // Setup IMessenger Mocks
             messengerMock = new Mock<IMessenger>();
 
+            var config = new BotConfig();
+            config.HostUrl = "http://localhost";
+
             plugin = new RulingPlugin(
                 mtgStore,
                 priceStoreMock.Object,
                 commandParserMock.Object,
                 httpClientMock.Object,
                 urlShortenerMock.Object,
-                new BotConfig());
+                config);
 
             plugin.LoggingService = loggingServiceMock.Object;
         }
@@ -147,7 +150,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("Card ruling: http://silencio.ikonzeh.org:6001/ruling/26660"));
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.Contains("http://localhost/ruling/1437"))));
         }
 
         [Test]
@@ -200,7 +203,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("Card ruling: http://silencio.ikonzeh.org:6001/ruling/394029"));
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.Contains("http://localhost/ruling/394029"))));
         }
 
         [Test]
@@ -283,7 +286,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("Card ruling: http://silencio.ikonzeh.org:6001/ruling/394029"));
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.Contains("http://localhost/ruling/394029"))));
         }
 
         [Test]

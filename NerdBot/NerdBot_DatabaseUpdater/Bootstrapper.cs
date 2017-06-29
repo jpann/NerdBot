@@ -4,7 +4,6 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
-using MtgDb.Info.Driver;
 using NerdBot.Mtg;
 using NerdBot.Utilities;
 using NerdBot_DatabaseUpdater.Mappers;
@@ -43,12 +42,6 @@ namespace NerdBot_DatabaseUpdater
                 TinyIoCContainer.Current.Resolve<SearchUtility>());
             TinyIoCContainer.Current.Register<IMtgStore>(mtgStore);
 
-            // Register the instance of MtgInfoMapper
-            var mtgInfoMapper = new MtgInfoMapper(
-                TinyIoCContainer.Current.Resolve<SearchUtility>());
-
-            TinyIoCContainer.Current.Register<IMtgDataMapper<MtgDb.Info.Card, MtgDb.Info.CardSet>>(mtgInfoMapper,
-                "MtgDbInfo");
 
             // Register the instance of MtgJsonMapper
             var mtgJsonMapper = new MtgJsonMapper(
@@ -59,10 +52,6 @@ namespace NerdBot_DatabaseUpdater
 
             TinyIoCContainer.Current.Register<IMtgDataMapper<MtgJsonCard, MtgJsonSet>>(mtgJsonMapper, 
                 "MtgJson");
-
-            // Register the instance of Db
-            var mtgInfoDb = new Db();
-            TinyIoCContainer.Current.Register<Db>(mtgInfoDb);
 
             // Register the instance of IFileSystem
             var fileSystem = new FileSystem();

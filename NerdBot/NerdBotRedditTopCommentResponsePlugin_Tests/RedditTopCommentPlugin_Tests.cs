@@ -124,6 +124,7 @@ namespace NerdBotRedditTopCommentResponsePlugin_Tests
             plugin.BotName = "TEST";
 
             plugin.LoggingService = loggingServiceMock.Object;
+            plugin.OnLoad();
         }
 
         [Test]
@@ -139,7 +140,7 @@ namespace NerdBotRedditTopCommentResponsePlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.AtLeastOnce);
+            messengerMock.Verify(m => m.SendMessageWithMention(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.AtLeastOnce);
         }
     }
 }

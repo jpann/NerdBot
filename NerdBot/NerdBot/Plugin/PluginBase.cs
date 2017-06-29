@@ -126,7 +126,11 @@ namespace NerdBot.Plugin
             set { this.mLoggingService = value; }
         }
 
-        public BotConfig Config { get; set; }
+        public BotConfig Config
+        {
+            get { return this.mBotConfig; }
+            set { this.mBotConfig = value; }
+        }
 
         public abstract string Name { get; }
         public abstract string Description { get; }

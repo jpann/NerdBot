@@ -164,7 +164,7 @@ namespace NerdBotCardPricesPlugin_Tests
                     messengerMock.Object
                     ).Result;
 
-            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("Inquisition of Kozilek [ROE] Foil: $100. 7-Day change: 10%.. Also appears in sets: ROE"))),
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("Inquisition of Kozilek [ROE]"))),
                 Times.Once);
         }
 
