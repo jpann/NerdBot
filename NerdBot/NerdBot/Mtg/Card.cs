@@ -50,7 +50,7 @@ namespace NerdBot.Mtg
 
         [JsonProperty("cmc")]
         [BsonElement("cmc")]
-        public int Cmc { get; set; }
+        public double Cmc { get; set; }
 
         [JsonProperty("setName")]
         [BsonElement("setName")]
