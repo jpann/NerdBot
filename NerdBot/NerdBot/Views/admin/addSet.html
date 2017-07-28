@@ -1,0 +1,208 @@
+﻿<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Add Set - NerdBot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font: 10px Helvetica, Arial;
+        }
+
+        .container {
+            margin: 5px;
+            padding: 5px;
+            height: 100%;
+        }
+
+        .alert {
+            display: none;
+        }
+    </style>
+
+    <script src="@Path['~/Content/js/jquery-3.2.1.min.js']"></script>
+    <script src="@Path['~/Content/js/jquery.validate.js']"></script>
+    <script src="@Path['~/Content/js/additional-methods.js']"></script>
+    <script src="@Path['~/Content/js/bootstrap.min.js']"></script>
+    <link rel="stylesheet" href="@Path['~/Content/css/bootstrap.min.css']">
+</head>
+
+<body>
+@Partial['partial/header.html'];
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">Add Set</div>
+        <div class="panel-body" style="overflow-y: scroll; height: 90%">
+            <form id="add-set-form">
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control form-control-lg" id="url" placeholder="url">
+                    </div>
+                </div>
+                <button id="add-set" type="button" class="btn btn-default">Add Set</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="alert alert-info" role="alert" style="display: none" id="success-alert">
+
+    </div>
+
+    <div class="alert alert-danger" role="alert" style="display: none" id="failure-alert">
+        
+    </div>
+
+    <div class="panel panel-default" style="display:none" id="results-success-panel">
+        <div class="panel-heading">Successful Results<br/>
+
+        </div>
+        <div class="panel-body" style="overflow-y: scroll; height: 90%">
+
+            <table id="results-table" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th class="col-md-1"><small>ID</small></th>
+                    <th class="col-md-1"><small>Set</small></th>
+                    <th class="col-md-2"><small>Name</small></th>
+                    <th class="col-md-1"><small>Cost</small></th>
+                    <th class="col-md-2"><small>Type</small></th>
+                    <th class="col-md-7"><small>Image</small></th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="panel panel-default" style="display:none" id="results-failure-panel">
+        <div class="panel-heading">Failure Results<br/>
+
+        </div>
+        <div class="panel-body" style="overflow-y: scroll; height: 90%">
+
+            <table id="failure-table" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th class="col-md-1"><small>ID</small></th>
+                    <th class="col-md-1"><small>Set</small></th>
+                    <th class="col-md-2"><small>Name</small></th>
+                    <th class="col-md-1"><small>Cost</small></th>
+                    <th class="col-md-2"><small>Type</small></th>
+                    <th class="col-md-7"><small>Image</small></th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+    $(function ()
+    {
+        $('#add-set').click(function () {
+            var url = $('#url').val();
+
+            var postData = { "url": url };
+
+            console.log(JSON.stringify(postData));
+
+            $("#add-set").prop("disabled", true);
+
+            $('#success-alert').show();
+            $('#success-alert').text('Adding set...');
+
+
+            $.ajax(
+            {
+                url: '/admin/addset',
+                type: "POST",
+                xhrFields: {
+                    withCredentials: true
+                },
+                dataType: "json",
+                data: JSON.stringify(postData),
+                contentType: "application/json",
+                cache: false,
+                timeout: 0,
+                complete: function () 
+                {
+                    $("#add-set").prop("disabled", false);
+                },
+                success: function (data) 
+                {
+                    $('#success-alert').show();
+                    $('#success-alert').text('Set added!');
+
+                    $('#results-success-panel').show();
+                    $('#results-failure-panel').show();
+
+                    $('#results-table tbody').empty();
+                    $('#failure-table tbody').empty();
+
+                    console.log(data);
+
+                    var cardsInserted = data.cardsInserted;
+                    var cardsFailed = data.cardsFailed;
+
+                    $.each(cardsInserted, function(id)
+                    {
+                        var card = cardsInserted[id];
+
+                        $('#results-table tbody').append(`
+                        <tr>
+                            <td>${card.multiverseId}</td>
+                            <td>${card.set}</td>
+                            <td>${card.name}</td>
+                            <td>${card.cost}</td>
+                            <td>${card.type}</td>
+                            <td><a href="${card.img}"><img src="${card.img}"/></a></td>
+                        </tr>
+                        `);
+                    });
+
+                    $.each(cardsFailed, function(id)
+                    {
+                        var card = cardsFailed[id];
+
+                        $('#failure-table tbody').append(`
+                        <tr>
+                            <td>${card.multiverseId}</td>
+                            <td>${card.set}</td>
+                            <td>${card.name}</td>
+                            <td>${card.cost}</td>
+                            <td>${card.type}</td>
+                            <td><a href="${card.img}">${card.img}</a></td>
+                        </tr>
+                    `);
+                    });
+
+                    
+                },
+                error: function (jqXHR, textStatus, err) 
+                {
+                    $('#success-alert').hide();
+                    $('#failure-alert').show();
+
+                    $('#failure-alert').text('Adding set failed!');
+
+                    console.warn("failed");
+                    console.warn('text status ' + textStatus + ', err ' + err)
+
+                },
+            });
+        });
+
+    });
+</script>
+</html>

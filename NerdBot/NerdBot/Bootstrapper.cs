@@ -2,9 +2,15 @@
 using System.Collections;
 using System.IO;
 using System.Linq;
+using Nancy.Authentication.Forms;
 using Nancy.Bootstrapper;
+using Nancy.Json;
 using Nancy.TinyIoc;
+using NerdBot.Admin;
 using NerdBot.Http;
+using NerdBot.Importer;
+using NerdBot.Importer.Mapper;
+using NerdBot.Importer.MtgData;
 using NerdBot.Messengers;
 using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
@@ -30,7 +36,25 @@ namespace NerdBot
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
+            JsonSettings.MaxJsonLength = Int32.MaxValue;
+        }
 
+        protected override void RequestStartup(TinyIoCContainer requestContainer, IPipelines pipelines, NancyContext context)
+        {
+            // At request startup we modify the request pipelines to
+            // include forms authentication - passing in our now request
+            // scoped user name mapper.
+            //
+            // The pipelines passed in here are specific to this request,
+            // so we can add/remove/update items in them as we please.
+            var formsAuthConfiguration =
+                new FormsAuthenticationConfiguration()
+                {
+                    RedirectUrl = "/admin/login",
+                    UserMapper = requestContainer.Resolve<IUserMapper>(),
+                };
+
+            FormsAuthentication.Enable(pipelines, formsAuthConfiguration);
         }
 
         protected override void ConfigureApplicationContainer(TinyIoCContainer container)
@@ -55,6 +79,10 @@ namespace NerdBot
             string reporterBotId;
             string reporterBotName;
             string hostUrl;
+            string adminUser;
+            string adminPassword;
+            string imgUrl = null;
+            string imgHiResUrl = null;
 
             this.LoadConfiguration(
                 configFile,
@@ -70,7 +98,11 @@ namespace NerdBot
                 out urlKey,
                 out reporterBotId,
                 out reporterBotName,
-                out hostUrl
+                out hostUrl,
+                out adminUser,
+                out adminPassword,
+                out imgUrl, 
+                out imgHiResUrl
                 );
 
             // Register the instance of ILoggingService
@@ -140,7 +172,9 @@ namespace NerdBot
             var botConfig = new BotConfig()
             {
                 SecretToken = secretToken,
-                HostUrl = hostUrl
+                HostUrl = hostUrl,
+                AdminUser = adminUser,
+                AdminPassword =  adminPassword
             };
             container.Register(botConfig);
 
@@ -157,6 +191,19 @@ namespace NerdBot
                 container);
 
             container.Register<IPluginManager>(pluginManager);
+
+            container.Register<IUserMapper, UserMapper>();
+
+            // Register the instance of MtgJsonMapper
+            var mtgJsonMapper = new MtgJsonMapper(
+                container.Resolve<SearchUtility>());
+
+            mtgJsonMapper.ImageUrl = imgUrl;
+            mtgJsonMapper.ImageHiResUrl = imgHiResUrl;
+
+            container.Register<IMtgDataMapper<MtgJsonCard, MtgJsonSet>>(mtgJsonMapper);
+
+            container.Register<IImporter, MtgImporter>();
         }
 
         private void LoadConfiguration(
@@ -173,7 +220,11 @@ namespace NerdBot
             out string urlKey,
             out string reporterBotId,
             out string reporterBotName,
-            out string hostUrl)
+            out string hostUrl,
+            out string adminUser,
+            out string adminPassword,
+            out string imgUrl,
+            out string imgHiResUrl)
         {
             IConfigSource source = new IniConfigSource(fileName);
 
@@ -232,6 +283,22 @@ namespace NerdBot
             hostUrl = source.Configs["App"].Get("url");
             if (string.IsNullOrEmpty(hostUrl))
                 throw new Exception("Configuration file is missing 'url' setting in section 'App'.");
+
+            adminUser = source.Configs["Admin"].Get("username");
+            if (string.IsNullOrEmpty(adminUser))
+                throw new Exception("Configuration file is missing 'username' setting in section 'Admin'.");
+
+            adminPassword = source.Configs["Admin"].Get("password");
+            if (string.IsNullOrEmpty(adminPassword))
+                throw new Exception("Configuration file is missing 'username' setting in section 'Admin'.");
+
+            imgUrl = source.Configs["DataMapper"].Get("img_url");
+            if (string.IsNullOrEmpty(imgUrl))
+                throw new Exception("Configuration file is missing 'img_url' setting in section 'DataMapper'.");
+
+            imgHiResUrl = source.Configs["DataMapper"].Get("imghires_url");
+            if (string.IsNullOrEmpty(imgHiResUrl))
+                throw new Exception("Configuration file is missing 'imghires_url' setting in section 'DataMapper'.");
         }
     }
 }

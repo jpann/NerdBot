@@ -111,6 +111,22 @@ namespace NerdBot.Mtg
         [JsonProperty("multiverseId")]
         [BsonElement("multiverseId")]
         public int MultiverseId { get; set; }
+
+        public string FullType
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(this.SubType) ? string.Format("{0} - {1}", this.Type, this.SubType) : this.Type;
+            }
+        }
+
+        [JsonProperty("colorIdentity")]
+        [BsonElement("colorIdentity")]
+        public List<string> ColorIdentity { get; set; }
+
+        [JsonProperty("types")]
+        [BsonElement("types")]
+        public List<string> Types { get; set; }
     }
 
     public class Ruling

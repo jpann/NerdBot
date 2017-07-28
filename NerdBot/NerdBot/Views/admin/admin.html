@@ -1,0 +1,45 @@
+﻿<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Panel - NerdBot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font: 10px Helvetica, Arial;
+        }
+
+        .container {
+            margin: 5px;
+            padding: 5px;
+            height: 100%;
+        }
+
+        .alert {
+            display: none;
+        }
+    </style>
+
+    <script src="@Path['~/Content/js/jquery-3.2.1.min.js']"></script>
+    <script src="@Path['~/Content/js/jquery.validate.js']"></script>
+    <script src="@Path['~/Content/js/additional-methods.js']"></script>
+    <script src="@Path['~/Content/js/bootstrap.min.js']"></script>
+    <link rel="stylesheet" href="@Path['~/Content/css/bootstrap.min.css']">
+
+</head>
+
+<body>
+    @Partial['partial/header.html'];
+
+        <div class="container">
+			You are logged in
+        </div>
+</body>
+
+</html>

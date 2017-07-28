@@ -98,11 +98,11 @@ namespace NerdBot.Tests.PriceStore
         [Test]
         public void GetCardPrice_ByName()
         {
-            string name = "Dragonlord Ojutai";
+            string name = "Dr%";
 
             CardPrice actual = priceStore.GetCardPrice(name);
 
-            Assert.AreEqual(name, actual.Name);
+            Assert.NotNull(actual);
         }
 
         [Test]
@@ -118,12 +118,12 @@ namespace NerdBot.Tests.PriceStore
         [Test]
         public void GetCardPrice_ByNameSet()
         {
-            string name = "Dragonlord Ojutai";
+            string name = "%a%";
             string setCode = "DTK";
 
             CardPrice actual = priceStore.GetCardPrice(name, setCode);
 
-            Assert.AreEqual(name, actual.Name);
+            Assert.NotNull(actual);
         }
 
         [Test]

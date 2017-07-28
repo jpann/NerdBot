@@ -14,6 +14,7 @@ using NerdBot.Parsers;
 using NerdBot.Reporters;
 using NUnit.Framework;
 using SimpleLogging.Core;
+using NerdBot.Modules;
 
 namespace NerdBot.Tests
 {

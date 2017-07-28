@@ -134,7 +134,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 Cmd = "randomartist",
                 Arguments = new string[]
                 {
-                    "edward%beard%"   
+                    "%edward%"   
                 }
             };
 
