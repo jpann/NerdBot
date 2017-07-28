@@ -1,0 +1,74 @@
+﻿<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@Model.Set.Name - NerdBot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font: 10px Helvetica, Arial;
+        }
+
+        .container {
+            margin: 5px;
+            padding: 5px;
+            height: 100%;
+        }
+
+        .alert {
+            display: none;
+        }
+    </style>
+
+    <script src="@Path['~/Content/js/jquery-3.2.1.min.js']"></script>
+    <script src="@Path['~/Content/js/jquery.validate.js']"></script>
+    <script src="@Path['~/Content/js/additional-methods.js']"></script>
+    <script src="@Path['~/Content/js/bootstrap.min.js']"></script>
+    <link rel="stylesheet" href="@Path['~/Content/css/bootstrap.min.css']">
+    <link href="@Path['~/Content/css/mana.css']" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+    @Partial['partial/header.html'];
+
+        <div class="container">
+			<div class="panel panel-default">
+			    <div class="panel-heading">
+			        @Model.Set.Name<br/>
+
+			    </div>
+                <div class="panel-body" style="overflow-y: scroll; height: 90%">
+
+                    <table id="user-table" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+							  <th class="col-md-1"><small>ID</small></th>
+							  <th class="col-md-2"><small>Name</small></th>
+							  <th class="col-md-2"><small>Cost</small></th>
+							  <th class="col-md-7"><small>Type</small></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+						@Each.Cards
+						<tr>
+							<td><a href="@Current.Img">@Current.MultiverseId</a></td>
+							<td>@Current.Name</td>
+							<td>@Current.Cost</td>
+							<td>@Current.FullType</td>
+						</tr>
+						@EndEach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>

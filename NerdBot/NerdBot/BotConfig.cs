@@ -10,5 +10,7 @@ namespace NerdBot
     {
         public string SecretToken { get; set; }
         public string HostUrl { get; set; }
+        public string AdminUser { get; set; }
+        public string AdminPassword { get; set; }
     }
 }

@@ -202,7 +202,7 @@ namespace NerdBot.Tests
         [Test]
         public void GetCards_ByName()
         {
-            int expectedCount = 2;
+            int expectedCount = 4;
 
             string name = "Spore Cloud";
 
@@ -228,7 +228,7 @@ namespace NerdBot.Tests
         [Test]
         public void GetCardOtherSets()
         {
-            int expectedCount = 1;
+            int expectedCount = 2;
             string expectedOtherSet = "Masters Edition II";
 
             int multiverseId = 1922;
@@ -255,7 +255,7 @@ namespace NerdBot.Tests
         [Test]
         public void GetCardsBySet()
         {
-            int expectedCount = 245;
+            int expectedCount = 247;
 
             string name = "Masters Edition II";
 

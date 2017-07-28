@@ -147,7 +147,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("Set 'Fallen Empires' [FEM] was released on 11-01-1994 and contains 187 cards."));
+            messengerMock.Verify(m => m.SendMessage("Set 'Fallen Empires' [FEM] was released on 11-15-1994 and contains 187 cards."));
         }
 
         [Test]
@@ -199,7 +199,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage("Set 'Fallen Empires' [FEM] was released on 11-01-1994 and contains 187 cards."));
+            messengerMock.Verify(m => m.SendMessage("Set 'Fallen Empires' [FEM] was released on 11-15-1994 and contains 187 cards."));
         }
 
         [Test]

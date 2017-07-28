@@ -53,11 +53,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\mongocsharpdriver.1.10.0\lib\net35\MongoDB.Driver.dll</HintPath>
     </Reference>
-    <Reference Include="Nancy">
-      <HintPath>..\packages\Nancy.0.23.2\lib\net40\Nancy.dll</HintPath>
+    <Reference Include="Nancy, Version=1.4.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nancy.1.4.3\lib\net40\Nancy.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Nancy.Hosting.Self">
-      <HintPath>..\packages\Nancy.Hosting.Self.0.23.2\lib\net40\Nancy.Hosting.Self.dll</HintPath>
+    <Reference Include="Nancy.Authentication.Forms, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nancy.Authentication.Forms.1.4.1\lib\net40\Nancy.Authentication.Forms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nancy.Hosting.Self, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nancy.Hosting.Self.1.4.1\lib\net40\Nancy.Hosting.Self.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Nancy.Validation.FluentValidation">
       <HintPath>..\packages\Nancy.Validation.FluentValidation.0.23.2\lib\net40\Nancy.Validation.FluentValidation.dll</HintPath>
@@ -88,10 +94,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admin\UserMapper.cs" />
+    <Compile Include="Admin\AuthenticatedUser.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="BotConfig.cs" />
     <Compile Include="Extensions\RequestBodyExtension.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="Importer\DataReaders\IMtgDataReader.cs" />
+    <Compile Include="Importer\DataReaders\MtgJsonReader.cs" />
+    <Compile Include="Importer\IImporter.cs" />
+    <Compile Include="Importer\Mapper\IMtgDataMapper.cs" />
+    <Compile Include="Importer\Mapper\MtgJsonMapper.cs" />
+    <Compile Include="Importer\MtgData\MtgJsonCard.cs" />
+    <Compile Include="Importer\MtgData\MtgJsonRuling.cs" />
+    <Compile Include="Importer\MtgData\MtgJsonSet.cs" />
+    <Compile Include="Importer\MtgData\MtgJsonSetExtended.cs" />
+    <Compile Include="Importer\MtgImporter.cs" />
+    <Compile Include="Importer\SetAddData.cs" />
     <Compile Include="IPluginManager.cs" />
     <Compile Include="Messengers\GroupMe\GroupMeMessage.cs" />
     <Compile Include="Messengers\GroupMe\GroupMeMessenger.cs" />
@@ -99,7 +118,8 @@
     <Compile Include="Messengers\IMessenger.cs" />
     <Compile Include="Http\IHttpClient.cs" />
     <Compile Include="Http\SimpleHttpClient.cs" />
-    <Compile Include="IndexModule.cs" />
+    <Compile Include="Modules\AdminModule.cs" />
+    <Compile Include="Modules\IndexModule.cs" />
     <Compile Include="Mtg\Card.cs" />
     <Compile Include="Mtg\IMtgStore.cs" />
     <Compile Include="Mtg\MtgStore.cs" />
@@ -153,6 +173,27 @@
     <None Include="Content\fonts\glyphicons-halflings-regular.woff2">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Content\fonts\mana.eot">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\fonts\mana.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\fonts\mana.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\fonts\mana.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\fonts\mplantin.eot">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\fonts\mplantin.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\fonts\mplantin.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="NerdBot-Example.ini" />
     <None Include="NerdBot.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -162,6 +203,36 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="Content\css\mana.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\fonts\mana.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\fonts\mplantin.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\js\additional-methods.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\js\jquery-3.2.1.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\js\jquery.validate.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\admin\admin.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\admin\partial\header.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\admin\listSets.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\admin\login.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Views\search.sshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -193,6 +264,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\js\npm.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\admin\set.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\admin\addSet.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

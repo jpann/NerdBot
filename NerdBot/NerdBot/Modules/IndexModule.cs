@@ -13,7 +13,7 @@ using NerdBot.Parsers;
 using NerdBot.Reporters;
 using SimpleLogging.Core;
 
-namespace NerdBot
+namespace NerdBot.Modules
 {
     using Nancy;
 

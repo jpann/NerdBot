@@ -20,8 +20,8 @@ namespace NerdBot_DatabaseUpdater.Mappers
             get { return this.mImageUrl; }
             set
             {
-                if (!value.Contains("{0}") && !value.Contains("{1}"))
-                    throw new FormatException("ImageUrl must contain {0} (set code) and {1} (multiverse id) format arguments.");
+                if (!value.Contains("%ID%"))
+                    throw new FormatException("ImageUrl must contain and %ID% (multiverse id) format arguments.");
 
                 this.mImageUrl = value;
             }
@@ -32,8 +32,8 @@ namespace NerdBot_DatabaseUpdater.Mappers
             get { return this.mImageHiResUrl; }
             set
             {
-                if (!value.Contains("{0}") && !value.Contains("{1}"))
-                    throw new FormatException("ImageUrl must contain {0} (set code) and {1} (multiverse id) format arguments.");
+                if (!value.Contains("%ID%"))
+                    throw new FormatException("ImageUrlHiRes must contain and %ID% (multiverse id) format arguments.");
 
                 this.mImageHiResUrl = value;
             }
@@ -75,8 +75,8 @@ namespace NerdBot_DatabaseUpdater.Mappers
             card.Cost = source.ManaCost;
             card.Desc = source.Text;
             card.Flavor = source.Flavor;
-            card.Img = string.Format(this.mImageUrl, setCode, source.MultiverseId);
-            card.ImgHires = string.Format(this.ImageHiResUrl, setCode, source.MultiverseId);
+            card.Img = this.mImageUrl.Replace("%ID%", source.MultiverseId);
+            card.ImgHires = this.ImageHiResUrl.Replace("%ID%", source.MultiverseId);
             card.Loyalty = source.Loyalty;
             card.MultiverseId = Convert.ToInt32(source.MultiverseId);
             card.Name = source.Name;
