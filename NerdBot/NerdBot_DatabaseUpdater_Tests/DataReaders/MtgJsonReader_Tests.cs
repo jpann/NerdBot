@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Moq;
+using NerdBot.Importer.DataReaders;
+using NerdBot.Importer.Mapper;
+using NerdBot.Importer.MtgData;
 using NerdBot.Mtg;
 using NerdBot.Utilities;
-using NerdBot_DatabaseUpdater.DataReaders;
-using NerdBot_DatabaseUpdater.Mappers;
-using NerdBot_DatabaseUpdater.MtgData;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
@@ -184,11 +184,11 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
             Set set = GetTestSet();
 
             dataMapperMock.Setup(
-                d => d.GetCard(It.Is<MtgJsonCard>(c => c.Name == "Abyssal Persecutor"), "Commander 2014", "C14"))
+                d => d.GetCard(It.Is<MtgJsonCard>(c => c.Name == cards[0].Name), cards[0].SetName, cards[0].SetId))
                 .Returns(() => cards[0]);
 
             dataMapperMock.Setup(
-                d => d.GetCard(It.Is<MtgJsonCard>(c => c.Name == "Adarkar Valkyrie"), "Commander 2014", "C14"))
+                d => d.GetCard(It.Is<MtgJsonCard>(c => c.Name == cards[1].Name), cards[1].SetName, cards[1].SetId))
                 .Returns(() => cards[1]);
 
             dataMapperMock.Setup(
@@ -220,9 +220,7 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
             string fileName = Path.Combine(GetTestDataPath(), jsonFileName);
 
             reader = new MtgJsonReader(
-                fileName,
                 dataMapperMock.Object,
-                fileSystemMock.Object,
                 loggingServiceMock.Object);
         }
 
@@ -236,13 +234,23 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
         [Test]
         public void ReadCards()
         {
-            var cards = reader.ReadCards();
+            var data = GetTestCards();
+
+            var obj = new
+            {
+                name = data[0].SetName,
+                code = data[0].SetId,
+                cards = data
+            };
+
+            var cards_data = JsonConvert.SerializeObject(obj);
+            var cards = reader.ReadCards(cards_data);
 
             List<Card> actualCards = cards.ToList();
 
             Assert.AreEqual(2, actualCards.Count());
-            Assert.AreEqual("Abyssal Persecutor", actualCards[0].Name);
-            Assert.AreEqual("Adarkar Valkyrie", actualCards[1].Name);
+            Assert.AreEqual(data[0].Name, actualCards[0].Name);
+            Assert.AreEqual(data[1].Name, actualCards[1].Name);
         }
         #endregion
 
@@ -250,7 +258,27 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
         [Test]
         public void ReadSet()
         {
-            var set = reader.ReadSet();
+            var data = GetTestCards();
+
+            var obj = new
+            {
+                Name = "Commander 2014",
+                SearchName = GetSearchValue("Commander 2014"),
+                BasicLandQty = 0,
+                Block = "",
+                Code = "C14",
+                CommonQty = 0,
+                Desc = "",
+                MythicQty = 1,
+                RareQty = 1,
+                ReleasedOn = new DateTime(2014,11,7),
+                Type = "commander",
+                cards = data
+            };
+
+            var set_data = JsonConvert.SerializeObject(obj);
+
+            var set = reader.ReadSet(set_data);
 
             Assert.AreEqual("Commander 2014", set.Name);
         }

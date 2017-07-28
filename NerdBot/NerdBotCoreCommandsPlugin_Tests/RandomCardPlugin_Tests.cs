@@ -146,7 +146,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage(It.Is<string>(c => c.Contains("/images/"))), Times.Once);
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(c => c.EndsWith(".jpg"))), Times.Once);
         }
     }
 }

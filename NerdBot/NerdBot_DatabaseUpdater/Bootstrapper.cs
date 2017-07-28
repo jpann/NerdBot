@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
-using System.Linq;
-using System.Text;
+using NerdBot.Importer;
+using NerdBot.Importer.Mapper;
+using NerdBot.Importer.MtgData;
 using NerdBot.Mtg;
 using NerdBot.Utilities;
-using NerdBot_DatabaseUpdater.Mappers;
-using NerdBot_DatabaseUpdater.MtgData;
 using Nini.Config;
 using SimpleLogging.Core;
 using SimpleLogging.NLog;
@@ -56,6 +54,12 @@ namespace NerdBot_DatabaseUpdater
             // Register the instance of IFileSystem
             var fileSystem = new FileSystem();
             TinyIoCContainer.Current.Register<IFileSystem>(fileSystem);
+
+            // Register IImporter
+            var importer = new MtgImporter(
+                mtgStore, 
+                TinyIoCContainer.Current.Resolve<ILoggingService>());
+            TinyIoCContainer.Current.Register<IImporter>(importer);
         }
 
         private static void LoadConfiguration(

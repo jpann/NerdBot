@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Moq;
+using NerdBot.Importer.Mapper;
+using NerdBot.Importer.MtgData;
 using NerdBot.Utilities;
-using NerdBot_DatabaseUpdater.Mappers;
-using NerdBot_DatabaseUpdater.MtgData;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;

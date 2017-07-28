@@ -151,7 +151,7 @@ namespace NerdBot.Importer.DataReaders
 
                 if (this.mSkipTokens)
                 {
-                    if (cardData.Layout.ToLower() == "token")
+                    if (!string.IsNullOrEmpty(cardData.Layout) && cardData.Layout.ToLower() == "token")
                     {
                         this.mLoggingService.Debug("Card is a token, skipping...");
 
