@@ -38,37 +38,50 @@
 <body>
     @Partial['partial/header.html'];
 
-        <div class="container">
-			<div class="panel panel-default">
-			    <div class="panel-heading">
-			        @Model.Set.Name<br/>
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            @Model.Set.Name<br/>
 
-			    </div>
-                <div class="panel-body" style="overflow-y: scroll; height: 90%">
-
-                    <table id="user-table" class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-							  <th class="col-md-1"><small>ID</small></th>
-							  <th class="col-md-2"><small>Name</small></th>
-							  <th class="col-md-2"><small>Cost</small></th>
-							  <th class="col-md-7"><small>Type</small></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-						@Each.Cards
-						<tr>
-							<td><a href="@Current.Img">@Current.MultiverseId</a></td>
-							<td>@Current.Name</td>
-							<td>@Current.Cost</td>
-							<td>@Current.FullType</td>
-						</tr>
-						@EndEach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </div>
+        <div class="panel-body" style="overflow-y: scroll; height: 90%">
+
+            <table id="user-table" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th class="col-md-1"><small>ID</small></th>
+                    <th class="col-md-2"><small>Name</small></th>
+                    <th class="col-md-2"><small>Cost</small></th>
+                    <th class="col-md-7"><small>Type</small></th>
+                </tr>
+                </thead>
+                <tbody>
+                @Each.Cards
+                <tr>
+                    <td><a rel="popover" data-img="@Current.Img" href="/ruling/@Current.MultiverseId">@Current.MultiverseId</a></td>
+                    <td>@Current.Name</td>
+                    <td>@Current.Cost</td>
+                    <td>@Current.FullType</td>
+                </tr>
+                @EndEach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+    <script>
+        $(function ()
+        {
+            $('a[rel=popover]').popover(
+                {
+                html: true,
+                trigger: 'hover',
+                placement: 'right',
+                content: function () { return '<img src="' + $(this).data('img') + '" />'; }
+            });
+    });
+    </script>
 </body>
 
 </html>
