@@ -74,6 +74,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NerdBot.TestsHelper\NerdBot.TestsHelper.csproj">
+      <Project>{5b10d135-cfd5-43b2-b229-1415bddb2909}</Project>
+      <Name>NerdBot.TestsHelper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NerdBotRedditTopCommentResponsePlugin\NerdBotRedditTopCommentResponsePlugin.csproj">
       <Project>{1744df3c-c9ab-47cf-a294-73182daa9394}</Project>
       <Name>NerdBotRedditTopCommentResponsePlugin</Name>

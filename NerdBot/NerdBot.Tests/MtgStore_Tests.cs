@@ -1,12 +1,8 @@
-﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Moq;
 using NerdBot.Mtg;
+using NerdBot.TestsHelper;
 using NerdBot.Utilities;
 using NUnit.Framework;
 using SimpleLogging.Core;
@@ -16,8 +12,7 @@ namespace NerdBot.Tests
     [TestFixture]
     class MtgStore_Tests
     {
-        private const string connectionString = "mongodb://localhost";
-        private const string databaseName = "mtgdb";
+        private TestConfiguration testConfig;
 
         private IMtgStore mtgStore;
         private Mock<ILoggingService> loggingServiceMock;
@@ -64,6 +59,12 @@ namespace NerdBot.Tests
             return searchValue;
         }
 
+        [TestFixtureSetUp]
+        public void TestFixtureSetUp()
+        {
+            testConfig = new ConfigReader().Read();
+        }
+
         [SetUp]
         public void SetUp()
         {
@@ -76,7 +77,7 @@ namespace NerdBot.Tests
             searchUtilityMock.Setup(s => s.GetRegexSearchValue(It.IsAny<string>()))
                 .Returns((string s) => this.GetRegexSearchValue(s));
 
-            mtgStore = new MtgStore(connectionString, databaseName, loggingServiceMock.Object, searchUtilityMock.Object);
+            mtgStore = new MtgStore(testConfig.Url, testConfig.Database, loggingServiceMock.Object, searchUtilityMock.Object);
         }
 
         #region CardExists

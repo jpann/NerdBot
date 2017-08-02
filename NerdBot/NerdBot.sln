@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotRedditTopCommentResp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotRedditTopCommentResponsePlugin_Tests", "NerdBotRedditTopCommentResponsePlugin_Tests\NerdBotRedditTopCommentResponsePlugin_Tests.csproj", "{C6DA1D76-DEAD-486F-B3E4-5F3DA2480D34}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBot.TestsHelper", "NerdBot.TestsHelper\NerdBot.TestsHelper.csproj", "{5B10D135-CFD5-43B2-B229-1415BDDB2909}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -139,6 +141,10 @@ Global
 		{C6DA1D76-DEAD-486F-B3E4-5F3DA2480D34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6DA1D76-DEAD-486F-B3E4-5F3DA2480D34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6DA1D76-DEAD-486F-B3E4-5F3DA2480D34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B10D135-CFD5-43B2-B229-1415BDDB2909}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B10D135-CFD5-43B2-B229-1415BDDB2909}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B10D135-CFD5-43B2-B229-1415BDDB2909}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B10D135-CFD5-43B2-B229-1415BDDB2909}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

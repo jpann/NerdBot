@@ -1,12 +1,10 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using MongoDB.Driver;
 using Moq;
 using NerdBot.Mtg;
+using NerdBot.TestsHelper;
 using NerdBot.Utilities;
 using NUnit.Framework;
 using SimpleLogging.Core;
@@ -16,8 +14,7 @@ namespace NerdBot.Tests
     [TestFixture]
     public class MtgStore_AddRemove_Tests
     {
-        private const string connectionString = "mongodb://localhost";
-        private const string databaseName = "mtgdb_ins_testing";
+        private TestConfiguration testConfig;
 
         private IMtgStore mtgStore;
         private Mock<ILoggingService> loggingServiceMock;
@@ -75,9 +72,9 @@ namespace NerdBot.Tests
         #region Test Data Methods
         public void InsertTestData()
         {
-            var client = new MongoClient(connectionString);
+            var client = new MongoClient(testConfig.Url);
             var server = client.GetServer();
-            var database = server.GetDatabase(databaseName);
+            var database = server.GetDatabase(testConfig.TestDb);
             var cardCollection = database.GetCollection<Card>("cards");
             var setCollection = database.GetCollection<Set>("sets");
 
@@ -87,9 +84,9 @@ namespace NerdBot.Tests
 
         public void RemoveTestData()
         {
-            var client = new MongoClient(connectionString);
+            var client = new MongoClient(testConfig.Url);
             var server = client.GetServer();
-            var database = server.GetDatabase(databaseName);
+            var database = server.GetDatabase(testConfig.TestDb);
             var cardCollection = database.GetCollection<Card>("cards");
             var setCollection = database.GetCollection<Set>("sets");
 
@@ -291,6 +288,12 @@ namespace NerdBot.Tests
         }
         #endregion
 
+        [TestFixtureSetUp]
+        public void TestFixtureSetup()
+        {
+            testConfig = new ConfigReader().Read();
+        }
+
         [SetUp]
         public void SetUp()
         {
@@ -304,8 +307,8 @@ namespace NerdBot.Tests
                 .Returns((string s) => this.GetRegexSearchValue(s));
 
             mtgStore = new MtgStore(
-                connectionString, 
-                databaseName, 
+                testConfig.Url,
+                testConfig.Database, 
                 loggingServiceMock.Object, 
                 searchUtilityMock.Object);
 

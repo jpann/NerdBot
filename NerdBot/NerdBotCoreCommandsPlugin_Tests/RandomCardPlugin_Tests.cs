@@ -12,6 +12,7 @@ using NerdBot.Messengers.GroupMe;
 using NerdBot.Mtg;
 using NerdBot.Mtg.Prices;
 using NerdBot.Parsers;
+using NerdBot.TestsHelper;
 using NerdBot.UrlShortners;
 using NerdBot.Utilities;
 using NerdBotCoreCommands;
@@ -23,9 +24,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
     [TestFixture]
     class RandomCardPlugin_Tests
     {
-        private const string connectionString = "mongodb://localhost";
-        private const string databaseName = "mtgdb";
-
+        private TestConfiguration testConfig;
         private IMtgStore mtgStore;
         private RandomCardPlugin plugin;
 
@@ -81,6 +80,8 @@ namespace NerdBotCoreCommandsPlugin_Tests
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
+            testConfig = new ConfigReader().Read();
+
             loggingServiceMock = new Mock<ILoggingService>();
             searchUtilityMock = new Mock<SearchUtility>();
 
@@ -91,8 +92,8 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 .Returns((string s) => this.GetRegexSearchValue(s));
 
             mtgStore = new MtgStore(
-                connectionString,
-                databaseName, 
+                testConfig.Url,
+                testConfig.Database, 
                 loggingServiceMock.Object,
                 searchUtilityMock.Object);
         }

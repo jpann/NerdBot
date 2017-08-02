@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Moq;
 using NerdBot.Mtg.Prices;
+using NerdBot.TestsHelper;
 using NerdBot.Utilities;
 using NUnit.Framework;
 using SimpleLogging.Core;
@@ -15,8 +12,7 @@ namespace NerdBot.Tests.PriceStore
     [TestFixture]
     class EchoMtgPriceStore_Tests
     {
-        private const string connectionString = "mongodb://localhost";
-        private const string databaseName = "mtgdb_prices";
+        private TestConfiguration testConfig;
 
         private ICardPriceStore priceStore;
         private Mock<ILoggingService> loggingServiceMock;
@@ -66,6 +62,8 @@ namespace NerdBot.Tests.PriceStore
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
+            testConfig = new ConfigReader().Read();
+
             loggingServiceMock = new Mock<ILoggingService>();
             searchUtilityMock = new Mock<SearchUtility>();
 
@@ -76,8 +74,8 @@ namespace NerdBot.Tests.PriceStore
                 .Returns((string s) => this.GetRegexSearchValue(s));
 
             priceStore = new EchoMtgPriceStore(
-                connectionString, 
-                databaseName, 
+                testConfig.Url, 
+                testConfig.PriceDatabase, 
                 loggingServiceMock.Object, 
                 searchUtilityMock.Object);
         }

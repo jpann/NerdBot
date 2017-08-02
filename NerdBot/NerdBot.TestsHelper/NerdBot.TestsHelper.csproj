@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6944899F-BE04-4A19-AC3F-CD6A327A1202}</ProjectGuid>
+    <ProjectGuid>{5B10D135-CFD5-43B2-B229-1415BDDB2909}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UrbanDictionaryPlugin_Tests</RootNamespace>
-    <AssemblyName>UrbanDictionaryPlugin_Tests</AssemblyName>
+    <RootNamespace>NerdBot.TestsHelper</RootNamespace>
+    <AssemblyName>NerdBot.TestsHelper</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,22 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.2.1409.1722\lib\net40\Moq.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
+    <Reference Include="Nini, Version=1.1.0.0, Culture=neutral, PublicKeyToken=691faec150a7fa7b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Trove.Nini.1.1.0.0\lib\net20\Nini.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="SimpleLogging.Core">
-      <HintPath>..\packages\SimpleLogging.Core.0.5.0\lib\portable-net4+sl4+wp7+win8\SimpleLogging.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="SimpleLogging.NLog">
-      <HintPath>..\packages\SimpleLogging.NLog.0.5.0\lib\net40\SimpleLogging.NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -56,26 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UrbanDictionaryPlugin_Tests.cs" />
+    <Compile Include="ConfigReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="NerdBot_Tests-Example.ini" />
+    <None Include="NerdBot_Tests.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\NerdBot.TestsHelper\NerdBot.TestsHelper.csproj">
-      <Project>{5b10d135-cfd5-43b2-b229-1415bddb2909}</Project>
-      <Name>NerdBot.TestsHelper</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NerdBotUrbanDictionary\NerdBotUrbanDictionary.csproj">
-      <Project>{aedbbacb-cccd-4d70-b1f5-81e3b8a46758}</Project>
-      <Name>NerdBotUrbanDictionary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NerdBot\NerdBot.csproj">
-      <Project>{35460aa4-b94a-4b64-9418-7243ec3d2f01}</Project>
-      <Name>NerdBot</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

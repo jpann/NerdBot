@@ -101,6 +101,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NerdBot.TestsHelper\NerdBot.TestsHelper.csproj">
+      <Project>{5b10d135-cfd5-43b2-b229-1415bddb2909}</Project>
+      <Name>NerdBot.TestsHelper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NerdBot\NerdBot.csproj">
       <Project>{35460aa4-b94a-4b64-9418-7243ec3d2f01}</Project>
       <Name>NerdBot</Name>

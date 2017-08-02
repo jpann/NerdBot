@@ -71,6 +71,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NerdBot.TestsHelper\NerdBot.TestsHelper.csproj">
+      <Project>{5b10d135-cfd5-43b2-b229-1415bddb2909}</Project>
+      <Name>NerdBot.TestsHelper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NerdBotWhatsInStandardPlugin\NerdBotWhatsInStandardPlugin.csproj">
       <Project>{c2e52de1-cd34-4aa6-a4c1-dbc8e9dbf35f}</Project>
       <Name>NerdBotWhatsInStandardPlugin</Name>

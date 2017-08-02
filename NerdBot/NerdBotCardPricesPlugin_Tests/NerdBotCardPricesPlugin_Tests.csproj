@@ -65,6 +65,10 @@
     <Compile Include="WhatsNotPlugin_Tests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NerdBot.TestsHelper\NerdBot.TestsHelper.csproj">
+      <Project>{5b10d135-cfd5-43b2-b229-1415bddb2909}</Project>
+      <Name>NerdBot.TestsHelper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NerdBotCardPrices\NerdBotCardPrices.csproj">
       <Project>{71b184b0-2fd3-4b70-a8fa-572f4db83bbf}</Project>
       <Name>NerdBotCardPrices</Name>

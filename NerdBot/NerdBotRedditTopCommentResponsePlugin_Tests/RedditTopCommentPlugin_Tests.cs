@@ -17,14 +17,14 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using NerdBot.TestsHelper;
 
 namespace NerdBotRedditTopCommentResponsePlugin_Tests
 {
     [TestFixture]
     public class RedditTopCommentPlugin_Tests
     {
-        private const string connectionString = "mongodb://localhost";
-        private const string databaseName = "mtgdb";
+        private TestConfiguration testConfig;
 
         private IMtgStore mtgStore;
         private RedditTopCommentPlugin plugin;
@@ -81,6 +81,8 @@ namespace NerdBotRedditTopCommentResponsePlugin_Tests
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
+            testConfig = new ConfigReader().Read();
+
             loggingServiceMock = new Mock<ILoggingService>();
             searchUtilityMock = new Mock<SearchUtility>();
 
@@ -91,8 +93,8 @@ namespace NerdBotRedditTopCommentResponsePlugin_Tests
                 .Returns((string s) => this.GetRegexSearchValue(s));
 
             mtgStore = new MtgStore(
-                connectionString,
-                databaseName,
+                testConfig.Url,
+                testConfig.Database,
                 loggingServiceMock.Object,
                 searchUtilityMock.Object);
         }
