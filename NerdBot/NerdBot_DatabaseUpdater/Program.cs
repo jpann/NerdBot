@@ -49,7 +49,7 @@ namespace NerdBot_DatabaseUpdater
 
             try
             {
-                mStopwatch = new Stopwatch();
+                mStopwatch = Stopwatch.StartNew();
                 mLoggingService = TinyIoCContainer.Current.Resolve<ILoggingService>();
                 mMtgStore = TinyIoCContainer.Current.Resolve<IMtgStore>();
                 mFileSystem = TinyIoCContainer.Current.Resolve<IFileSystem>();
