@@ -4,16 +4,14 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Search results for @Model.SearchTerm</title>
+    <title>Search results for '@Model.SearchTerm' - NerdBot</title>
     
-
-    <!-- Bootstrap core CSS -->
-    <link href="@Path['~/Content/css/bootstrap.min.css']" rel="stylesheet">
-    <!-- Bootstrap theme -->
-    <link href="@Path['~/Content/css/bootstrap-theme.min.css']" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="theme.css" rel="stylesheet">
+    <script src="@Path['~/Content/js/jquery-3.2.1.min.js']"></script>
+    <script src="@Path['~/Content/js/jquery.validate.js']"></script>
+    <script src="@Path['~/Content/js/additional-methods.js']"></script>
+    <script src="@Path['~/Content/js/bootstrap.min.js']"></script>
+    <link rel="stylesheet" href="@Path['~/Content/css/bootstrap.min.css']">
+	<link rel="stylesheet" href="@Path['~/Content/css/keyrune.css']">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -23,40 +21,60 @@
 
 	<style>
 	  body {
-		padding: 30px;
+		padding: 10px;
 	  }
 	</style>
   </head>
   <body>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
+	
 
-	<b>Seach Term:</b> @Model.SearchTerm 
-	<br/><br/>
+	<div class="container">
+		<div class="panel panel-default">
+			<div class="panel-heading"><b>Seach Term:</b> '@Model.SearchTerm'</div>
+			<div class="panel-body" style="overflow-y: scroll; height: 90%">
 
-	@If.HasCards
-	<h4>Search Results</h4>
-	<table class="table table-bordered" width="75%">
-        <thead>
-            <tr>
-                <th width="10%">Name</th>
-                <th width="15%">Set</th>
-				<th>Command</th>
-            </tr>
-        </thead>
-	<tbody>
-	@Each.Cards
-		<tr>
-			<td>@Current.Name</td>
-			<td>@Current.SetName</td>
-			<td>img @Current.SetId&#59;@Current.Name</td>
-		</tr>
-	@EndEach
-	</tbody>
-	</table>
-	@EndIf
+				<table id="cards-table" class="table table-sm table-hover">
+					<thead>
+						<tr>
+							<th class="col-md-2"><small>Name</small></th>
+							<th class="col-md-2"><small>Set</small></th>
+							<th class="col-md-9"><small>NerdBot Command</small></th>
+						</tr>
+					</thead>
+					<tbody>
+					@If.HasCards
+						@Each.Cards
+						<tr>
+							<td><a href="/ruling/@Current.MultiverseId" rel="popover" data-img="@Current.Img">@Current.Name</a></td>
+							<td>
+								<a href="http://gatherer.wizards.com/Pages/Search/Default.aspx?action=advanced&set=[%22@Current.SetName%22]" target="_blank">
+									<i class="ss @Current.SetAsKeyRuneIcon ss-2x"></i>
+								</a>
+							</td>
+							<td>img @Current.SetId&#59;@Current.Name</td>
+						</tr>
+						@EndEach
+					@EndIf
+					</tbody>
+					
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<script>
+	$(function ()
+	{
+		$('a[rel=popover]').popover(
+		{
+			html: true,
+			trigger: 'hover',
+			placement: 'right',
+			container: 'body',
+			content: function () { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
+		});
+	});
+	</script>
   </body>
 </html>
 
