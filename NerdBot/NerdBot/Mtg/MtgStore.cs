@@ -91,6 +91,16 @@ namespace NerdBot.Mtg
             var rulingsDocument = BsonDocumentWrapper.CreateMultiple(card.Rulings);
             var rulingArray = new BsonArray(rulingsDocument);
 
+            var colorIdentityDocument = BsonDocumentWrapper.CreateMultiple(card.ColorIdentity);
+            var colorIdentityArray = new BsonArray(colorIdentityDocument);
+
+            var variationsDocument = BsonDocumentWrapper.CreateMultiple(card.Variations);
+            var variationsArray = new BsonArray(variationsDocument);
+
+            var typesDocument = BsonDocumentWrapper.CreateMultiple(card.Types);
+            var typesArray = new BsonArray(typesDocument);
+
+
             // Update document
             var cardUpdate = Update
                 .Set("relatedCardId", card.RelatedCardId)
@@ -115,7 +125,12 @@ namespace NerdBot.Mtg
                 .Set("rulings", rulingArray) // Use BsonArray that contains a BsonDocumentWrapper of the card's rulings
                 .Set("img", card.Img ?? "")
                 .Set("imgHires", card.ImgHires ?? "")
-                .Set("multiverseId", card.MultiverseId);
+                .Set("multiverseId", card.MultiverseId)
+                .Set("number", card.Number ?? "")
+                .Set("mciNumber", card.McINumber ?? "")
+                .Set("colorIdentity", colorIdentityArray)
+                .Set("variations", variationsArray)
+                .Set("types", typesArray);
 
             // Find and modify document. If document doesnt exist, insert it
             FindAndModifyArgs findModifyArgs = new FindAndModifyArgs();

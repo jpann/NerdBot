@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NerdBot.Importer.MtgData;
 using NerdBot.Mtg;
 using NerdBot.Utilities;
@@ -113,6 +111,19 @@ namespace NerdBot.Importer.Mapper
                 card.Rulings = rulings;
             }
 
+            card.Number = source.Number;
+            card.McINumber = source.McINumber;
+
+            if (source.ColorIdentity != null)
+            {
+                card.ColorIdentity = source.ColorIdentity.ToList();
+            }
+
+            if (source.Variations != null)
+            {
+                card.Variations = source.Variations.ToList();
+            }
+            
             return card;
         }
 

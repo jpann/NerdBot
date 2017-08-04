@@ -15,6 +15,9 @@ namespace NerdBot.Mtg
         {
             this.Rulings = new List<Ruling>();
             this.Colors = new List<string>();
+            this.ColorIdentity = new List<string>();
+            this.Variations = new List<int?>();
+            this.Types = new List<string>();
         }
 
         [BsonId(IdGenerator = typeof(ObjectIdGenerator))]
@@ -127,6 +130,19 @@ namespace NerdBot.Mtg
         [JsonProperty("types")]
         [BsonElement("types")]
         public List<string> Types { get; set; }
+
+        [JsonProperty("number")]
+        [BsonElement("number")]
+        public string Number { get; set; }
+
+        [JsonProperty("variations")]
+        [BsonElement("variations")]
+        public List<int?> Variations { get; set; }
+
+        [JsonProperty("mciNumber")]
+        [BsonElement("mciNumber")]
+        public string McINumber { get; set; }
+
     }
 
     public class Ruling

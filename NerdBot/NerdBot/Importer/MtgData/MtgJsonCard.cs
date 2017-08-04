@@ -24,5 +24,8 @@ namespace NerdBot.Importer.MtgData
         public List<MtgJsonRuling> Rulings { get; set; }
 
         public string[] ColorIdentity { get; set; }
+        public List<int?> Variations { get; set; }
+        public string McINumber { get; set; }
+
     }
 }
