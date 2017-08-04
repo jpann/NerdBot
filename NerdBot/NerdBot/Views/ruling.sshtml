@@ -43,8 +43,7 @@
                         </thead>
                         <tbody>
 							<tr>
-								<th scope="row">Image</th>
-								<td><img src="@Model.Card.Img" /></td>
+								<td colspan="2"><img src="@Model.Card.Img" /></td>
 							</tr>
 							<tr>
 								<th scope="row">Name</th>
@@ -81,8 +80,7 @@
 								</td>
 							</tr>
 							<tr>
-								<th scope="row">Rulings</th>
-								<td>
+								<td colspan="2">
 								@If.Card.HasRulings
 								<table class="table table-sm" width="75%">
 									<thead>
