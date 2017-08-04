@@ -25,6 +25,16 @@ namespace NerdBot.Mtg
         [BsonElement("code")]
         public string Code { get; set; }
 
+        public string SetAsKeyRuneIcon
+        {
+            get
+            {
+                string set = "ss ss-{0} ss-{1}";
+
+                return string.Format(set, this.Code.ToLower(), "common");
+            }
+        }
+
         [JsonProperty("block")]
         [BsonElement("block")]
         public string Block { get; set; }

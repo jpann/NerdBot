@@ -71,6 +71,7 @@
 			trigger: 'hover',
 			placement: 'right',
 			container: 'body',
+			animation : 'true',
 			content: function () { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
 		});
 	});

@@ -31,6 +31,7 @@
     <script src="@Path['~/Content/js/additional-methods.js']"></script>
     <script src="@Path['~/Content/js/bootstrap.min.js']"></script>
     <link rel="stylesheet" href="@Path['~/Content/css/bootstrap.min.css']">
+    <link rel="stylesheet" href="@Path['~/Content/css/keyrune.css']">
 
 </head>
 
@@ -44,23 +45,25 @@
 
                     <table id="user-table" class="table table-bordered table-hover">
                         <thead>
-                            <tr>
-							  <th class="col-md-1"><small>Code</small></th>
-							  <th class="col-md-2"><small>Name</small></th>
-							  <th class="col-md-2"><small>Block</small></th>
-							  <th class="col-md-1"><small>Type</small></th>
-							  <th class="col-md-5"><small>Released On</small></th>
-                            </tr>
+                        <tr>
+                            <th class="col-md-1"><small>Symbol</small></th>
+                            <th class="col-md-1"><small>Code</small></th>
+                            <th class="col-md-2"><small>Name</small></th>
+                            <th class="col-md-2"><small>Block</small></th>
+                            <th class="col-md-1"><small>Type</small></th>
+                            <th class="col-md-5"><small>Released On</small></th>
+                        </tr>
                         </thead>
                         <tbody>
 						@Each.Sets
-						<tr>
-							<td><a href="/admin/set/@Current.Code">@Current.Code</a></td>
-							<td>@Current.Name</td>
-							<td>@Current.Block</td>
-							<td>@Current.Type</td>
-							<td>@Current.ReleasedOn</td>
-						</tr>
+                        <tr>
+                            <td><i class="ss @Current.Symbol ss-2x"></i></td>
+                            <td><a href="/admin/set/@Current.Code">@Current.Code</a></td>
+                            <td>@Current.Name</td>
+                            <td>@Current.Block</td>
+                            <td>@Current.Type</td>
+                            <td>@Current.ReleasedOn</td>
+                        </tr>
 						@EndEach
                         </tbody>
                     </table>

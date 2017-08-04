@@ -88,7 +88,8 @@ namespace NerdBot.Modules
                         Block = s.Block,
                         Type = s.Type,
                         ReleasedOn = s.ReleasedOn.ToShortDateString(),
-                        ReleasedOnSort = s.ReleasedOn
+                        ReleasedOnSort = s.ReleasedOn,
+                        Symbol = s.SetAsKeyRuneIcon
                     }).OrderByDescending(s => s.ReleasedOnSort)
                 }];
 

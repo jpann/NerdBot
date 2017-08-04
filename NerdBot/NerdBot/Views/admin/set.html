@@ -31,7 +31,8 @@
     <script src="@Path['~/Content/js/additional-methods.js']"></script>
     <script src="@Path['~/Content/js/bootstrap.min.js']"></script>
     <link rel="stylesheet" href="@Path['~/Content/css/bootstrap.min.css']">
-    <link href="@Path['~/Content/css/mana.css']" rel="stylesheet" type="text/css" />
+    <link href="@Path['~/Content/css/mana.css']" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="@Path['~/Content/css/keyrune.css']">
 
 </head>
 
@@ -50,15 +51,17 @@
                 <thead>
                 <tr>
                     <th class="col-md-1"><small>ID</small></th>
+                    <th class="col-md-1"><small>Set</small></th>
                     <th class="col-md-2"><small>Name</small></th>
                     <th class="col-md-2"><small>Cost</small></th>
-                    <th class="col-md-7"><small>Type</small></th>
+                    <th class="col-md-6"><small>Type</small></th>
                 </tr>
                 </thead>
                 <tbody>
                 @Each.Cards
                 <tr>
                     <td><a rel="popover" data-img="@Current.Img" href="/ruling/@Current.MultiverseId">@Current.MultiverseId</a></td>
+                    <td><i class="ss @Current.SetAsKeyRuneIcon ss-2x"></i></td>
                     <td>@Current.Name</td>
                     <td>@Current.Cost</td>
                     <td>@Current.FullType</td>
