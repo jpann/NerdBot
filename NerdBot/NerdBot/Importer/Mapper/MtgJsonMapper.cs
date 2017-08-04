@@ -145,6 +145,9 @@ namespace NerdBot.Importer.Mapper
             set.UncommonQty = source.UncommonQty;
             set.RareQty = source.RareQty;
             set.SearchName = this.mSearchUtility.GetSearchValue(source.Name);
+            set.GathererCode = source.GathererCode;
+            set.OldCode = source.OldCode;
+            set.MagicCardsInfoCode = source.MagicCardsInfoCode;
 
             return set;
         }

@@ -865,7 +865,10 @@ namespace NerdBot.Mtg
                 .Set("mythicQty", set.MythicQty)
                 .Set("basicLandQty", set.BasicLandQty)
                 .Set("totalQty", set.TotalQty)
-                .Set("releasedOn", set.ReleasedOn);
+                .Set("releasedOn", set.ReleasedOn)
+                .Set("gathererCode", set.GathererCode ?? "")
+                .Set("oldCode", set.OldCode ?? "")
+                .Set("magicCardsInfoCode", set.MagicCardsInfoCode ?? "");
 
             // Find and modify document. If document doesnt exist, insert it
             FindAndModifyArgs findModifyArgs = new FindAndModifyArgs();

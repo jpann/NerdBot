@@ -14,5 +14,8 @@ namespace NerdBot.Importer.MtgData
         public int RareQty { get; set; }
         public int MythicQty { get; set; }
         public int BasicLandQty { get; set; }
+        public string GathererCode { get; set; }
+        public string OldCode { get; set; }
+        public string MagicCardsInfoCode { get; set; }
     }
 }

@@ -70,5 +70,17 @@ namespace NerdBot.Mtg
         [JsonProperty("releasedOn")]
         [BsonElement("releasedOn")]
         public DateTime ReleasedOn { get; set; }
+
+        [JsonProperty("gathererCode")]
+        [BsonElement("gathererCode")]
+        public string GathererCode { get; set; }
+
+        [JsonProperty("oldCode")]
+        [BsonElement("oldCode")]
+        public string OldCode { get; set; }
+
+        [JsonProperty("magicCardsInfoCode")]
+        [BsonElement("magicCardsInfoCode")]
+        public string MagicCardsInfoCode { get; set; }
     }
 }
