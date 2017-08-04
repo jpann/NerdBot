@@ -173,25 +173,16 @@
     <None Include="Content\fonts\glyphicons-halflings-regular.woff2">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\fonts\mana.eot">
+    <None Include="Content\fonts\keyrune.eot">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\fonts\mana.ttf">
+    <None Include="Content\fonts\keyrune.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\fonts\mana.woff">
+    <None Include="Content\fonts\keyrune.woff">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\fonts\mana.woff2">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\fonts\mplantin.eot">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\fonts\mplantin.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\fonts\mplantin.woff">
+    <None Include="Content\fonts\keyrune.woff2">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="NerdBot-Example.ini" />
@@ -203,13 +194,13 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Content Include="Content\css\mana.css">
+    <Content Include="Content\css\keyrune.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\fonts\mana.svg">
+    <Content Include="Content\css\keyrune.min.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\fonts\mplantin.svg">
+    <Content Include="Content\fonts\keyrune.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\js\additional-methods.js">
@@ -261,9 +252,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\js\bootstrap.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\js\npm.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\admin\set.html">

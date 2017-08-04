@@ -64,7 +64,7 @@ namespace NerdBot.Modules
                 int cardMultiverseId = parameters.id;
 
                 var card = await mtgStore.GetCard(cardMultiverseId);
-
+                
                 if (card == null)
                 {
                     string msg = string.Format("No card found using multiverseId '{0}'", cardMultiverseId);
@@ -74,7 +74,22 @@ namespace NerdBot.Modules
                     return msg;
                 }
 
-                return View["ruling.sshtml", card];
+                var set = await mtgStore.GetSetByCode(card.SetId);
+
+                if (set == null)
+                {
+                    string msg = string.Format("No set found using code '{0}'", card.SetId);
+
+                    loggingService.Error(msg);
+
+                    return msg;
+                }
+
+                return View["ruling.sshtml", new
+                {
+                    Card = card,
+                    SetCode = !string.IsNullOrEmpty(set.GathererCode) ? set.GathererCode : set.Code
+                }];
             };
 
             // Get search results

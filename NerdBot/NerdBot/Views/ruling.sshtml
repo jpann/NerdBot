@@ -4,16 +4,15 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Rulings for @Model.Name</title>
+    <title>Rulings for @Model.Card.Name - NerdBot</title>
     
 
-    <!-- Bootstrap core CSS -->
-    <link href="@Path['~/Content/css/bootstrap.min.css']" rel="stylesheet">
-    <!-- Bootstrap theme -->
-    <link href="@Path['~/Content/css/bootstrap-theme.min.css']" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="theme.css" rel="stylesheet">
+    <script src="@Path['~/Content/js/jquery-3.2.1.min.js']"></script>
+    <script src="@Path['~/Content/js/jquery.validate.js']"></script>
+    <script src="@Path['~/Content/js/additional-methods.js']"></script>
+    <script src="@Path['~/Content/js/bootstrap.min.js']"></script>
+    <link rel="stylesheet" href="@Path['~/Content/css/bootstrap.min.css']">
+	<link rel="stylesheet" href="@Path['~/Content/css/keyrune.css']">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -28,46 +27,87 @@
 	</style>
   </head>
   <body>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
+	
 
-	<img src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=@Model.MultiverseId&type=card" /><br/><br/>
+	<div class="container">
+			<div class="panel panel-default">
+                <div class="panel-heading">@Model.Card.Name - @Model.Card.SetName [@Model.SetCode]</div>
+                <div class="panel-body" style="overflow-y: scroll; height: 90%">
 
-	<b>Name:</b> @Model.Name (<a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=true&multiverseid=@Model.MultiverseId">printed</a> / <a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=false&multiverseid=@Model.MultiverseId">oracle</a>)<br />
-	<b>Set:</b> @Model.SetName [@Model.SetId]<br />
-	<b>Type:</b> @Model.Type<br />
-	@If.HasSubType
-	<b>Sub-type:</b> @Model.SubType<br />
-	@EndIf
-	<b>Rarity:</b> @Model.Rarity<br />
-
-	<b>Text:</b><br/>
-	@Model.Desc
-	<br /><br />
-	<b>Gatherer Discussion:</b> <a href="http://gatherer.wizards.com/Pages/Card/Discussion.aspx?multiverseid=@Model.MultiverseId">Click here.</a>
-	<br /><br />
-
-	@If.HasRulings
-	<h4>Rulings</h4>
-	<table class="table table-bordered" width="75%">
-        <thead>
-            <tr>
-                <th width="10%">Date</th>
-                <th>Ruling</th>
-            </tr>
-        </thead>
-	<tbody>
-	@Each.Rulings
-		<tr>
-			<td>@Current.ReleasedOn</td>
-			<td>@Current.Rule</td>
-		</tr>
-	@EndEach
-	</tbody>
-	</table>
-	@EndIf
+                    <table id="card-table" class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+							  <th class="col-md-1"><small></small></th>
+							  <th class="col-md-11"><small></small></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+							<tr>
+								<th scope="row">Image</th>
+								<td><img src="@Model.Card.Img" /></td>
+							</tr>
+							<tr>
+								<th scope="row">Name</th>
+								<td>@Model.Card.Name</td>
+							</tr>
+							<tr>
+								<th scope="row">Set</th>
+								<td>
+									<a href="http://gatherer.wizards.com/Pages/Search/Default.aspx?action=advanced&set=[%22@Model.Card.SetName%22]" target="_blank">
+										<i class="ss @Model.Card.SetAsKeyRuneIcon ss-2x"></i> @Model.Card.SetName [@Model.SetCode]
+									</a>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">Type</th>
+								<td>@Model.Card.FullType</td>
+							</tr>
+							<tr>
+								<th scope="row">Rarity</th>
+								<td>@Model.Card.Rarity</td>
+							</tr>
+							<tr>
+								<th scope="row">Text</th>
+								<td>@Model.Card.Desc</td>
+							</tr>
+							<tr>
+								<th scope="row">Gatherer</th>
+								<td>
+									<ul>
+										<li><a href="http://gatherer.wizards.com/Pages/Card/Discussion.aspx?multiverseid=@Model.Card.MultiverseId" target="_blank">Gatherer Discussion</a></li>
+										<li><a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=true&multiverseid=@Model.Card.MultiverseId" target="_blank">Printed</a></li>
+										<li><a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=false&multiverseid=@Model.Card.MultiverseId" target="_blank">Oracle Text</a></li>
+									</ul>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">Rulings</th>
+								<td>
+								@If.Card.HasRulings
+								<table class="table table-sm" width="75%">
+									<thead>
+										<tr>
+											<th width="10%">Date</th>
+											<th>Ruling</th>
+										</tr>
+									</thead>
+									<tbody>
+									@Each.Card.Rulings
+										<tr>
+											<td>@Current.ReleasedOnShort</td>
+											<td>@Current.Rule</td>
+										</tr>
+									@EndEach
+									</tbody>
+								</table>
+								@EndIf
+								</td>
+							</tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
   </body>
 </html>
 

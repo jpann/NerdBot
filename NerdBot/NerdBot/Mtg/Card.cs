@@ -95,6 +95,41 @@ namespace NerdBot.Mtg
         [BsonElement("setId")]
         public string SetId { get; set; }
 
+        public string SetAsKeyRuneIcon
+        {
+            get
+            {
+                string set = "ss ss-{0} ss-{1}";
+
+                switch (this.Rarity)
+                {
+                    case "Basic Land":
+                        set = string.Format(set, this.SetId.ToLower(), "common");
+                        break;
+                    case "Common":
+                        set = string.Format(set, this.SetId.ToLower(), "common");
+                        break;
+                    case "Uncommon":
+                        set = string.Format(set, this.SetId.ToLower(), "uncommon");
+                        break;
+                    case "Rare":
+                        set = string.Format(set, this.SetId.ToLower(), "rare");
+                        break;
+                    case "Mythic Rare":
+                        set = string.Format(set, this.SetId.ToLower(), "mythic");
+                        break;
+                    case "Special":
+                        set = string.Format(set, this.SetId.ToLower(), "timeshifted");
+                        break;
+                    default:
+                        set = string.Format(set, this.SetId.ToLower(), "common");
+                        break;
+                }
+
+                return set;
+            }
+        }
+
         [JsonProperty("token")]
         [BsonElement("token")]
         public bool? Token { get; set; }
@@ -142,7 +177,6 @@ namespace NerdBot.Mtg
         [JsonProperty("mciNumber")]
         [BsonElement("mciNumber")]
         public string McINumber { get; set; }
-
     }
 
     public class Ruling
@@ -150,6 +184,11 @@ namespace NerdBot.Mtg
         [BsonElement("releasedOn")]
         [JsonProperty("releasedOn")]
         public DateTime ReleasedOn { get; set; }
+
+        public string ReleasedOnShort
+        {
+            get { return this.ReleasedOn.ToShortDateString(); }
+        }
 
         [BsonElement("rule")]
         [JsonProperty("rule")]
