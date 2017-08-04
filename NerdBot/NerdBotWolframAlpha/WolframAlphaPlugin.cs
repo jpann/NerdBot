@@ -124,7 +124,15 @@ namespace NerdBotWolframAlpha
                             {
                                 foreach (SubPod subPod in primaryPod.SubPods.Take(cSubPodTakeCount))
                                 {
-                                    messenger.SendMessage(subPod.Plaintext);
+                                    if (subPod.Image != null && string.IsNullOrEmpty(subPod.Plaintext))
+                                    {
+                                        messenger.SendMessage(subPod.Image.Src);
+                                    }
+                                    else
+                                    {
+                                        messenger.SendMessage(subPod.Plaintext);
+                                    }
+                                    
                                 }
                             }
                         }
