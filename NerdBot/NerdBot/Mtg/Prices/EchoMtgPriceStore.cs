@@ -197,7 +197,12 @@ namespace NerdBot.Mtg.Prices
                 Query.GT("priceDiffValue", 0),
                 Query.NE("priceMid", ""),
                 Query.NE("priceLow", ""),
-                Query.NE("priceFoil", "")
+                Query.NE("priceFoil", ""),
+                Query.NE("searchName", "swamp"),
+                Query.NE("searchName", "mountain"),
+                Query.NE("searchName", "plains"),
+                Query.NE("searchName", "island"),
+                Query.NE("searchName", "forest")
                 );
 
             var sortBy = SortBy.Descending("priceDiffValue");
@@ -231,7 +236,12 @@ namespace NerdBot.Mtg.Prices
                 Query.LT("priceDiffValue", 0),
                 Query.NE("priceMid", ""),
                 Query.NE("priceLow", ""),
-                Query.NE("priceFoil", "")
+                Query.NE("priceFoil", ""),
+                Query.NE("searchName", "swamp"),
+                Query.NE("searchName", "mountain"),
+                Query.NE("searchName", "plains"),
+                Query.NE("searchName", "island"),
+                Query.NE("searchName", "forest")
                 );
 
             var sortBy = SortBy.Ascending("priceDiffValue");
