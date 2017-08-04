@@ -100,7 +100,6 @@ namespace NerdBot.Mtg
             var typesDocument = BsonDocumentWrapper.CreateMultiple(card.Types);
             var typesArray = new BsonArray(typesDocument);
 
-
             // Update document
             var cardUpdate = Update
                 .Set("relatedCardId", card.RelatedCardId)
