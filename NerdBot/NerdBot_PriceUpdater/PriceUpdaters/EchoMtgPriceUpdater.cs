@@ -60,7 +60,7 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
 
             string pageSource = this.mHttpClient.GetPageSource(url);
 
-			this.mLoggingService.Debug (pageSource);
+			this.mLoggingService.Trace (pageSource);
 
             HtmlDocument htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(pageSource);
