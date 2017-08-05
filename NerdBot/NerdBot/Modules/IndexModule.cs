@@ -11,6 +11,7 @@ using NerdBot.Mtg;
 using NerdBot.Mtg.Prices;
 using NerdBot.Parsers;
 using NerdBot.Reporters;
+using NerdBot.Web.Queries;
 using SimpleLogging.Core;
 
 namespace NerdBot.Modules
@@ -35,8 +36,114 @@ namespace NerdBot.Modules
                         this.Request.UserHostAddress,
                         this.Request.Path);
 
-                return HttpStatusCode.NotAcceptable;
+                return View["index/index.html"];
             };
+
+            #region Card Search Route
+            Post["/api/search/{term}", true] = async (parameters, ct) =>
+            {
+                int limit = 200;
+
+                string term = parameters.term;
+
+                if (string.IsNullOrEmpty(term))
+                {
+                    return HttpStatusCode.NotAcceptable;
+                }
+
+                var cards = await mtgStore.SearchCards(term, limit);
+
+                if (cards == null)
+                {
+                    string msg = string.Format("No cards found using name '{0}'", term);
+
+                    loggingService.Error(msg);
+
+                    return Response.AsJson(new
+                    {
+                        SearchTerm = term,
+                        Limit = limit,
+                        Cards = new List<Card>()
+                    }).StatusCode = HttpStatusCode.NotAcceptable;
+                }
+
+                return Response.AsJson(new
+                {
+                    SearchTerm = term,
+                    Limit = limit,
+                    Cards = cards.Select(c => new
+                    {
+                        Name = c.Name,
+                        Code = c.SetId,
+                        Set = c.SetName,
+                        Cost = c.Cost,
+                        Type = c.FullType,
+                        Rarity = c.Rarity,
+                        Img = c.Img,
+                        MultiverseId = c.MultiverseId,
+                        SearchName = c.SearchName,
+                        Symbol = c.SetAsKeyRuneIcon,
+                        Desc = c.Desc,
+                        CMC = c.Cmc
+                    }).OrderByDescending(c => c.SearchName)
+                });
+            };
+
+            //
+            // Testing out paging
+            Post["/api/0.x/search", true] = async (parameters, ct) =>
+            {
+                int limit = 1000;
+
+                //string term = parameters.term;
+
+                var query = this.Bind<SearchQuery>();
+
+                if (query == null)
+                    return HttpStatusCode.NotAcceptable;
+
+                if (string.IsNullOrEmpty(query.SearchTerm))
+                {
+                    return HttpStatusCode.NotAcceptable;
+                }
+
+                var cards = await mtgStore.SearchCards(query.SearchTerm, query.Page, limit);
+
+                if (cards == null)
+                {
+                    string msg = string.Format("No cards found using name '{0}'", query.SearchTerm);
+
+                    loggingService.Error(msg);
+
+                    return Response.AsJson(new
+                    {
+                        SearchTerm = query.SearchTerm,
+                        Limit = limit,
+                        Cards = new List<Card>()
+                    }).StatusCode = HttpStatusCode.NotAcceptable;
+                }
+
+                return Response.AsJson(new
+                {
+                    SearchTerm = query.SearchTerm,
+                    Limit = limit,
+                    Cards = cards.Select(c => new
+                    {
+                        Name = c.Name,
+                        Code = c.SetId,
+                        Set = c.SetName,
+                        Cost = c.Cost,
+                        Type = c.FullType,
+                        Rarity = c.Rarity,
+                        Img = c.Img,
+                        MultiverseId = c.MultiverseId,
+                        SearchName = c.SearchName,
+                        Symbol = c.SetAsKeyRuneIcon,
+                        Desc = c.Desc
+                    }).OrderByDescending(c => c.SearchName)
+                });
+            };
+            #endregion
 
             // priceincreases route
             Get["/priceincreases/"] = parameters =>
@@ -85,7 +192,7 @@ namespace NerdBot.Modules
                     return msg;
                 }
 
-                return View["ruling.sshtml", new
+                return View["index/ruling.sshtml", new
                 {
                     Card = card,
                     SetCode = !string.IsNullOrEmpty(set.GathererCode) ? set.GathererCode : set.Code
@@ -115,13 +222,14 @@ namespace NerdBot.Modules
                     return msg;
                 }
 
-                return View["search.sshtml", new
+                return View["index/search.sshtml", new
                 {
                     SearchTerm = name, 
                     Cards = cards
                 }];
             };
 
+            #region Bot Route
             Post["/bot/{token}", true] = async (parameters, ct) =>
             {
                 try
@@ -214,6 +322,7 @@ namespace NerdBot.Modules
                     return HttpStatusCode.BadGateway;
                 }
             };
+            #endregion
         }
     }
 }

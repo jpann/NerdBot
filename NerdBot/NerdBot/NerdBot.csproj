@@ -150,8 +150,15 @@
     <Compile Include="UrlShortners\BitlyUrlShortener.cs" />
     <Compile Include="UrlShortners\IUrlShortener.cs" />
     <Compile Include="Utilities\SearchUtility.cs" />
+    <Compile Include="Web\Queries\SearchQuery.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Views\index\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\index\partial\header.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
@@ -224,10 +231,10 @@
     <Content Include="Views\admin\login.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Views\search.sshtml">
+    <None Include="Views\index\search.sshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Views\ruling.sshtml">
+    <None Include="Views\index\ruling.sshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

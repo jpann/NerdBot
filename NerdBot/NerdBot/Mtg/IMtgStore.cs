@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Nancy.Routing.Trie;
 
 namespace NerdBot.Mtg
 {
@@ -23,6 +19,7 @@ namespace NerdBot.Mtg
         Task<List<Card>> GetCards();
         Task<List<Card>> GetCards(string name, int limit = 0);
 		Task<List<Card>> SearchCards(string name, int limit = 0);
+        Task<List<Card>> SearchCards(string name, int skipRecords = 0, int limit = 100);
 
         Task<Card> GetRandomCardByArtist(string artist);
         Task<Card> GetRandomCardInSet(string setName);
