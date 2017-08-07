@@ -29,7 +29,6 @@
            height: 90%;
             width: 100%; 
         }
-
     </style>
 
     <script src="@Path['~/Content/js/jquery-3.2.1.min.js']"></script>
@@ -58,10 +57,10 @@
         </div>
         <div class="panel-body" style="overflow-y: scroll; height: 90%">
 
-            <table id="cards-table" class="table table-bordered table-hover">
+            <table id="cards-table" class="table compact row-border table-hover stripe" cellspacing="0">
                 <thead>
                 <tr>
-                    <th class="col-md-1"><small>Set</small></th>
+                    <th class="col-md-1 dt-body-center"><small>Set</small></th>
                     <th class="col-md-1"><small>Name</small></th>
                     <th class="col-md-1"><small>Cost</small></th>
                     <th class="col-md-1"><small>Type</small></th>
@@ -72,9 +71,9 @@
                     <tr>
                         <th>Set</th>
                         <th>Name</th>
-                        <th>Cost</th>
-                        <th>Type</th>
-                        <th>Text</th>
+                        <th class="searchable">Cost</th>
+                        <th class="searchable">Type</th>
+                        <th class="searchable">Text</th>
                     </tr>
                 </tfoot>
                 <tbody>
@@ -86,35 +85,23 @@
 <script>
     $(function ()
     {
-        $('#cards-table tfoot th').each( function () {
-            var title = $(this).text();
-            $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
-        } );
-
         var table = $('#cards-table').DataTable({
-            drawCallback: function () {
+            drawCallback: function() {
                 $('[data-toggle=popover]').popover({
                     "html": true,
                     trigger: 'hover',
                     placement: 'right',
-                    container : 'body',
-                    content: function () { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
+                    container: 'body',
+                    content: function() { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
                 })
-            }
+            },
+            //'autoWidth': false,
+            'searching': false,
+            'columnDefs': [
+            {
+                'width': '25px', 'className' : 'dt-center', 'targets' : [0],
+            }]
         });
-
-        table.columns().every( function () {
-            var that = this;
- 
-            $( 'input', this.footer() ).on( 'keyup change', function () {
-                if ( that.search() !== this.value ) {
-                    that
-                        .search( this.value )
-                        .draw();
-                }
-            } );
-        } );
-
 
         $('#btn-search').click(function ()
         {
