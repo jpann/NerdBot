@@ -662,6 +662,7 @@ namespace NerdBotCommon.Mtg
                 throw new ArgumentException("text");
 
             text = text.Replace("%", ".*");
+            text = text.Replace("*", ".*");
 
             if (!text.EndsWith(".*"))
                 text = text + ".*";
