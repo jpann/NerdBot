@@ -35,8 +35,9 @@ namespace NerdBotCommon.Utilities
 
             string searchValue = text.ToLower();
 
-                // Replace * and % with a regex '*' char
-                searchValue = searchValue.Replace("%", ".*");
+            // Replace * and % with a regex '*' char
+            searchValue = searchValue.Replace("%", ".*");
+            searchValue = searchValue.Replace("*", ".*");
 
             // If the first character of the searchValue is not '*', 
             // meaning the user does not want to do a contains search,
