@@ -2,6 +2,7 @@
 using System.Collections;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Nancy.Authentication.Forms;
 using Nancy.Bootstrapper;
 using Nancy.Json;
@@ -179,7 +180,9 @@ namespace NerdBot
             container.Register(botConfig);
 
             // Register the instance of IPluginManager
-            string pluginDirectory = Environment.CurrentDirectory;
+            //string pluginDirectory = Environment.CurrentDirectory;
+            string pluginDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
+                "plugins");
 
             var pluginManager = new PluginManager(
                 msgrBotName,
