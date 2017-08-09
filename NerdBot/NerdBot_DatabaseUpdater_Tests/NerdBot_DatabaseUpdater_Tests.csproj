@@ -73,9 +73,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NerdBot\NerdBot.csproj">
-      <Project>{35460aa4-b94a-4b64-9418-7243ec3d2f01}</Project>
-      <Name>NerdBot</Name>
+    <ProjectReference Include="..\NerdBotCommon\NerdBotCommon.csproj">
+      <Project>{28d62611-0c89-4c9c-bfda-20a52768807f}</Project>
+      <Name>NerdBotCommon</Name>
     </ProjectReference>
     <ProjectReference Include="..\NerdBot_DatabaseUpdater\NerdBot_DatabaseUpdater.csproj">
       <Project>{3e730be7-1ded-4b63-a168-2b64286a65ac}</Project>

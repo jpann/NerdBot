@@ -5,7 +5,7 @@ using Nancy;
 using Nancy.Authentication.Forms;
 using Nancy.Security;
 
-namespace NerdBot.Admin
+namespace NerdBotCommon.Admin
 {
     public class UserMapper : IUserMapper
     {

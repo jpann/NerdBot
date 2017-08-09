@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NerdBot.Mtg;
+using NerdBotCommon.Mtg;
 using NerdBot_PriceUpdater.PriceUpdaters;
 using SimpleLogging.Core;
 using TinyIoC;

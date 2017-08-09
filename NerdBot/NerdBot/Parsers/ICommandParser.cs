@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace NerdBot.Parsers
+namespace NerdBotCommon.Parsers
 {
     public interface ICommandParser
     {

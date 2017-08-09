@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.IO.Abstractions;
-using NerdBot.Importer;
-using NerdBot.Importer.Mapper;
-using NerdBot.Importer.MtgData;
-using NerdBot.Mtg;
-using NerdBot.Utilities;
+using NerdBotCommon.Importer;
+using NerdBotCommon.Importer.Mapper;
+using NerdBotCommon.Importer.MtgData;
+using NerdBotCommon.Mtg;
+using NerdBotCommon.Utilities;
 using Nini.Config;
 using SimpleLogging.Core;
 using SimpleLogging.NLog;

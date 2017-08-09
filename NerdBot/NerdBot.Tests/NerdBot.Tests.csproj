@@ -7,7 +7,7 @@
     <ProjectGuid>{F5F2713F-5087-44B2-8AAA-13B9C9DB1FF4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NerdBot.Tests</RootNamespace>
+    <RootNamespace>NerdBotCommon.Tests</RootNamespace>
     <AssemblyName>NerdBot.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -104,6 +104,10 @@
     <ProjectReference Include="..\NerdBot.TestsHelper\NerdBot.TestsHelper.csproj">
       <Project>{5b10d135-cfd5-43b2-b229-1415bddb2909}</Project>
       <Name>NerdBot.TestsHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NerdBotCommon\NerdBotCommon.csproj">
+      <Project>{28d62611-0c89-4c9c-bfda-20a52768807f}</Project>
+      <Name>NerdBotCommon</Name>
     </ProjectReference>
     <ProjectReference Include="..\NerdBot\NerdBot.csproj">
       <Project>{35460aa4-b94a-4b64-9418-7243ec3d2f01}</Project>

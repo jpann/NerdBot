@@ -5,15 +5,15 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Nancy.TinyIoc;
-using NerdBot.Extensions;
-using NerdBot.Messengers;
-using NerdBot.Mtg;
-using NerdBot.Parsers;
-using NerdBot.Plugin;
-using NerdBot.Reporters;
+using NerdBotCommon.Extensions;
+using NerdBotCommon.Messengers;
+using NerdBotCommon.Mtg;
+using NerdBotCommon.Parsers;
+using NerdBotCommon.Plugin;
+using NerdBotCommon.Reporters;
 using SimpleLogging.Core;
 
-namespace NerdBot
+namespace NerdBotCommon
 {
     public class PluginManager : IPluginManager
     {

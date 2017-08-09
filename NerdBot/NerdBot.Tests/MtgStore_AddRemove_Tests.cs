@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using MongoDB.Driver;
 using Moq;
-using NerdBot.Mtg;
-using NerdBot.TestsHelper;
-using NerdBot.Utilities;
+using NerdBotCommon.Mtg;
+using NerdBotCommon.TestsHelper;
+using NerdBotCommon.Utilities;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
-namespace NerdBot.Tests
+namespace NerdBotCommon.Tests
 {
     [TestFixture]
     public class MtgStore_AddRemove_Tests

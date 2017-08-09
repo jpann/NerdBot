@@ -1,10 +1,10 @@
-﻿using NerdBot.Http;
-using NerdBot.Messengers;
-using NerdBot.Mtg;
-using NerdBot.Mtg.Prices;
-using NerdBot.Parsers;
-using NerdBot.Plugin;
-using NerdBot.UrlShortners;
+﻿using NerdBotCommon.Http;
+using NerdBotCommon.Messengers;
+using NerdBotCommon.Mtg;
+using NerdBotCommon.Mtg.Prices;
+using NerdBotCommon.Parsers;
+using NerdBotCommon.Plugin;
+using NerdBotCommon.UrlShortners;
 using System;
 using System.Collections.Generic;
 using System.Linq;

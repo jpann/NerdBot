@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using NerdBot.Mtg;
+using NerdBotCommon.Mtg;
 
 namespace NerdBot_PriceUpdater.PriceUpdaters
 {

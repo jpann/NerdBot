@@ -1,13 +1,13 @@
 ﻿using Moq;
-using NerdBot;
-using NerdBot.Http;
-using NerdBot.Messengers;
-using NerdBot.Messengers.GroupMe;
-using NerdBot.Mtg;
-using NerdBot.Mtg.Prices;
-using NerdBot.Parsers;
-using NerdBot.UrlShortners;
-using NerdBot.Utilities;
+using NerdBotCommon;
+using NerdBotCommon.Http;
+using NerdBotCommon.Messengers;
+using NerdBotCommon.Messengers.GroupMe;
+using NerdBotCommon.Mtg;
+using NerdBotCommon.Mtg.Prices;
+using NerdBotCommon.Parsers;
+using NerdBotCommon.UrlShortners;
+using NerdBotCommon.Utilities;
 using NerdBotRedditTopCommentResponsePlugin;
 using NUnit.Framework;
 using SimpleLogging.Core;
@@ -17,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NerdBot.TestsHelper;
+using NerdBotCommon.TestsHelper;
 
 namespace NerdBotRedditTopCommentResponsePlugin_Tests
 {

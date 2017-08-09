@@ -7,7 +7,7 @@
     <ProjectGuid>{35460AA4-B94A-4B64-9418-7243EC3D2F01}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NerdBot</RootNamespace>
+    <RootNamespace>NerdBotCommon</RootNamespace>
     <AssemblyName>NerdBot</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -100,39 +100,13 @@
     <Compile Include="BotConfig.cs" />
     <Compile Include="Extensions\RequestBodyExtension.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="Importer\DataReaders\IMtgDataReader.cs" />
-    <Compile Include="Importer\DataReaders\MtgJsonReader.cs" />
-    <Compile Include="Importer\IImporter.cs" />
-    <Compile Include="Importer\Mapper\IMtgDataMapper.cs" />
-    <Compile Include="Importer\Mapper\MtgJsonMapper.cs" />
-    <Compile Include="Importer\MtgData\MtgJsonCard.cs" />
-    <Compile Include="Importer\MtgData\MtgJsonRuling.cs" />
-    <Compile Include="Importer\MtgData\MtgJsonSet.cs" />
-    <Compile Include="Importer\MtgData\MtgJsonSetExtended.cs" />
-    <Compile Include="Importer\MtgImporter.cs" />
-    <Compile Include="Importer\SetAddData.cs" />
     <Compile Include="IPluginManager.cs" />
-    <Compile Include="Messengers\GroupMe\GroupMeMessage.cs" />
-    <Compile Include="Messengers\GroupMe\GroupMeMessenger.cs" />
-    <Compile Include="Messengers\IMessage.cs" />
-    <Compile Include="Messengers\IMessenger.cs" />
-    <Compile Include="Http\IHttpClient.cs" />
-    <Compile Include="Http\SimpleHttpClient.cs" />
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\IndexModule.cs" />
-    <Compile Include="Mtg\Card.cs" />
-    <Compile Include="Mtg\IMtgStore.cs" />
-    <Compile Include="Mtg\MtgStore.cs" />
-    <Compile Include="Mtg\Prices\CardPrice.cs" />
-    <Compile Include="Mtg\Prices\EchoMtgPriceStore.cs" />
-    <Compile Include="Mtg\Prices\ICardPriceStore.cs" />
     <Compile Include="Plugin\IMessagePlugin.cs" />
     <Compile Include="Plugin\MessagePluginBase.cs" />
     <Compile Include="Reporters\GroupMeReporter.cs" />
     <Compile Include="Reporters\IReporter.cs" />
-    <Compile Include="Statistics\CardQueryStat.cs" />
-    <Compile Include="Mtg\Set.cs" />
-    <Compile Include="Parsers\Command.cs" />
     <Compile Include="Parsers\CommandParser.cs" />
     <Compile Include="Parsers\ICommandParser.cs" />
     <Compile Include="PluginManager.cs" />
@@ -145,11 +119,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Statistics\IQueryStatisticsStore.cs" />
-    <Compile Include="Statistics\QueryStatisticsStore.cs" />
-    <Compile Include="UrlShortners\BitlyUrlShortener.cs" />
-    <Compile Include="UrlShortners\IUrlShortener.cs" />
-    <Compile Include="Utilities\SearchUtility.cs" />
     <Compile Include="Web\Queries\SearchQuery.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -238,7 +207,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\NerdBotCommon\NerdBotCommon.csproj">
+      <Project>{28d62611-0c89-4c9c-bfda-20a52768807f}</Project>
+      <Name>NerdBotCommon</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Content\css\bootstrap-theme.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

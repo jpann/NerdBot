@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NerdBot
+namespace NerdBotCommon
 {
     public class BotConfig
     {

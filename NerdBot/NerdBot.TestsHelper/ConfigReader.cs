@@ -2,7 +2,7 @@
 using System.IO;
 using Nini.Config;
 
-namespace NerdBot.TestsHelper
+namespace NerdBotCommon.TestsHelper
 {
     public class ConfigReader
     {

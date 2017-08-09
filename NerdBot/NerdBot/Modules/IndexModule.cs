@@ -5,16 +5,16 @@ using MongoDB.Bson;
 using Nancy.Extensions;
 using Nancy.ModelBinding;
 using Nancy.Routing;
-using NerdBot.Messengers;
-using NerdBot.Messengers.GroupMe;
-using NerdBot.Mtg;
-using NerdBot.Mtg.Prices;
-using NerdBot.Parsers;
-using NerdBot.Reporters;
-using NerdBot.Web.Queries;
+using NerdBotCommon.Messengers;
+using NerdBotCommon.Messengers.GroupMe;
+using NerdBotCommon.Mtg;
+using NerdBotCommon.Mtg.Prices;
+using NerdBotCommon.Parsers;
+using NerdBotCommon.Reporters;
+using NerdBotCommon.Web.Queries;
 using SimpleLogging.Core;
 
-namespace NerdBot.Modules
+namespace NerdBotCommon.Modules
 {
     using Nancy;
 

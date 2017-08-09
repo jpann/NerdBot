@@ -6,10 +6,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using NerdBot.Http;
-using NerdBot.Mtg;
-using NerdBot.Mtg.Prices;
-using NerdBot.Utilities;
+using NerdBotCommon.Http;
+using NerdBotCommon.Mtg;
+using NerdBotCommon.Mtg.Prices;
+using NerdBotCommon.Utilities;
 using SimpleLogging.Core;
 
 namespace NerdBot_PriceUpdater.PriceUpdaters

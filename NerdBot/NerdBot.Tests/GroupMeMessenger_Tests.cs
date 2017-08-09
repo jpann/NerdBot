@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Moq;
-using NerdBot.Http;
-using NerdBot.Messengers.GroupMe;
+using NerdBotCommon.Http;
+using NerdBotCommon.Messengers.GroupMe;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
-namespace NerdBot.Tests
+namespace NerdBotCommon.Tests
 {
     [TestFixture]
     class GroupMeMessenger_Tests

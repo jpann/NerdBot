@@ -1,4 +1,4 @@
-﻿using NerdBot.Http;
+﻿using NerdBotCommon.Http;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;

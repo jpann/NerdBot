@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NerdBot;
-using NerdBot.Http;
-using NerdBot.Messengers;
-using NerdBot.Mtg;
-using NerdBot.Mtg.Prices;
-using NerdBot.Parsers;
-using NerdBot.Plugin;
-using NerdBot.UrlShortners;
+using NerdBotCommon;
+using NerdBotCommon.Http;
+using NerdBotCommon.Messengers;
+using NerdBotCommon.Mtg;
+using NerdBotCommon.Mtg.Prices;
+using NerdBotCommon.Parsers;
+using NerdBotCommon.Plugin;
+using NerdBotCommon.UrlShortners;
 using NerdBotTappedOut.Fetchers;
 
 namespace NerdBotTappedOut

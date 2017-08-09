@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using Moq;
-using NerdBot.Mtg.Prices;
-using NerdBot.Utilities;
+using NerdBotCommon.Mtg.Prices;
+using NerdBotCommon.Utilities;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
-namespace NerdBot.Tests.PriceStore
+namespace NerdBotCommon.Tests.PriceStore
 {
     [TestFixture]
     class EchoMtgPriceStore_Remove_Tests

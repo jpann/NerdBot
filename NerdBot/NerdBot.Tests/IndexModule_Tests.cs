@@ -5,18 +5,18 @@ using System.Text;
 using Moq;
 using Nancy;
 using Nancy.Testing;
-using NerdBot.Http;
-using NerdBot.Messengers;
-using NerdBot.Messengers.GroupMe;
-using NerdBot.Mtg;
-using NerdBot.Mtg.Prices;
-using NerdBot.Parsers;
-using NerdBot.Reporters;
+using NerdBotCommon.Http;
+using NerdBotCommon.Messengers;
+using NerdBotCommon.Messengers.GroupMe;
+using NerdBotCommon.Mtg;
+using NerdBotCommon.Mtg.Prices;
+using NerdBotCommon.Parsers;
+using NerdBotCommon.Reporters;
 using NUnit.Framework;
 using SimpleLogging.Core;
-using NerdBot.Modules;
+using NerdBotCommon.Modules;
 
-namespace NerdBot.Tests
+namespace NerdBotCommon.Tests
 {
     [TestFixture]
     class IndexModule_Tests

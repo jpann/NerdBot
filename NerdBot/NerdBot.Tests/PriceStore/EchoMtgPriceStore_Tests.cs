@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Moq;
-using NerdBot.Mtg.Prices;
-using NerdBot.TestsHelper;
-using NerdBot.Utilities;
+using NerdBotCommon.Mtg.Prices;
+using NerdBotCommon.TestsHelper;
+using NerdBotCommon.Utilities;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
-namespace NerdBot.Tests.PriceStore
+namespace NerdBotCommon.Tests.PriceStore
 {
     [TestFixture]
     class EchoMtgPriceStore_Tests

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace NerdBot.Parsers
+namespace NerdBotCommon.Parsers
 {
     public class CommandParser : ICommandParser
     {

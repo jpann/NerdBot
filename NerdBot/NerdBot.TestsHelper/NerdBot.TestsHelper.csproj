@@ -7,7 +7,7 @@
     <ProjectGuid>{5B10D135-CFD5-43B2-B229-1415BDDB2909}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NerdBot.TestsHelper</RootNamespace>
+    <RootNamespace>NerdBotCommon.TestsHelper</RootNamespace>
     <AssemblyName>NerdBot.TestsHelper</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

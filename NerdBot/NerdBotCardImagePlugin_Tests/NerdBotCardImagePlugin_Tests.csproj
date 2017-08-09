@@ -75,6 +75,10 @@
       <Project>{843fb055-a272-4900-bc89-8c2013181486}</Project>
       <Name>NerdBotCardImage</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NerdBotCommon\NerdBotCommon.csproj">
+      <Project>{28d62611-0c89-4c9c-bfda-20a52768807f}</Project>
+      <Name>NerdBotCommon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NerdBot\NerdBot.csproj">
       <Project>{35460aa4-b94a-4b64-9418-7243ec3d2f01}</Project>
       <Name>NerdBot</Name>

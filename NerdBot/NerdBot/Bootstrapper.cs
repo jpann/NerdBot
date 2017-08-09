@@ -7,30 +7,47 @@ using Nancy.Authentication.Forms;
 using Nancy.Bootstrapper;
 using Nancy.Json;
 using Nancy.TinyIoc;
-using NerdBot.Admin;
-using NerdBot.Http;
-using NerdBot.Importer;
-using NerdBot.Importer.Mapper;
-using NerdBot.Importer.MtgData;
-using NerdBot.Messengers;
-using NerdBot.Messengers.GroupMe;
-using NerdBot.Mtg;
-using NerdBot.Mtg.Prices;
-using NerdBot.Parsers;
-using NerdBot.Reporters;
-using NerdBot.Statistics;
-using NerdBot.UrlShortners;
-using NerdBot.Utilities;
+using NerdBotCommon.Admin;
+using NerdBotCommon.Http;
+using NerdBotCommon.Importer;
+using NerdBotCommon.Importer.Mapper;
+using NerdBotCommon.Importer.MtgData;
+using NerdBotCommon.Messengers;
+using NerdBotCommon.Messengers.GroupMe;
+using NerdBotCommon.Mtg;
+using NerdBotCommon.Mtg.Prices;
+using NerdBotCommon.Parsers;
+using NerdBotCommon.Reporters;
+using NerdBotCommon.Statistics;
+using NerdBotCommon.UrlShortners;
+using NerdBotCommon.Utilities;
 using Nini.Config;
 using SimpleLogging.Core;
 using SimpleLogging.NLog;
 
-namespace NerdBot
+namespace NerdBotCommon
 {
     using Nancy;
 
+    public class SelfHostRootPathProvider : IRootPathProvider
+    {
+        public string GetRootPath()
+        {
+            return StaticConfiguration.IsRunningDebug
+                ? Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", ".."))
+                : AppDomain.CurrentDomain.BaseDirectory;
+        }
+    }
+
     public class Bootstrapper : DefaultNancyBootstrapper
     {
+
+        // Use custom IRootPathProvider to prevent multiple root path provider exception
+        protected override IRootPathProvider RootPathProvider
+        {
+            get { return new SelfHostRootPathProvider(); }
+        }
+
         // The bootstrapper enables you to reconfigure the composition of the framework,
         // by overriding the various methods and properties.
         // For more information https://github.com/NancyFx/Nancy/wiki/Bootstrapper

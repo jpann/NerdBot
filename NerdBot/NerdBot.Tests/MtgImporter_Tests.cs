@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
-using NerdBot.Importer;
-using NerdBot.Mtg;
+using NerdBotCommon.Importer;
+using NerdBotCommon.Mtg;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
-namespace NerdBot.Tests
+namespace NerdBotCommon.Tests
 {
     [TestFixture]
     class MtgImporter_Tests

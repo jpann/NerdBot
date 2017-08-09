@@ -78,6 +78,10 @@
       <Project>{5b10d135-cfd5-43b2-b229-1415bddb2909}</Project>
       <Name>NerdBot.TestsHelper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NerdBotCommon\NerdBotCommon.csproj">
+      <Project>{28d62611-0c89-4c9c-bfda-20a52768807f}</Project>
+      <Name>NerdBotCommon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NerdBotRedditTopCommentResponsePlugin\NerdBotRedditTopCommentResponsePlugin.csproj">
       <Project>{1744df3c-c9ab-47cf-a294-73182daa9394}</Project>
       <Name>NerdBotRedditTopCommentResponsePlugin</Name>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using NerdBot.Http;
+using NerdBotCommon.Http;
 using Newtonsoft.Json;
 
 namespace NerdBotUrbanDictionary

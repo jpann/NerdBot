@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Nancy.IO;
 
-namespace NerdBot.Extensions
+namespace NerdBotCommon.Extensions
 {
     public static class RequestBodyExtension
     {

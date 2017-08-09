@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NerdBot.Messengers;
+using NerdBotCommon.Messengers;
 
-namespace NerdBot.Reporters
+namespace NerdBotCommon.Reporters
 {
     public class GroupMeReporter : IReporter
     {
