@@ -90,6 +90,7 @@
     <ProjectReference Include="..\NerdBot\NerdBot.csproj">
       <Project>{35460aa4-b94a-4b64-9418-7243ec3d2f01}</Project>
       <Name>NerdBot</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
