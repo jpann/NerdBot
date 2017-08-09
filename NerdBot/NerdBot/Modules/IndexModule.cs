@@ -51,7 +51,7 @@ namespace NerdBotCommon.Modules
                     return HttpStatusCode.NotAcceptable;
                 }
 
-                var cards = await mtgStore.SearchCards(term, limit);
+                var cards = await mtgStore.AdvancedSearchCards(term, limit);
 
                 if (cards == null)
                 {
