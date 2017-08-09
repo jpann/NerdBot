@@ -152,7 +152,7 @@ namespace NerdBotCoreCommandsPlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.Contains("http://localhost/ruling/1437"))));
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.Contains("/ruling/"))));
         }
 
         [Test]

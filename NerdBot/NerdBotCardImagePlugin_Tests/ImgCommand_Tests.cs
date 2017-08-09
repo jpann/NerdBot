@@ -199,7 +199,7 @@ namespace NerdBotCardImagePlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith("1922.jpg"))));
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith(".jpg"))));
         }
         
 
@@ -225,7 +225,7 @@ namespace NerdBotCardImagePlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith("1922.jpg"))));
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith(".jpg"))));
         }
 
         [Test]
@@ -279,7 +279,7 @@ namespace NerdBotCardImagePlugin_Tests
                 messengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith("1922.jpg"))));
+            messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith(".jpg"))));
         }
     }
 }

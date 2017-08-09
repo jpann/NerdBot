@@ -256,7 +256,7 @@ namespace NerdBot.Tests
         [Test]
         public void GetCardsBySet()
         {
-            int expectedCount = 247;
+            int expectedCount = 245;
 
             string name = "Masters Edition II";
 
