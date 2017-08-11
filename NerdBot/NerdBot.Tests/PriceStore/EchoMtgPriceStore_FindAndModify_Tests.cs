@@ -14,7 +14,7 @@ namespace NerdBotCommon.Tests.PriceStore
     class EchoMtgPriceStore_FindAndModify_Tests
     {
         private const string connectionString = "mongodb://localhost";
-        private const string databaseName = "mtgdb_prices";
+        private const string databaseName = "mtgdb";
         private const string testDataTag = "http://localhost/card/1000";
 
         private ICardPriceStore priceStore;
@@ -68,7 +68,8 @@ namespace NerdBotCommon.Tests.PriceStore
             var client = new MongoClient(connectionString);
             var server = client.GetServer();
             var database = server.GetDatabase(databaseName);
-            var collection = database.GetCollection<CardPrice>("echo_prices");
+            var card_collection = database.GetCollection<CardPrice>("echo_prices");
+            var set_collection = database.GetCollection<SetPrice>("echo_set_prices");
 
             // Card 1
             CardPrice card1 = new CardPrice()
@@ -110,9 +111,48 @@ namespace NerdBotCommon.Tests.PriceStore
                 LastUpdated = DateTime.Now.AddDays(-1)
             };
 
-            collection.Save(card1);
-            collection.Save(card2);
-            collection.Save(card3);
+            card_collection.Save(card1);
+            card_collection.Save(card2);
+            card_collection.Save(card3);
+
+            SetPrice set1 = new SetPrice()
+            {
+                Name = "Find Modify 1",
+                SetCode = "XXX",
+                TotalCards = 1,
+                SetValue = "$2.00",
+                FoilSetValue = "$10.00",
+                SearchName = this.GetSearchValue("Find Modify 1"),
+                Url = testDataTag,
+                LastUpdated = DateTime.Now.AddDays(-1)
+            };
+
+            SetPrice set2 = new SetPrice()
+            {
+                Name = "Find Modify 2",
+                SetCode = "YYY",
+                TotalCards = 1,
+                SetValue = "$2.00",
+                FoilSetValue = "$10.00",
+                SearchName = this.GetSearchValue("Find Modify 2"),
+                Url = testDataTag,
+                LastUpdated = DateTime.Now.AddDays(-1)
+            };
+
+            SetPrice set3 = new SetPrice()
+            {
+                Name = "Find Modify 1",
+                SetCode = "XXX",
+                TotalCards = 1,
+                SetValue = "$4.00",
+                FoilSetValue = "$4.00",
+                SearchName = this.GetSearchValue("Find Modify 1"),
+                Url = testDataTag,
+                LastUpdated = DateTime.Now.AddDays(-1)
+            };
+
+            set_collection.Save(set1);
+            set_collection.Save(set2);
         }
         #endregion
 
@@ -122,10 +162,14 @@ namespace NerdBotCommon.Tests.PriceStore
             var client = new MongoClient(connectionString);
             var server = client.GetServer();
             var database = server.GetDatabase(databaseName);
-            var collection = database.GetCollection<CardPrice>("echo_prices");
+            var card_collection = database.GetCollection<CardPrice>("echo_prices");
+            var set_collection = database.GetCollection<SetPrice>("echo_set_prices");
 
-            var query = Query<CardPrice>.EQ(c => c.Url, testDataTag);
-            var removeResult = collection.Remove(query);
+            var cardquery = Query<CardPrice>.EQ(c => c.Url, testDataTag);
+            var cardremoveResult = card_collection.Remove(cardquery);
+
+            var setquery = Query<SetPrice>.EQ(c => c.Url, testDataTag);
+            var setremoveResult = set_collection.Remove(setquery);
         }
         #endregion
 
@@ -160,7 +204,70 @@ namespace NerdBotCommon.Tests.PriceStore
             this.RemoveTestData();
         }
 
-        //TODO SetPrice tests
+        #region FindAndModifySetPrice
+        [Test]
+        public void FindAndModifySetPrice()
+        {
+            SetPrice expected = new SetPrice()
+            {
+                Name = "Find Modify 1",
+                SetCode = "XXX",
+                TotalCards = 1,
+                SetValue = "$10.00",
+                FoilSetValue = "$20.00",
+                SearchName = this.GetSearchValue("Find Modify 1"),
+                Url = testDataTag,
+                LastUpdated = DateTime.Now
+            };
+
+            SetPrice actual = priceStore.FindAndModifySetPrice(expected, true);
+
+            Assert.AreEqual(expected.SetValue, actual.SetValue);
+            Assert.AreEqual(expected.FoilSetValue, actual.FoilSetValue);
+        }
+
+        [Test]
+        public void FindAndModifySetPrice_DoesntExist()
+        {
+            SetPrice expected = new SetPrice()
+            {
+                Name = "Find Modify 3",
+                SetCode = "ZZZ",
+                TotalCards = 1,
+                SetValue = "$2.00",
+                FoilSetValue = "$10.00",
+                SearchName = this.GetSearchValue("Find Modify 3"),
+                Url = testDataTag,
+                LastUpdated = DateTime.Now
+            };
+
+            SetPrice actual = priceStore.FindAndModifySetPrice(expected, true);
+
+            Assert.AreEqual(expected.SetValue, actual.SetValue);
+            Assert.AreEqual(expected.FoilSetValue, actual.FoilSetValue);
+        }
+
+        [Test]
+        public void FindAndModifySetPrice_MultipleButUpdateOne()
+        {
+            SetPrice expected = new SetPrice()
+            {
+                Name = "Find Modify 1",
+                SetCode = "XXX",
+                TotalCards = 1,
+                SetValue = "$2.00",
+                FoilSetValue = "$10.00",
+                SearchName = this.GetSearchValue("Find Modify 1"),
+                Url = testDataTag,
+                LastUpdated = DateTime.Now
+            };
+
+            SetPrice actual = priceStore.FindAndModifySetPrice(expected, true);
+
+            Assert.AreEqual(expected.SetValue, actual.SetValue);
+            Assert.AreEqual(expected.FoilSetValue, actual.FoilSetValue);
+        }
+        #endregion
 
         #region FindAndModifyCardPrice
         [Test]

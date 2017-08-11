@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using Moq;
@@ -18,7 +14,7 @@ namespace NerdBotCommon.Tests.PriceStore
     class EchoMtgPriceStore_Remove_Tests
     {
         private const string connectionString = "mongodb://localhost";
-        private const string databaseName = "mtgdb_prices";
+        private const string databaseName = "mtgdb";
         private const string testDataTag = "http://TEST-DATA";
 
         private ICardPriceStore priceStore;
@@ -74,7 +70,8 @@ namespace NerdBotCommon.Tests.PriceStore
             var client = new MongoClient(connectionString);
             var server = client.GetServer();
             var database = server.GetDatabase(databaseName);
-            var collection = database.GetCollection<CardPrice>("echo_prices");
+            var card_collection = database.GetCollection<CardPrice>("echo_prices");
+            var set_collection = database.GetCollection<SetPrice>("echo_set_prices");
 
             // Card 1
             CardPrice card1 = new CardPrice()
@@ -129,10 +126,63 @@ namespace NerdBotCommon.Tests.PriceStore
                 LastUpdated = DateTime.Now.AddDays(-2)
             };
 
-            collection.Save(card1);
-            collection.Save(card2);
-            collection.Save(card3);
-            collection.Save(cardPriceToRemove);
+            card_collection.Save(card1);
+            card_collection.Save(card2);
+            card_collection.Save(card3);
+            card_collection.Save(cardPriceToRemove);
+
+            SetPrice set1 = new SetPrice()
+            {
+                Name = "Find Modify 1",
+                SetCode = "XXX",
+                TotalCards = 1,
+                SetValue = "$2.00",
+                FoilSetValue = "$10.00",
+                SearchName = this.GetSearchValue("Find Modify 1"),
+                Url = testDataTag,
+                LastUpdated = DateTime.Now.AddDays(-1)
+            };
+
+            SetPrice set2 = new SetPrice()
+            {
+                Name = "Find Modify 2",
+                SetCode = "YYY",
+                TotalCards = 1,
+                SetValue = "$2.00",
+                FoilSetValue = "$10.00",
+                SearchName = this.GetSearchValue("Find Modify 2"),
+                Url = testDataTag,
+                LastUpdated = DateTime.Now.AddDays(-1)
+            };
+
+            SetPrice set3 = new SetPrice()
+            {
+                Name = "Find Modify 1",
+                SetCode = "XXX",
+                TotalCards = 1,
+                SetValue = "$4.00",
+                FoilSetValue = "$4.00",
+                SearchName = this.GetSearchValue("Find Modify 1"),
+                Url = testDataTag,
+                LastUpdated = DateTime.Now.AddDays(-1)
+            };
+
+            SetPrice setToRemove = new SetPrice()
+            {
+                Name = "Remove me 1",
+                SetCode = "XXX",
+                TotalCards = 1,
+                SetValue = "$4.00",
+                FoilSetValue = "$4.00",
+                SearchName = this.GetSearchValue("Remove me 1"),
+                Url = testDataTag,
+                LastUpdated = DateTime.Now.AddDays(-2)
+            };
+
+            set_collection.Save(set1);
+            set_collection.Save(set2);
+            set_collection.Save(set3);
+            set_collection.Save(setToRemove);
         }
         #endregion
 
@@ -142,10 +192,14 @@ namespace NerdBotCommon.Tests.PriceStore
             var client = new MongoClient(connectionString);
             var server = client.GetServer();
             var database = server.GetDatabase(databaseName);
-            var collection = database.GetCollection<CardPrice>("echo_prices");
+            var card_collection = database.GetCollection<CardPrice>("echo_prices");
+            var set_collection = database.GetCollection<SetPrice>("echo_set_prices");
 
-            var query = Query<CardPrice>.EQ(c => c.Url, testDataTag);
-            var removeResult = collection.Remove(query);
+            var cardquery = Query<CardPrice>.EQ(c => c.Url, testDataTag);
+            var cardremoveResult = card_collection.Remove(cardquery);
+
+            var setquery = Query<SetPrice>.EQ(c => c.Url, testDataTag);
+            var setremoveResult = set_collection.Remove(setquery);
         }
         #endregion
 
@@ -180,7 +234,70 @@ namespace NerdBotCommon.Tests.PriceStore
             this.RemoveTestData();
         }
 
-        //TODO SetPrice tests
+        #region RemoveSetPrice
+        private SetPrice GetTestSet()
+        {
+            var client = new MongoClient(connectionString);
+            var server = client.GetServer();
+            var database = server.GetDatabase(databaseName);
+            var collection = database.GetCollection<SetPrice>("echo_prices");
+
+            var set = collection.FindOneAs<SetPrice>(
+                Query<SetPrice>.EQ(c => c.Name, "Remove me 1"));
+
+            return set;
+        }
+
+        [Test]
+        public void RemoveSetPrice()
+        {
+            bool actual = priceStore.RemoveCardPrice(cardPriceToRemove);
+
+            Assert.True(actual);
+        }
+
+        [Test]
+        public void RemoveSetPrice_DoesntExist()
+        {
+            SetPrice set = new SetPrice()
+            {
+                Name = "Remove me 1",
+                SetCode = "XXX",
+                TotalCards = 1,
+                SetValue = "$4.00",
+                FoilSetValue = "$4.00",
+                SearchName = this.GetSearchValue("Remove me 1"),
+                Url = testDataTag,
+                LastUpdated = DateTime.Now.AddDays(-5)
+            };
+
+            bool actual = priceStore.RemoveSetPrice(set);
+
+            Assert.True(actual);
+        }
+        #endregion
+
+        #region RemoveSetPricesOnOrBefore
+        [Test]
+        public void RemoveSetPriceOnOrBefore()
+        {
+            DateTime removeOnOrBefore = DateTime.Now.AddDays(-3);
+
+            int actual = priceStore.RemoveSetPricesOnOrBefore(removeOnOrBefore);
+
+            Assert.GreaterOrEqual(actual, 0);
+        }
+
+        [Test]
+        public void RemoveSetPriceOnOrBefore_NothingRemoved()
+        {
+            DateTime removeOnOrBefore = DateTime.Now.AddDays(-30);
+
+            int actual = priceStore.RemoveSetPricesOnOrBefore(removeOnOrBefore);
+
+            Assert.GreaterOrEqual(actual, 0);
+        }
+        #endregion
 
         #region RemoveCardPrice
         private CardPrice GetTestCard()
