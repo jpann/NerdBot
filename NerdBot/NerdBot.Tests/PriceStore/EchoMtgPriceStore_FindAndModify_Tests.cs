@@ -15,7 +15,7 @@ namespace NerdBotCommon.Tests.PriceStore
     {
         private const string connectionString = "mongodb://localhost";
         private const string databaseName = "mtgdb_prices";
-        private const string testDataTag = "http://TEST-DATA";
+        private const string testDataTag = "http://localhost/card/1000";
 
         private ICardPriceStore priceStore;
         private Mock<ILoggingService> loggingServiceMock;
@@ -174,7 +174,10 @@ namespace NerdBotCommon.Tests.PriceStore
                 PriceFoil = "$30.00",
                 SearchName = this.GetSearchValue("Find Modify 1"),
                 Url = testDataTag,
-                LastUpdated = DateTime.Now
+                LastUpdated = DateTime.Now,
+                ImageUrl = "http://localhost/1000.jpg",
+                MultiverseId = 1000
+
             };
 
             CardPrice actual = priceStore.FindAndModifyCardPrice(expected, true);
@@ -198,7 +201,9 @@ namespace NerdBotCommon.Tests.PriceStore
                 PriceFoil = "$30.00",
                 SearchName = this.GetSearchValue("Find Modify 3"),
                 Url = testDataTag,
-                LastUpdated = DateTime.Now
+                LastUpdated = DateTime.Now,
+                ImageUrl = "http://localhost/1000.jpg",
+                MultiverseId = 1000
             };
 
             CardPrice actual = priceStore.FindAndModifyCardPrice(expected, true);
@@ -222,7 +227,9 @@ namespace NerdBotCommon.Tests.PriceStore
                 PriceFoil = "$30.00",
                 SearchName = this.GetSearchValue("Find Modify 1"),
                 Url = testDataTag,
-                LastUpdated = DateTime.Now
+                LastUpdated = DateTime.Now,
+                ImageUrl = "http://localhost/1000.jpg",
+                MultiverseId = 1000
             };
 
             CardPrice actual = priceStore.FindAndModifyCardPrice(expected, true);

@@ -17,6 +17,7 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
     public class EchoMtgPriceUpdater : IPriceUpdater
     {
         private const string cUrl = "https://www.echomtg.com/set/{0}/";
+        private const string cCardUrl = "https://www.echomtg.com{0}";
 
         private readonly ICardPriceStore mPriceStore;
         private readonly ILoggingService mLoggingService;
@@ -179,11 +180,23 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
                     }
                 }
 
-                price.PriceFoil = foilNode.InnerText;
-                //price.Url = "https://www.echomtg.com" + href;
-                price.Url = "NULL";
-                price.LastUpdated = DateTime.Now;
+                // Get multiverseId
+                int multiverseId = Convert.ToInt32(row.Attributes["data-id"].Value);
 
+                HtmlNode nameChildNode = nameNode.SelectSingleNode("./a");
+                if (nameChildNode != null)
+                {
+                    string cardUrl = string.Format(cCardUrl, nameChildNode.Attributes["href"].Value);
+                    string cardImageUrl = nameChildNode.Attributes["data-image"].Value;
+
+                    price.Url = cardUrl;
+                    price.ImageUrl = cardImageUrl;
+                }
+                
+                price.PriceFoil = foilNode.InnerText;
+                price.LastUpdated = DateTime.Now;
+                price.MultiverseId = multiverseId;
+   
 				this.mLoggingService.Debug ("PriceFoil={0}; PriceLow={1}; PriceMid={2}",
 					price.PriceFoil, price.PriceLow, price.PriceMid);
 

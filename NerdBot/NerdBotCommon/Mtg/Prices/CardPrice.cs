@@ -56,5 +56,13 @@ namespace NerdBotCommon.Mtg.Prices
         [JsonProperty("lastUpdated")]
         [BsonElement("lastUpdated")]
         public DateTime LastUpdated { get; set; }
+
+        [JsonProperty("multiverseId")]
+        [BsonElement("multiverseId")]
+        public int MultiverseId { get; set; }
+
+        [JsonProperty("imageUrl")]
+        [BsonElement("imageUrl")]
+        public string ImageUrl { get; set; }
     }
 }

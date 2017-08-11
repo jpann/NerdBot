@@ -5,6 +5,7 @@ namespace NerdBotCommon.Mtg.Prices
 {
     public interface ICardPriceStore
     {
+        CardPrice GetCardPrice(int multiverseId);
         CardPrice GetCardPrice(string name);
         CardPrice GetCardPrice(string name, string setCode);
         bool RemoveCardPrice(CardPrice cardPrice);

@@ -49,6 +49,30 @@ namespace NerdBotCommon.Mtg.Prices
             this.mSearchUtility = searchUtility;
         }
 
+        public CardPrice GetCardPrice(int multiverseId)
+        {
+            this.mLoggingService.Debug("Getting price for '{0}' using search multiverseId...",
+                multiverseId);
+
+            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cPriceCollectionName);
+
+            var query = Query<CardPrice>.EQ(e => e.MultiverseId, multiverseId);
+            var sortBy = SortBy.Ascending("lastUpdated");
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            var card = cardPriceCollection.FindAs<CardPrice>(query)
+                .SetSortOrder(sortBy)
+                .SetLimit(1);
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return card.FirstOrDefault();
+        }
+
         public CardPrice GetCardPrice(string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -155,7 +179,8 @@ namespace NerdBotCommon.Mtg.Prices
             // Query for this card
             var cardQuery = Query.And(
                 Query.EQ("name", cardPrice.Name),
-                Query.EQ("setCode", cardPrice.SetCode)
+                Query.EQ("setCode", cardPrice.SetCode),
+                Query.EQ("multiverseId", cardPrice.MultiverseId)
                 );
 
             var cardSoryBy = SortBy.Descending("name");
@@ -171,7 +196,9 @@ namespace NerdBotCommon.Mtg.Prices
                 .Set("priceDiffValue", cardPrice.PriceDiffValue)
                 .Set("priceMid", cardPrice.PriceMid)
                 .Set("priceLow", cardPrice.PriceLow)
-                .Set("priceFoil", cardPrice.PriceFoil);
+                .Set("priceFoil", cardPrice.PriceFoil)
+                .Set("multiverseId", cardPrice.MultiverseId)
+                .Set("imageUrl", cardPrice.ImageUrl);
 
             // Find and modify document. If document doesnt exist, insert it
             FindAndModifyArgs findModifyArgs = new FindAndModifyArgs();
