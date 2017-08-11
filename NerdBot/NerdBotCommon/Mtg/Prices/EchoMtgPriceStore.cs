@@ -12,7 +12,8 @@ namespace NerdBotCommon.Mtg.Prices
 {
     public class EchoMtgPriceStore : ICardPriceStore
     {
-        private const string cPriceCollectionName = "echo_prices";
+        private const string cCardPriceCollectionName = "echo_prices";
+        private const string cSetPriceCollectionName = "echo_set_prices";
 
         private readonly string mConnectionString;
         private readonly string mDatabaseName;
@@ -49,12 +50,141 @@ namespace NerdBotCommon.Mtg.Prices
             this.mSearchUtility = searchUtility;
         }
 
+        #region Sets
+
+        public SetPrice GetSetPriceByCode(string code)
+        {
+            this.mLoggingService.Debug("Getting set price for '{0}' using search code...",
+                code);
+
+            var setPriceCollection = this.mDatabase.GetCollection<SetPrice>(cSetPriceCollectionName);
+
+            var query = Query<SetPrice>.EQ(e => e.SetCode, code);
+            var sortBy = SortBy.Ascending("lastUpdated");
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            var set = setPriceCollection.FindAs<SetPrice>(query)
+                .SetSortOrder(sortBy)
+                .SetLimit(1);
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return set.FirstOrDefault();
+        }
+
+        public SetPrice GetSetPrice(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
+            string searchName = this.mSearchUtility.GetRegexSearchValue(name);
+
+            this.mLoggingService.Debug("Getting set price for '{0}' using search name '{1}'...",
+                name,
+                searchName);
+
+            var setPriceCollection = this.mDatabase.GetCollection<SetPrice>(cSetPriceCollectionName);
+
+            var query = Query<SetPrice>.Matches(c => c.SearchName, new BsonRegularExpression(searchName, "i"));
+            var sortBy = SortBy.Ascending("lastUpdated");
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            var set = setPriceCollection.FindAs<SetPrice>(query)
+                .SetSortOrder(sortBy)
+                .SetLimit(1);
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return set.FirstOrDefault();
+        }
+
+        public bool RemoveSetPrice(SetPrice setPrice)
+        {
+            if (setPrice == null)
+                throw new ArgumentNullException("setPrice");
+
+            var setPriceCollection = this.mDatabase.GetCollection<SetPrice>(cSetPriceCollectionName);
+
+            var query = Query<SetPrice>.EQ(c => c.Id, setPrice.Id);
+
+            var removeResult = setPriceCollection.Remove(query);
+
+            if (removeResult.Ok)
+                return true;
+            else
+                return false;
+        }
+
+        public int RemoveSetPricesOnOrBefore(DateTime date)
+        {
+            if (date == DateTime.MinValue)
+                throw new ArgumentException("date");
+
+            var setPriceCollection = this.mDatabase.GetCollection<CardPrice>(cSetPriceCollectionName);
+
+            var query = Query<SetPrice>.LTE(c => c.LastUpdated, date.ToUniversalTime());
+
+            var removeResult = setPriceCollection.Remove(query);
+
+            return (int)removeResult.DocumentsAffected;
+        }
+
+        public SetPrice FindAndModifySetPrice(SetPrice setPrice, bool upsert = true)
+        {
+            if (setPrice == null)
+                throw new ArgumentNullException("setPrice");
+
+            var setPriceCollection = this.mDatabase.GetCollection<CardPrice>(cSetPriceCollectionName);
+
+            // Query for this set
+            var setQuery = Query.And(
+                Query.EQ("name", setPrice.Name),
+                Query.EQ("setCode", setPrice.SetCode)
+            );
+
+            var cardSoryBy = SortBy.Descending("name");
+
+            // Update document
+            var cardUpdate = Update
+                .Set("url", setPrice.Url)
+                .Set("name", setPrice.Name)
+                .Set("searchName", setPrice.SearchName)
+                .Set("lastUpdated", setPrice.LastUpdated)
+                .Set("setCode", setPrice.SetCode)
+                .Set("totalCards", setPrice.TotalCards)
+                .Set("setValue", setPrice.SetValue)
+                .Set("foilSetValue", setPrice.FoilSetValue);
+
+            // Find and modify document. If document doesnt exist, insert it
+            FindAndModifyArgs findModifyArgs = new FindAndModifyArgs();
+            findModifyArgs.SortBy = cardSoryBy;
+            findModifyArgs.Query = setQuery;
+            findModifyArgs.Upsert = true;
+            findModifyArgs.Update = cardUpdate;
+            findModifyArgs.VersionReturned = FindAndModifyDocumentVersion.Modified;
+
+            var setResult = setPriceCollection.FindAndModify(findModifyArgs);
+            var setModified = setResult.GetModifiedDocumentAs<SetPrice>();
+
+            return setModified;
+        }
+        #endregion
+
+        #region Cards
         public CardPrice GetCardPrice(int multiverseId)
         {
             this.mLoggingService.Debug("Getting price for '{0}' using search multiverseId...",
                 multiverseId);
 
-            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cPriceCollectionName);
+            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cCardPriceCollectionName);
 
             var query = Query<CardPrice>.EQ(e => e.MultiverseId, multiverseId);
             var sortBy = SortBy.Ascending("lastUpdated");
@@ -84,7 +214,7 @@ namespace NerdBotCommon.Mtg.Prices
                 name,
                 searchName);
 
-            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cPriceCollectionName);
+            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cCardPriceCollectionName);
 
             var query = Query<CardPrice>.Matches(c => c.SearchName, new BsonRegularExpression(searchName, "i"));
             var sortBy = SortBy.Ascending("lastUpdated");
@@ -118,7 +248,7 @@ namespace NerdBotCommon.Mtg.Prices
                 setCode,
                 searchName);
 
-            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cPriceCollectionName);
+            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cCardPriceCollectionName);
 
             var query = Query.And(
                 Query<CardPrice>.Matches(e => e.SearchName, new BsonRegularExpression(searchName, "i")),
@@ -143,7 +273,7 @@ namespace NerdBotCommon.Mtg.Prices
             if (cardPrice == null)
                 throw new ArgumentNullException("cardPrice");
 
-            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cPriceCollectionName);
+            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cCardPriceCollectionName);
 
             var query = Query<CardPrice>.EQ(c => c.Id, cardPrice.Id);
 
@@ -160,7 +290,7 @@ namespace NerdBotCommon.Mtg.Prices
             if (date == DateTime.MinValue)
                 throw new ArgumentException("date");
 
-            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cPriceCollectionName);
+            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cCardPriceCollectionName);
 
             var query = Query<CardPrice>.LTE(c => c.LastUpdated, date.ToUniversalTime());
 
@@ -174,7 +304,7 @@ namespace NerdBotCommon.Mtg.Prices
             if (cardPrice == null)
                 throw new ArgumentNullException("cardPrice");
 
-            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cPriceCollectionName);
+            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cCardPriceCollectionName);
 
             // Query for this card
             var cardQuery = Query.And(
@@ -218,7 +348,7 @@ namespace NerdBotCommon.Mtg.Prices
         {
             List<CardPrice> prices = new List<CardPrice>();
 
-            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cPriceCollectionName);
+            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cCardPriceCollectionName);
 
             var cardQuery = Query.And(
                 Query.GT("priceDiffValue", 0),
@@ -257,7 +387,7 @@ namespace NerdBotCommon.Mtg.Prices
         {
             List<CardPrice> prices = new List<CardPrice>();
 
-            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cPriceCollectionName);
+            var cardPriceCollection = this.mDatabase.GetCollection<CardPrice>(cCardPriceCollectionName);
 
             var cardQuery = Query.And(
                 Query.LT("priceDiffValue", 0),
@@ -291,5 +421,6 @@ namespace NerdBotCommon.Mtg.Prices
 
             return prices;
         }
+        #endregion
     }
 }

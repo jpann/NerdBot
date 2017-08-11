@@ -92,6 +92,8 @@ namespace NerdBotCommon.Tests.PriceStore
             
         }
 
+        //TODO SetPrice tests
+
         #region GetCardPrice
         [Test]
         public void GetCardPrice_ByName()

@@ -160,6 +160,8 @@ namespace NerdBotCommon.Tests.PriceStore
             this.RemoveTestData();
         }
 
+        //TODO SetPrice tests
+
         #region FindAndModifyCardPrice
         [Test]
         public void FindAndModifyCardPrice()

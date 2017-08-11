@@ -68,7 +68,55 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
 
 			this.mLoggingService.Debug ("Loaded page into memory");
 
-            //HtmlNode cardsNode = htmlDoc.DocumentNode.SelectSingleNode(@"/html/body/div[4]/div[1]/div[2]/div[1]/table/tbody");
+            // Create set price
+            HtmlNode setPrices = htmlDoc.DocumentNode.SelectSingleNode(@"//*[contains(@class,'todaysprices')]");
+
+            if (setPrices != null)
+            {
+                SetPrice setPrice = new SetPrice();
+
+                setPrice.Name = set.Name;
+                setPrice.SetCode = set.Code;
+                setPrice.SearchName = set.SearchName;
+                setPrice.Url = url;
+                setPrice.LastUpdated = DateTime.Now;
+
+                if (setPrices.SelectSingleNode("./div[@class=' mid'][1]/span[@class='numbers price_mid']") != null)
+                {
+                    string totalCards = setPrices.SelectSingleNode("./div[@class=' mid'][1]/span[@class='numbers price_mid']").InnerText;
+                    totalCards = totalCards.Trim();
+
+                    setPrice.TotalCards = Convert.ToInt32(totalCards);
+                }
+
+                if (setPrices.SelectSingleNode("./div[@class=' mid'][2]/span[@class='numbers price_mid']") != null)
+                {
+                    string setComplPrice = setPrices.SelectSingleNode("./div[@class=' mid'][2]/span[@class='numbers price_mid']").InnerText;
+                    setComplPrice = setComplPrice.Trim();
+
+                    setPrice.SetValue = setComplPrice;
+                }
+
+                if (setPrices.SelectSingleNode("./div[@class='foil']/span[@class='numbers price_low']") != null)
+                {
+                    string setFoilPrice = setPrices.SelectSingleNode("./div[@class='foil']/span[@class='numbers price_low']").InnerText;
+                    setFoilPrice = setFoilPrice.Trim();
+
+                    setPrice.FoilSetValue = setFoilPrice;
+                }
+
+                string msg = string.Format("Inserting set price for '{0} [{1}]'... ",
+                    setPrice.Name,
+                    setPrice.SetCode);
+
+                Console.WriteLine(msg);
+                this.mLoggingService.Debug(msg);
+
+                SetPrice newSetPrice = this.mPriceStore.FindAndModifySetPrice(setPrice, true);
+
+                this.mLoggingService.Debug("Saved price for set '{0}'.", setPrice.Name);
+            }
+
             HtmlNode cardsNode = htmlDoc.DocumentNode.SelectSingleNode(@"/html/body/div[4]/div/div[5]/table/tbody");
 
 			this.mLoggingService.Debug ("Parsed cards node");

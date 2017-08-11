@@ -99,6 +99,7 @@
     <Compile Include="Mtg\Prices\CardPrice.cs" />
     <Compile Include="Mtg\Prices\EchoMtgPriceStore.cs" />
     <Compile Include="Mtg\Prices\ICardPriceStore.cs" />
+    <Compile Include="Mtg\Prices\SetPrice.cs" />
     <Compile Include="Mtg\Set.cs" />
     <Compile Include="Parsers\Command.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

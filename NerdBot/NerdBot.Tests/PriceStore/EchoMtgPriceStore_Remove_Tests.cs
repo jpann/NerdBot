@@ -180,6 +180,8 @@ namespace NerdBotCommon.Tests.PriceStore
             this.RemoveTestData();
         }
 
+        //TODO SetPrice tests
+
         #region RemoveCardPrice
         private CardPrice GetTestCard()
         {
