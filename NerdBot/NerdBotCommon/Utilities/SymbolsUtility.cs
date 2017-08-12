@@ -129,6 +129,8 @@ namespace NerdBotCommon.Utilities
             desc = desc.Replace("{T}", string.Format(format, "ms-tap"));
             desc = desc.Replace("{Q}", string.Format(format, "ms-untap"));
 
+            desc = desc.Replace("\n", "<br/>");
+
             // Phyrexian costs
             var phyRegex = new Regex(@"(?<cost>{(?<c>[GUBWR])/P})");
             var phyCostMatches = phyRegex.Matches(desc);
@@ -147,7 +149,6 @@ namespace NerdBotCommon.Utilities
             }
 
             // Split costs
-            //TODO Fix these
             var splitRegex = new Regex(@"(?<cost>{(?<a>[\d|\w])/(?<b>[\d|\w])})");
 
             var splitMatches = splitRegex.Matches(desc);
