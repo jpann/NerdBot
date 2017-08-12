@@ -109,6 +109,7 @@
     <Compile Include="UrlShortners\BitlyUrlShortener.cs" />
     <Compile Include="UrlShortners\IUrlShortener.cs" />
     <Compile Include="Utilities\SearchUtility.cs" />
+    <Compile Include="Utilities\SymbolsUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

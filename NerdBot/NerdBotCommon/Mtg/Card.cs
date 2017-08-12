@@ -5,6 +5,7 @@ using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
+using NerdBotCommon.Utilities;
 using Newtonsoft.Json;
 
 namespace NerdBotCommon.Mtg
@@ -39,6 +40,11 @@ namespace NerdBotCommon.Mtg
         [BsonElement("desc")]
         public string Desc { get; set; }
 
+        public string DescWithSymbols
+        {
+            get { return SymbolsUtility.GetDescSymbols(this.Desc); }
+        }
+
         [JsonProperty("flavor")]
         [BsonElement("flavor")]
         public string Flavor { get; set; }
@@ -50,6 +56,11 @@ namespace NerdBotCommon.Mtg
         [JsonProperty("cost")]
         [BsonElement("cost")]
         public string Cost { get; set; }
+
+        public string CostWithSymbols
+        {
+            get { return SymbolsUtility.GetCostSymbols(this.Cost); }
+        }
 
         [JsonProperty("cmc")]
         [BsonElement("cmc")]
@@ -193,5 +204,10 @@ namespace NerdBotCommon.Mtg
         [BsonElement("rule")]
         [JsonProperty("rule")]
         public string Rule { get; set; }
+
+        public string RuleWithSymbols
+        {
+            get { return SymbolsUtility.GetDescSymbols(this.Rule); }
+        }
     }
 }

@@ -37,6 +37,8 @@
     <script src="@Path['~/Content/js/bootstrap.min.js']"></script>
     <link rel="stylesheet" href="@Path['~/Content/css/bootstrap.min.css']">
     <link rel="stylesheet" href="@Path['~/Content/css/keyrune.css']">
+    <link rel="stylesheet" href="@Path['~/Content/css/mana.css']">
+
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
 </head>
@@ -137,9 +139,9 @@
                         table.row.add( [
                             `<i class="ss ${card.symbol} ss-2x"></i>`,
                             `<a rel="popover" role="button" class="btn popovers" data-toggle="popover" data-img="${card.img}" href="/ruling/${card.multiverseId}" target="_blank">${card.name}</a>`,
-                            `${card.cost}`,
+                            `${card.costSymbols}`,
                             `${card.type}`,
-                            `${card.desc}`,
+                            `${card.descSymbols}`,
                             `${card.prices.mid}`,
                             `${card.prices.low}`
                             ] ).draw( false );

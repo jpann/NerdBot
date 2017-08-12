@@ -12,6 +12,7 @@
     <script src="@Path['~/Content/js/bootstrap.min.js']"></script>
     <link rel="stylesheet" href="@Path['~/Content/css/bootstrap.min.css']">
 	<link rel="stylesheet" href="@Path['~/Content/css/keyrune.css']">
+	<link rel="stylesheet" href="@Path['~/Content/css/mana.css']">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>

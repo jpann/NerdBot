@@ -10,6 +10,7 @@ using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
 using NerdBotCommon.Parsers;
 using NerdBotCommon.Reporters;
+using NerdBotCommon.Utilities;
 using NerdBotCommon.Web.Queries;
 using SimpleLogging.Core;
 
@@ -75,6 +76,7 @@ namespace NerdBotCommon.Modules
                     Code = c.SetId,
                     Set = c.SetName,
                     Cost = c.Cost,
+                    CostSymbols = c.CostWithSymbols,
                     Type = c.FullType,
                     Rarity = c.Rarity,
                     Img = c.Img,
@@ -82,6 +84,7 @@ namespace NerdBotCommon.Modules
                     SearchName = c.SearchName,
                     Symbol = c.SetAsKeyRuneIcon,
                     Desc = c.Desc,
+                    DescSymbols = c.DescWithSymbols,
                     CMC = c.Cmc,
                     Prices = GetCardPrice(priceStore, c.MultiverseId)
                 }).OrderByDescending(c => c.SearchName);
@@ -139,13 +142,17 @@ namespace NerdBotCommon.Modules
                     Code = c.SetId,
                     Set = c.SetName,
                     Cost = c.Cost,
+                    CostSymbols = c.CostWithSymbols,
                     Type = c.FullType,
                     Rarity = c.Rarity,
                     Img = c.Img,
                     MultiverseId = c.MultiverseId,
                     SearchName = c.SearchName,
                     Symbol = c.SetAsKeyRuneIcon,
-                    Desc = c.Desc
+                    Desc = c.Desc,
+                    DescSymbols = c.DescWithSymbols,
+                    CMC = c.Cmc,
+                    Prices = GetCardPrice(priceStore, c.MultiverseId)
                 }).OrderByDescending(c => c.SearchName);
 
                 sw.Stop();

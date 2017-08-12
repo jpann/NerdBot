@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="@Path['~/Content/css/bootstrap.min.css']">
     <link href="@Path['~/Content/css/mana.css']" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="@Path['~/Content/css/keyrune.css']">
+    <link rel="stylesheet" href="@Path['~/Content/css/mana.css']">
 
 </head>
 
@@ -63,7 +64,7 @@
                     <td><a rel="popover" data-img="@Current.Img" href="/ruling/@Current.MultiverseId">@Current.MultiverseId</a></td>
                     <td><i class="ss @Current.SetAsKeyRuneIcon ss-2x"></i></td>
                     <td>@Current.Name</td>
-                    <td>@Current.Cost</td>
+                    <td>@Current.CostWithSymbols</td>
                     <td>@Current.FullType</td>
                 </tr>
                 @EndEach
