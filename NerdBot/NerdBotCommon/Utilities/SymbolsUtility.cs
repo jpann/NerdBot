@@ -133,7 +133,7 @@ namespace NerdBotCommon.Utilities
             var phyRegex = new Regex(@"(?<cost>{(?<c>[GUBWR])/P})");
             var phyCostMatches = phyRegex.Matches(desc);
 
-            if (phyCostMatches.Count > 1)
+            if (phyCostMatches.Count > 0)
             {
                 foreach (Match m in phyCostMatches)
                 {
@@ -151,7 +151,7 @@ namespace NerdBotCommon.Utilities
             var splitRegex = new Regex(@"(?<cost>{(?<a>[\d|\w])/(?<b>[\d|\w])})");
 
             var splitMatches = splitRegex.Matches(desc);
-            if (splitMatches.Count > 1)
+            if (splitMatches.Count > 0)
             {
                 foreach (Match m in splitMatches)
                 {
