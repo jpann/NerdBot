@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Nancy.Extensions;
 using Nancy.ModelBinding;
@@ -40,6 +41,8 @@ namespace NerdBotCommon.Modules
             #region Card Search Route
             Post["/api/search/{term}", true] = async (parameters, ct) =>
             {
+                var sw = Stopwatch.StartNew();
+
                 int limit = 200;
 
                 string term = parameters.term;
@@ -83,19 +86,23 @@ namespace NerdBotCommon.Modules
                     Prices = GetCardPrice(priceStore, c.MultiverseId)
                 }).OrderByDescending(c => c.SearchName);
             
+                sw.Stop();
 
                 return Response.AsJson(new
                 {
                     SearchTerm = term,
                     Limit = limit,
-                    Cards = cards
+                    Elapsed = sw.Elapsed.ToString(),
+                    Cards = cards, 
                 });
             };
 
             //
             // Testing out paging
-            Post["/api/0.x/search", true] = async (parameters, ct) =>
+            Post["/api/0.x/search", true] = async (parameters, ct) =>   
             {
+                var sw = Stopwatch.StartNew();
+
                 int limit = 1000;
 
                 //string term = parameters.term;
@@ -110,9 +117,9 @@ namespace NerdBotCommon.Modules
                     return HttpStatusCode.NotAcceptable;
                 }
 
-                var cards = await mtgStore.SearchCards(query.SearchTerm, query.Page, limit);
+                var db_cards = await mtgStore.SearchCards(query.SearchTerm, query.Page, limit);
 
-                if (cards == null)
+                if (db_cards == null)
                 {
                     string msg = string.Format("No cards found using name '{0}'", query.SearchTerm);
 
@@ -126,24 +133,29 @@ namespace NerdBotCommon.Modules
                     }).StatusCode = HttpStatusCode.NotAcceptable;
                 }
 
+                var cards = db_cards.Select(c => new
+                {
+                    Name = c.Name,
+                    Code = c.SetId,
+                    Set = c.SetName,
+                    Cost = c.Cost,
+                    Type = c.FullType,
+                    Rarity = c.Rarity,
+                    Img = c.Img,
+                    MultiverseId = c.MultiverseId,
+                    SearchName = c.SearchName,
+                    Symbol = c.SetAsKeyRuneIcon,
+                    Desc = c.Desc
+                }).OrderByDescending(c => c.SearchName);
+
+                sw.Stop();
+
                 return Response.AsJson(new
                 {
                     SearchTerm = query.SearchTerm,
                     Limit = limit,
-                    Cards = cards.Select(c => new
-                    {
-                        Name = c.Name,
-                        Code = c.SetId,
-                        Set = c.SetName,
-                        Cost = c.Cost,
-                        Type = c.FullType,
-                        Rarity = c.Rarity,
-                        Img = c.Img,
-                        MultiverseId = c.MultiverseId,
-                        SearchName = c.SearchName,
-                        Symbol = c.SetAsKeyRuneIcon,
-                        Desc = c.Desc
-                    }).OrderByDescending(c => c.SearchName)
+                    Elapsed = sw.Elapsed.ToString(),
+                    Cards = cards
                 });
             };
             #endregion
@@ -171,6 +183,8 @@ namespace NerdBotCommon.Modules
             // Ruling route
             Get["/ruling/{id:int}", true] = async (parameters, ct) =>
             {
+                var sw = Stopwatch.StartNew();
+
                 int cardMultiverseId = parameters.id;
 
                 var card = await mtgStore.GetCard(cardMultiverseId);
@@ -198,8 +212,11 @@ namespace NerdBotCommon.Modules
                 // Get price information
                 var cardPrice = priceStore.GetCardPrice(card.MultiverseId);
 
+                sw.Stop();
+
                 return View["index/ruling.sshtml", new
                 {
+                    Elapsed = sw.Elapsed.ToString(),
                     Card = card,
                     SetCode = !string.IsNullOrEmpty(set.GathererCode) ? set.GathererCode : set.Code,
                     CardPrices = new
@@ -216,6 +233,8 @@ namespace NerdBotCommon.Modules
             // Get search results
             Get["/search/{name}", true] = async (parameters, ct) =>
             {
+                var sw = Stopwatch.StartNew();
+
                 int limit = 100;
 
                 string name = parameters.name;
@@ -236,9 +255,13 @@ namespace NerdBotCommon.Modules
                     return msg;
                 }
 
+                sw.Stop();
+
                 return View["index/search.sshtml", new
                 {
                     SearchTerm = name, 
+                    Limit = limit,
+                    Elapsed = sw.Elapsed.ToString(),
                     Cards = cards
                 }];
             };
