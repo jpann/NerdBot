@@ -80,6 +80,14 @@
 								</td>
 							</tr>
 							<tr>
+								<th scope="row">Low Price</th>
+								<td>@Model.CardPrices.Low</td>
+							</tr>
+							<tr>
+								<th scope="row">Mid Price</th>
+								<td>@Model.CardPrices.Mid</td>
+							</tr>
+							<tr>
 								<td colspan="2">
 								@If.Card.HasRulings
 								<table class="table table-sm" width="75%">

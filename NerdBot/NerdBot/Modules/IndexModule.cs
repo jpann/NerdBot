@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MongoDB.Bson;
 using Nancy.Extensions;
 using Nancy.ModelBinding;
-using Nancy.Routing;
 using NerdBotCommon.Messengers;
 using NerdBotCommon.Messengers.GroupMe;
 using NerdBotCommon.Mtg;
@@ -51,9 +49,9 @@ namespace NerdBotCommon.Modules
                     return HttpStatusCode.NotAcceptable;
                 }
 
-                var cards = await mtgStore.AdvancedSearchCards(term, limit);
+                var db_cards = await mtgStore.AdvancedSearchCards(term, limit);
 
-                if (cards == null)
+                if (db_cards == null)
                 {
                     string msg = string.Format("No cards found using name '{0}'", term);
 
@@ -67,25 +65,30 @@ namespace NerdBotCommon.Modules
                     }).StatusCode = HttpStatusCode.NotAcceptable;
                 }
 
+                // Get price information
+                var cards = db_cards.Select(c => new
+                {
+                    Name = c.Name,
+                    Code = c.SetId,
+                    Set = c.SetName,
+                    Cost = c.Cost,
+                    Type = c.FullType,
+                    Rarity = c.Rarity,
+                    Img = c.Img,
+                    MultiverseId = c.MultiverseId,
+                    SearchName = c.SearchName,
+                    Symbol = c.SetAsKeyRuneIcon,
+                    Desc = c.Desc,
+                    CMC = c.Cmc,
+                    Prices = GetCardPrice(priceStore, c.MultiverseId)
+                }).OrderByDescending(c => c.SearchName);
+            
+
                 return Response.AsJson(new
                 {
                     SearchTerm = term,
                     Limit = limit,
-                    Cards = cards.Select(c => new
-                    {
-                        Name = c.Name,
-                        Code = c.SetId,
-                        Set = c.SetName,
-                        Cost = c.Cost,
-                        Type = c.FullType,
-                        Rarity = c.Rarity,
-                        Img = c.Img,
-                        MultiverseId = c.MultiverseId,
-                        SearchName = c.SearchName,
-                        Symbol = c.SetAsKeyRuneIcon,
-                        Desc = c.Desc,
-                        CMC = c.Cmc
-                    }).OrderByDescending(c => c.SearchName)
+                    Cards = cards
                 });
             };
 
@@ -192,10 +195,21 @@ namespace NerdBotCommon.Modules
                     return msg;
                 }
 
+                // Get price information
+                var cardPrice = priceStore.GetCardPrice(card.MultiverseId);
+
                 return View["index/ruling.sshtml", new
                 {
                     Card = card,
-                    SetCode = !string.IsNullOrEmpty(set.GathererCode) ? set.GathererCode : set.Code
+                    SetCode = !string.IsNullOrEmpty(set.GathererCode) ? set.GathererCode : set.Code,
+                    CardPrices = new
+                    {
+                        Url = cardPrice != null ? cardPrice.Url : "",
+                        Low = cardPrice != null ? cardPrice.PriceLow : "",
+                        Mid = cardPrice != null ? cardPrice.PriceMid : "",
+                        Foil = cardPrice != null ? cardPrice.PriceFoil : "",
+                        Diff = cardPrice != null ? cardPrice.PriceDiff : "",
+                    }
                 }];
             };
 
@@ -323,6 +337,20 @@ namespace NerdBotCommon.Modules
                 }
             };
             #endregion
+        }
+
+        private dynamic GetCardPrice(ICardPriceStore priceStore, int multiverseId)
+        {
+            var price = priceStore.GetCardPrice(multiverseId);
+
+            return new
+            {
+                Url = price != null ? price.Url : "",
+                Low = price != null ? price.PriceLow : "",
+                Mid = price != null ? price.PriceMid : "",
+                Foil = price != null ? price.PriceFoil : "",
+                Diff = price != null ? price.PriceDiff : "",
+            };
         }
     }
 }

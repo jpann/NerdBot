@@ -64,18 +64,11 @@
                     <th class="col-md-1"><small>Name</small></th>
                     <th class="col-md-1"><small>Cost</small></th>
                     <th class="col-md-1"><small>Type</small></th>
-                    <th class="col-md-8"><small>Text</small></th>
+                    <th class="col-md-6"><small>Text</small></th>
+                    <th class="col-md-1"><small>Price - Mid</small></th>
+                    <th class="col-md-1"><small>Price - Low</small></th>
                 </tr>
                 </thead>
-                <tfoot>
-                    <tr>
-                        <th>Set</th>
-                        <th>Name</th>
-                        <th class="searchable">Cost</th>
-                        <th class="searchable">Type</th>
-                        <th class="searchable">Text</th>
-                    </tr>
-                </tfoot>
                 <tbody>
                 </tbody>
             </table>
@@ -146,7 +139,9 @@
                             `<a rel="popover" role="button" class="btn popovers" data-toggle="popover" data-img="${card.img}" href="/ruling/${card.multiverseId}" target="_blank">${card.name}</a>`,
                             `${card.cost}`,
                             `${card.type}`,
-                            `${card.desc}`
+                            `${card.desc}`,
+                            `${card.prices.mid}`,
+                            `${card.prices.low}`
                             ] ).draw( false );
                     });
 
