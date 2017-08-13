@@ -273,6 +273,63 @@ namespace NerdBotCommon.Modules
                 }];
             };
 
+            #region Sets
+            Get["/sets", true] = async (parameters, ct) =>
+            {
+                var sets = await mtgStore.GetSets();
+
+                return View["listSets.html", new
+                {
+                    Sets = sets.Select(s => new
+                    {
+                        Name = s.Name,
+                        Code = s.Code,
+                        Block = s.Block,
+                        Type = s.Type,
+                        ReleasedOn = s.ReleasedOn.ToShortDateString(),
+                        ReleasedOnSort = s.ReleasedOn,
+                        Symbol = s.SetAsKeyRuneIcon
+                    }).OrderByDescending(s => s.ReleasedOnSort)
+                }];
+            };
+
+            Get["/set/{set}", true] = async (parameters, ct) =>
+            {
+                string setCode = parameters.set;
+
+                var set = await mtgStore.GetSetByCode(setCode);
+                var db_cards = await mtgStore.GetCardsBySet(set.Name);
+
+                // Get price information
+                var cards = db_cards.Select(c => new
+                {
+                    Name = c.Name,
+                    Code = c.SetId,
+                    Set = c.SetName,
+                    Cost = c.Cost,
+                    CostSymbols = c.CostWithSymbols,
+                    Type = c.FullType,
+                    Rarity = c.Rarity,
+                    Img = c.Img,
+                    MultiverseId = c.MultiverseId,
+                    SearchName = c.SearchName,
+                    Symbol = c.SetAsKeyRuneIcon,
+                    Desc = c.Desc,
+                    DescSymbols = c.DescWithSymbols,
+                    CMC = c.Cmc,
+                    Prices = GetCardPrice(priceStore, c.MultiverseId),
+                    SetSymbol = c.SetAsKeyRuneIcon
+                }).OrderByDescending(c => c.SearchName);
+
+                return View["set.html", new
+                {
+                    Set = set,
+                    Cards = cards
+                }];
+
+            };
+            #endregion
+
             #region Bot Route
             Post["/bot/{token}", true] = async (parameters, ct) =>
             {

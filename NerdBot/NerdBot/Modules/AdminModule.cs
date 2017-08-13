@@ -72,7 +72,6 @@ namespace NerdBotCommon.Modules
             };
 
             #region Sets
-
             Get["/sets", true] = async (parameters, ct) =>
             {
                 this.RequiresAuthentication();
