@@ -22,19 +22,32 @@
     <![endif]-->
 
 	<style>
-	  body {
-		padding: 30px;
-	  }
+	    * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+            width: 100%;
+        }
+        body {
+            font: 12px Helvetica, Arial;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container {
+            height: 100%;
+            width: 100%;
+        }
 	</style>
   </head>
   <body>
 	
 
 	<div class="container">
-			<div class="panel panel-default">
-                <div class="panel-heading">@Model.Card.Name - @Model.Card.SetName [@Model.SetCode]</div>
-                <div class="panel-body" style="overflow-y: scroll; height: 90%">
-
                     <table id="card-table" class="table table-sm table-hover">
                         <thead>
                             <tr>
@@ -116,8 +129,6 @@
 							</tr>
                         </tbody>
                     </table>
-                </div>
-            </div>
         </div>
   </body>
 </html>
