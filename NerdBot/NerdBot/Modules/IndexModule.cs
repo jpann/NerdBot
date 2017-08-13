@@ -40,7 +40,7 @@ namespace NerdBotCommon.Modules
             };
 
             #region Card Search Route
-            Post["/api/search/{term}", true] = async (parameters, ct) =>
+            Get["/api/search/{term}", true] = async (parameters, ct) =>
             {
                 var sw = Stopwatch.StartNew();
 

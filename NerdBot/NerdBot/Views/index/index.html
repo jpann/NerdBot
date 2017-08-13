@@ -116,13 +116,13 @@
             $.ajax(
             {
                 url: '/api/search/'+ term,
-                type: "POST",
+                type: "GET",
                 xhrFields: {
                     withCredentials: true
                 },
                 dataType: "json",
                 contentType: "application/json",
-                cache: false,
+                cache: true,
                 timeout: 5000,
                 complete: function() 
                 {
