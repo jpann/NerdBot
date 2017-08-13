@@ -67,7 +67,7 @@ namespace NerdBotCommon.Utilities
                 {
                     string color = phyCostMatch.Groups["c"].Value;
 
-                    cost = string.Format("ms-{0}p ms-split", color.ToLower());
+                    cost = string.Format("ms-{0}p", color.ToLower());
                 }
 
                 // Split costs
@@ -142,7 +142,7 @@ namespace NerdBotCommon.Utilities
                     string color = m.Groups["c"].Value;
                     string matched = m.Groups["cost"].Value;
 
-                    string cost = string.Format(format, string.Format("ms-{0}p ms-split", color.ToLower()));
+                    string cost = string.Format(format, string.Format("ms-{0}p", color.ToLower()));
 
                     desc = desc.Replace(matched, cost);
                 }
