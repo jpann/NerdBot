@@ -40,7 +40,7 @@ namespace NerdBotCommon.Modules
             };
 
             #region Card Search Route
-            Get["/api/search/{term}", true] = async (parameters, ct) =>
+            Get["/api/search/{term?}", true] = async (parameters, ct) =>
             {
                 var sw = Stopwatch.StartNew();
 
@@ -48,9 +48,14 @@ namespace NerdBotCommon.Modules
 
                 string term = parameters.term;
 
-                if (string.IsNullOrEmpty(term))
+                if (string.IsNullOrEmpty(term) || term.StartsWith("?"))
                 {
-                    return HttpStatusCode.NotAcceptable;
+                    return Response.AsJson(new
+                    {
+                        SearchTerm = "",
+                        Limit = limit,
+                        Cards = new List<Card>()
+                    });
                 }
 
                 var db_cards = await mtgStore.AdvancedSearchCards(term, limit);

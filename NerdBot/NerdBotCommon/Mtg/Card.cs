@@ -42,7 +42,10 @@ namespace NerdBotCommon.Mtg
 
         public string DescWithSymbols
         {
-            get { return SymbolsUtility.GetDescSymbols(this.Desc); }
+            get
+            {
+                return SymbolsUtility.GetDescSymbols(this.Desc);
+            }
         }
 
         [JsonProperty("flavor")]
@@ -59,7 +62,10 @@ namespace NerdBotCommon.Mtg
 
         public string CostWithSymbols
         {
-            get { return SymbolsUtility.GetCostSymbols(this.Cost); }
+            get
+            {
+                return SymbolsUtility.GetCostSymbols(this.Cost);
+            }
         }
 
         [JsonProperty("cmc")]
@@ -110,7 +116,8 @@ namespace NerdBotCommon.Mtg
         {
             get
             {
-                string set = "ss ss-{0} ss-{1}";
+                string set = "<i class=\"ss ss-{0} ss-{1} ss-2x\"></i>";
+                //string set = "ss ss-{0} ss-{1}";
 
                 switch (this.Rarity)
                 {

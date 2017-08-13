@@ -77,8 +77,58 @@
 <script>
     $(function ()
     {
-        var table = $('#cards-table').DataTable({
+        //var table = $('#cards-table').DataTable({
+        //    responsive: true,
+        //    drawCallback: function() {
+        //        $('[data-toggle=popover]').popover({
+        //            "html": true,
+        //            trigger: 'hover',
+        //            placement: 'right',
+        //            container: 'body',
+        //            content: function() { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
+        //        })
+        //    },
+        //    'searching': false,
+        //    'columnDefs': [
+        //    {
+        //        'width': '25px', 'className' : 'dt-center', 'targets' : [0],
+        //    }]
+        //});
+
+        var table = $('#cards-table').DataTable(
+        {
+            'ajax' : {
+                'url' : "/api/search/",
+                'type' : "GET",
+                'dataSrc' : "cards"
+            },
             responsive: true,
+            'deferRender' : true,
+            "processing": true,
+            'searching': false,
+            'columns' : [
+                { "data" : "symbol" },
+                { "data" : "name" },
+                { "data" : "costSymbols" },
+                { "data" : "type" },
+                { "data" : "prices.mid" },
+                { "data" : "prices.low" },
+                { "data" : "img" },
+                { "data" : "multiverseId" }
+                 
+            ],
+            'columnDefs': [
+                {
+                    'width': '10px', 'className' : 'dt-center', 'targets' : 0,
+                },
+                {
+                    "render" : function(data, type, row) {
+                        return `<a rel="popover" role="button" class="btn popovers" data-toggle="popover" data-img="${row.img}" href="/ruling/${row.multiverseId}" target="_blank">${data}</a>`;
+                    },
+                    "targets" : 1
+                },
+                { "visible": false,  "targets": [ 6, 7] }
+            ],
             drawCallback: function() {
                 $('[data-toggle=popover]').popover({
                     "html": true,
@@ -87,12 +137,7 @@
                     container: 'body',
                     content: function() { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
                 })
-            },
-            'searching': false,
-            'columnDefs': [
-            {
-                'width': '25px', 'className' : 'dt-center', 'targets' : [0],
-            }]
+            }
         });
 
         $('#btn-search').click(function ()
@@ -101,7 +146,9 @@
 
             if (search_term)
             {
-                perform_search(search_term);
+                //perform_search(search_term);
+
+                table.ajax.url('/api/search/' + search_term).load();
             }
 
         });
@@ -109,6 +156,8 @@
         function perform_search(term)
         {
             var table = $('#cards-table').DataTable();
+
+            console.time("search_api");
 
             $.ajax(
             {
@@ -129,9 +178,14 @@
                 {
                     table.clear();
 
-                    $.each(data.cards, function(id)
+                    console.timeEnd("search_api");
+
+                    console.time("search_result_loop");
+
+                    var l = data.cards.length;
+                    for (var i = 0; i < l; i++) 
                     {
-                        var card = data.cards[id];
+                        var card = data.cards[i];
 
                         table.row.add( [
                             `<i class="ss ${card.symbol} ss-2x"></i>`,
@@ -140,8 +194,10 @@
                             `${card.type}`,
                             `${card.prices.mid}`,
                             `${card.prices.low}`
-                            ] ).draw( false );
-                    });
+                        ] ).draw( false );
+                    }
+
+                    console.timeEnd("search_result_loop");
 
                     $('#cards-table').on('click', function(e)
                     {

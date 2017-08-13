@@ -54,7 +54,7 @@
 								<th scope="row">Set</th>
 								<td>
 									<a href="http://gatherer.wizards.com/Pages/Search/Default.aspx?action=advanced&set=[%22@Model.Card.SetName%22]" target="_blank">
-										<i class="ss @Model.Card.SetAsKeyRuneIcon ss-2x"></i> @Model.Card.SetName [@Model.SetCode]
+										@Model.Card.SetAsKeyRuneIcon @Model.Card.SetName [@Model.SetCode]
 									</a>
 								</td>
 							</tr>
