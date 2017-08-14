@@ -12,18 +12,47 @@
     <script src="@Path['~/Content/js/bootstrap.min.js']"></script>
     <link rel="stylesheet" href="@Path['~/Content/css/bootstrap.min.css']">
 	<link rel="stylesheet" href="@Path['~/Content/css/keyrune.css']">
-	<link rel="stylesheet" href="@Path['~/Content/css/mana.css']">
+    <link rel="stylesheet" href="@Path['~/Content/css/mana.css']">
+      
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.1.1/js/responsive.bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css">
+
+      <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
 	<style>
-	  body {
-		padding: 10px;
-	  }
+	    * {
+	        margin: 0;
+	        padding: 0;
+	        box-sizing: border-box;
+	    }
+
+	    html {
+	        height: 100%;
+	        width: 100%;
+	    }
+	    body {
+	        font: 12px Helvetica, Arial;
+	        margin: 0px;
+	        height: 100%;
+	        width: 100%;
+	    }
+	    .container {
+	        height: 95%;
+	        width: 100%;
+	    }
+	    .panel {
+	        height: 100%;
+	        width: 100%;
+	    }
 	</style>
   </head>
   <body>
@@ -34,7 +63,7 @@
 			<div class="panel-heading"><b>Seach Term:</b> '@Model.SearchTerm'</div>
 			<div class="panel-body" style="overflow-y: scroll; height: 90%">
 
-				<table id="cards-table" class="table table-sm table-hover">
+				<table id="cards-table" class="table table-sm display responsive nowrap table-hover stripe row-border" cellspacing="0" width="100%">
 					<thead>
 						<tr>
 							<th class="col-md-2"><small>Name</small></th>
@@ -66,6 +95,24 @@
 	<script>
 	$(function ()
 	{
+	    var table = $('#cards-table').DataTable({
+	        responsive: true,
+	        drawCallback: function() {
+	            $('[data-toggle=popover]').popover({
+	                "html": true,
+	                trigger: 'hover',
+	                placement: 'right',
+	                container: 'body',
+	                content: function() { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
+	            })
+	        },
+	        'searching': false,
+	        'columnDefs': [
+	        {
+	            'width': '25px', 'className' : 'dt-center', 'targets' : [0],
+	        }]
+	    });
+
 		$('a[rel=popover]').popover(
 		{
 			html: true,

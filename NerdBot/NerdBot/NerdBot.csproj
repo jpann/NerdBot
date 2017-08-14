@@ -239,9 +239,9 @@
     <Content Include="Views\admin\login.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Views\index\search.sshtml">
+    <Content Include="Views\index\search.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="Views\index\ruling.sshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

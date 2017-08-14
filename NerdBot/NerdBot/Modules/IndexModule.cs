@@ -269,7 +269,7 @@ namespace NerdBotCommon.Modules
 
                 sw.Stop();
 
-                return View["index/search.sshtml", new
+                return View["index/search.html", new
                 {
                     SearchTerm = name, 
                     Limit = limit,
