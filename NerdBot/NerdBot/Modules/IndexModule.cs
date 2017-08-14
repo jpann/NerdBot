@@ -192,6 +192,57 @@ namespace NerdBotCommon.Modules
                 return Response.AsJson<List<CardPrice>>(prices);
             };
 
+            // Price changes
+            Get["/price-changes", true] = async (parameters, ct) =>
+            {
+                int limit = 100;
+
+                var sw = Stopwatch.StartNew();
+
+                List<CardPrice> db_increases = priceStore.GetCardsByPriceIncrease(limit);
+                List<CardPrice> db_decreases = priceStore.GetCardsByPriceDecrease(limit);
+
+                var increases = db_increases.Select(c => new
+                {
+                    Name = c.Name,
+                    Code = c.SetCode,
+                    Symbol = c.SetAsKeyRuneIcon,
+                    MultiverseId = c.MultiverseId,
+                    PriceDiff = c.PriceDiff,
+                    PriceDiffValue = c.PriceDiffValue,
+                    PriceMid = c.PriceMid,
+                    PriceFoil = c.PriceFoil,
+                    Img = c.ImageUrl,
+                    LastUpdated = c.LastUpdated.ToShortDateString(),
+                    Url = c.Url
+                });
+
+                var decreases = db_decreases.Select(c => new
+                {
+                    Name = c.Name,
+                    Code = c.SetCode,
+                    Symbol = c.SetAsKeyRuneIcon,
+                    MultiverseId = c.MultiverseId,
+                    PriceDiff = c.PriceDiff,
+                    PriceDiffValue = c.PriceDiffValue,
+                    PriceMid = c.PriceMid,
+                    PriceFoil = c.PriceFoil,
+                    Img = c.ImageUrl,
+                    LastUpdated = c.LastUpdated.ToShortDateString(),
+                    Url = c.Url
+                });
+
+                sw.Stop();
+
+                return View["index/price-changes.html", new
+                {
+                    Elapsed = sw.Elapsed.ToString(),
+                    Limit = limit,
+                    Increased = increases,
+                    Decreased = decreases
+                }];
+            };
+
             // Ruling route
             Get["/ruling/{id:int}", true] = async (parameters, ct) =>
             {

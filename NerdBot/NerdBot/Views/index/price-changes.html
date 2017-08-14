@@ -1,0 +1,197 @@
+﻿<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Price Changes - NerdBot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+            width: 100%;
+        }
+        body {
+            font: 12px Helvetica, Arial;
+            margin: 0;
+            height: calc(100% - 50px);
+            width: 100%;
+        }
+        .container {
+            height: 90%;
+            width: 100%;
+        }
+        .panel {
+            height: 90%;
+            width: 100%;
+        }
+
+        .panel-body {
+            height: 100%;
+            width: 100%;
+        }
+
+        th.dt-center, td.dt-center { text-align: center; }
+    </style>
+
+    <script src="@Path['~/Content/js/jquery-3.2.1.min.js']"></script>
+    <script src="@Path['~/Content/js/jquery.validate.js']"></script>
+    <script src="@Path['~/Content/js/additional-methods.js']"></script>
+    <script src="@Path['~/Content/js/bootstrap.min.js']"></script>
+    <link rel="stylesheet" href="@Path['~/Content/css/bootstrap.min.css']">
+    <link href="@Path['~/Content/css/mana.css']" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="@Path['~/Content/css/keyrune.css']">
+    <link rel="stylesheet" href="@Path['~/Content/css/mana.css']">
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.1.1/js/responsive.bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css">
+
+
+</head>
+
+<body>
+    @Partial['partial/header.html'];
+
+<div class="container-fluid">
+    <div class="panel panel-default" style="overflow-y: scroll; height: 90%; width: 100%;">
+        <div class="panel-heading">
+            Recent Top Price Increases
+        </div>
+        <div class="panel-body" style="overflow-y: scroll; height: 90%; width: 100%;">
+
+            <table id="increases-table" class="display responsive table-hover stripe row-border" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th class="col-md-1"><small>Set</small></th>
+                    <th class="col-md-2"><small>Name</small></th>
+                    <th class="col-md-1"><small>%</small></th>
+                    <th class="col-md-1"><small>Mid</small></th>
+                    <th class="col-md-1"><small>Foil</small></th>
+                    <th class="col-md-6"><small>Updated On</small></th>
+                    <th class="col-md-1" data-visible="false"><small>% Value</small></th>
+                </tr>
+                </thead>
+                <tbody>
+                @Each.Increased
+                <tr>
+                    <td>@Current.Symbol</td>
+                    <td>
+                        <a rel="popover" role="button" class="btn popovers" data-toggle="popover" data-img="@Current.Img" href="@Current.Url" target="_blank">@Current.Name</a>
+                    </td>
+                    <td>@Current.PriceDiff</td>
+                    <td>@Current.PriceMid</td>
+                    <td>@Current.PriceFoil</td>
+                    <td>@Current.LastUpdated</td>
+                    <td>@Current.PriceDiffValue</td>
+                </tr>
+                @EndEach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="panel panel-default" style="overflow-y: scroll; height: 90%; width: 100%;">
+        <div class="panel-heading">
+            Recent Top Price Decreases
+        </div>
+        <div class="panel-body" style="overflow-y: scroll; height: 90%; width: 100%;">
+
+            <table id="decreases-table" class="display responsive table-hover stripe row-border" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th class="col-md-1"><small>Set</small></th>
+                    <th class="col-md-2"><small>Name</small></th>
+                    <th class="col-md-1"><small>%</small></th>
+                    <th class="col-md-1"><small>Mid</small></th>
+                    <th class="col-md-1"><small>Foil</small></th>
+                    <th class="col-md-6"><small>Updated On</small></th>
+                    <th class="col-md-1" data-visible="false"><small>% Value</small></th>
+                </tr>
+                </thead>
+                <tbody>
+                @Each.Decreased
+                <tr>
+                    <td>@Current.Symbol</td>
+                    <td>
+                        <a rel="popover" role="button" class="btn popovers" data-toggle="popover" data-img="@Current.Img" href="@Current.Url" target="_blank">@Current.Name</a>
+                    </td>
+                    <td>@Current.PriceDiff</td>
+                    <td>@Current.PriceMid</td>
+                    <td>@Current.PriceFoil</td>
+                    <td>@Current.LastUpdated</td>
+                    <td>@Current.PriceDiffValue</td>
+                </tr>
+                @EndEach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function ()
+    {
+        var table_increases = $('#increases-table').DataTable({
+            responsive: true,
+            lengthChange: false,
+            drawCallback: function () {
+                $('[data-toggle=popover]').popover({
+                    "html": true,
+                    trigger: 'hover',
+                    placement: 'right',
+                    container: 'body',
+                    content: function () { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
+                })
+            },
+            'searching': false,
+            'columnDefs': [
+                {
+                    'width': '10px', 'className': 'dt-center', 'targets': 0,
+                },
+                {
+                    'targets': [2],
+                    'orderData': 6
+                },
+                { 'visible': false, 'targets': [6] }
+            ]
+        });
+
+        var table_decreases = $('#decreases-table').DataTable({
+            responsive: true,
+            lengthChange: false,
+            drawCallback: function () {
+                $('[data-toggle=popover]').popover({
+                    "html": true,
+                    trigger: 'hover',
+                    placement: 'right',
+                    container: 'body',
+                    content: function () { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
+                })
+            },
+            'searching': false,
+            'columnDefs': [
+                {
+                    'width': '10px', 'className': 'dt-center', 'targets': 0,
+                },
+                {
+                    'targets': [2],
+                    'orderData': 6
+                },
+                { 'visible': false, 'targets': [6] }
+            ]
+        });
+    });
+</script>
+@Partial['partial/footer.html'];
+</body>
+
+</html>

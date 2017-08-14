@@ -29,6 +29,18 @@ namespace NerdBotCommon.Mtg.Prices
         [BsonElement("setCode")]
         public string SetCode { get; set; }
 
+        public string SetAsKeyRuneIcon
+        {
+            get
+            {
+                string set = "<i class=\"ss ss-{0} ss-{1} ss-2x\"></i>";
+                
+                set = string.Format(set, this.SetCode.ToLower(), "common");
+
+                return set;
+            }
+        }
+
         [JsonProperty("priceDiff")]
         [BsonElement("priceDiff")]
         public string PriceDiff { get; set; }

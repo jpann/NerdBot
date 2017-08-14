@@ -134,6 +134,9 @@
     <Content Include="Content\fonts\mplantin.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Views\index\price-changes.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Views\index\index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
