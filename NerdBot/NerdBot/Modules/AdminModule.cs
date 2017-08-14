@@ -101,12 +101,32 @@ namespace NerdBotCommon.Modules
                 string setCode = parameters.set;
 
                 var set = await mtgStore.GetSetByCode(setCode);
-                var cards = await mtgStore.GetCardsBySet(set.Name);
+                var db_cards = await mtgStore.GetCardsBySet(set.Name);
+
+                // Get price information
+                var cards = db_cards.Select(c => new
+                {
+                    Name = c.Name,
+                    Code = c.SetId,
+                    Set = c.SetName,
+                    Cost = c.Cost,
+                    CostSymbols = c.CostWithSymbols,
+                    Type = c.FullType,
+                    Rarity = c.Rarity,
+                    Img = c.Img,
+                    MultiverseId = c.MultiverseId,
+                    SearchName = c.SearchName,
+                    Symbol = c.SetAsKeyRuneIcon,
+                    Desc = c.Desc,
+                    DescSymbols = c.DescWithSymbols,
+                    CMC = c.Cmc,
+                    SetSymbol = c.SetAsKeyRuneIcon
+                }).OrderByDescending(c => c.SearchName);
 
                 return View["set.html", new
                 {
                     Set = set,
-                    Cards = cards.OrderBy(c => c.MultiverseId)
+                    Cards = cards
                 }];
 
             };

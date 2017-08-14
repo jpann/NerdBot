@@ -87,7 +87,9 @@
 					            @Current.SetAsKeyRuneIcon
 					        </a>
 					    </td>
-					    <td><a href="/ruling/@Current.MultiverseId" rel="popover" data-img="@Current.Img">@Current.Name</a></td>
+					    <td>
+					        <a rel="popover" role="button" class="btn popovers" data-toggle="popover" data-img="@Current.Img" href="/ruling/@Current.MultiverseId" target="_blank">@Current.Name</a>
+					    </td>
 					    <td>img @Current.SetId&#59;@Current.Name</td>
 					</tr>
 						@EndEach
@@ -104,13 +106,13 @@
 	{
 	    var table = $('#cards-table').DataTable({
 	        responsive: true,
-	        drawCallback: function() {
+	        drawCallback: function () {
 	            $('[data-toggle=popover]').popover({
 	                "html": true,
 	                trigger: 'hover',
 	                placement: 'right',
 	                container: 'body',
-	                content: function() { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
+	                content: function () { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
 	            })
 	        },
 	        'searching': false,

@@ -83,7 +83,9 @@
                 @Each.Cards
                 <tr>
                     <td>@Current.Symbol</td>
-                    <td><a rel="popover" data-img="@Current.Img" href="/ruling/@Current.MultiverseId">@Current.Name</a></td>
+                    <td>
+                        <a rel="popover" role="button" class="btn popovers" data-toggle="popover" data-img="@Current.Img" href="/ruling/@Current.MultiverseId" target="_blank">@Current.Name</a>
+                    </td>
                     <td>@Current.CostSymbols</td>
                     <td>@Current.Type</td>
                     <td>@Current.DescSymbols</td>
