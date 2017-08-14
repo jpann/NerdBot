@@ -6,8 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Rulings for @Model.Card.Name - NerdBot</title>
     
+      <style>
+          * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+          }
 
-    <script src="@Path['~/Content/js/jquery-3.2.1.min.js']"></script>
+          html {
+              height: 100%;
+              width: 100%;
+          }
+          body {
+              font: 12px Helvetica, Arial;
+              margin: 0;
+              height: calc(100% - 50px);
+              width: 100%;
+          }
+          .container {
+              height: 90%;
+              width: 100%;
+          }
+          .panel {
+              height: 90%;
+              width: 100%;
+          }
+      </style>
+
+      <script src="@Path['~/Content/js/jquery-3.2.1.min.js']"></script>
     <script src="@Path['~/Content/js/jquery.validate.js']"></script>
     <script src="@Path['~/Content/js/additional-methods.js']"></script>
     <script src="@Path['~/Content/js/bootstrap.min.js']"></script>
@@ -21,32 +47,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-	<style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        html {
-            height: 100%;
-            width: 100%;
-        }
-        body {
-            font: 12px Helvetica, Arial;
-            margin: 0;
-            height: calc(100% - 50px);
-            width: 100%;
-        }
-        .container {
-            height: 90%;
-            width: 100%;
-        }
-        .panel {
-           height: 90%;
-           width: 100%;
-        }
-	</style>
   </head>
   <body>
 	@Partial['partial/header.html'];
