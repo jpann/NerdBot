@@ -130,73 +130,10 @@
 
             if (search_term)
             {
-                //perform_search(search_term);
-
                 table.ajax.url('/api/search/' + search_term).load();
             }
 
         });
-
-        function perform_search(term)
-        {
-            var table = $('#cards-table').DataTable();
-
-            console.time("search_api");
-
-            $.ajax(
-            {
-                url: '/api/search/'+ term,
-                type: "GET",
-                xhrFields: {
-                    withCredentials: true
-                },
-                dataType: "json",
-                contentType: "application/json",
-                cache: true,
-                timeout: 5000,
-                complete: function() 
-                {
-
-                },
-                success: function(data) 
-                {
-                    table.clear();
-
-                    console.timeEnd("search_api");
-
-                    console.time("search_result_loop");
-
-                    var l = data.cards.length;
-                    for (var i = 0; i < l; i++) 
-                    {
-                        var card = data.cards[i];
-
-                        table.row.add( [
-                            `<i class="ss ${card.symbol} ss-2x"></i>`,
-                            `<a rel="popover" role="button" class="btn popovers" data-toggle="popover" data-img="${card.img}" href="/ruling/${card.multiverseId}" target="_blank">${card.name}</a>`,
-                            `${card.costSymbols}`,
-                            `${card.type}`,
-                            `${card.prices.mid}`,
-                            `${card.prices.low}`
-                        ] ).draw( false );
-                    }
-
-                    console.timeEnd("search_result_loop");
-
-                    $('#cards-table').on('click', function(e)
-                    {
-                        if($('[data-toggle=popover]').length > 1)
-                            $('[data-toggle=popover]').popover('hide');
-                        $(e.target).popover('toggle');
-                    });
-                },
-                error: function(jqXHR, textStatus, err)
-                {
-                    console.warn(JSON.stringify(jqXHR.responseJSON))
-                    console.warn('text status '+textStatus+', err '+err)
-                },
-            });
-        }
     });
 </script>
 </body>
