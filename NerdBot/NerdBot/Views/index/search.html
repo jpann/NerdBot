@@ -101,28 +101,29 @@
 		</div>
 	</div>
 
-	<script>
-	$(function ()
-	{
-	    var table = $('#cards-table').DataTable({
-	        responsive: true,
-	        drawCallback: function () {
-	            $('[data-toggle=popover]').popover({
-	                "html": true,
-	                trigger: 'hover',
-	                placement: 'right',
-	                container: 'body',
-	                content: function () { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
-	            })
-	        },
-	        'searching': false,
-	        'columnDefs': [
-	        {
-	            'width': '10px', 'className': 'dt-center', 'targets': 0,
-	        }]
-	    });
-	});
-	</script>
+  <script>
+      $(function ()
+      {
+          var table = $('#cards-table').DataTable({
+              responsive: true,
+              drawCallback: function () {
+                  $('[data-toggle=popover]').popover({
+                      "html": true,
+                      trigger: 'hover',
+                      placement: 'right',
+                      container: 'body',
+                      content: function () { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
+                  })
+              },
+              'searching': false,
+              'columnDefs': [
+                  {
+                      'width': '10px', 'className': 'dt-center', 'targets': 0,
+                  }]
+          });
+      });
+  </script>
+  @Partial['partial/footer.html'];
   </body>
 </html>
 

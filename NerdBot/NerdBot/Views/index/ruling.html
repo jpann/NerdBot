@@ -51,89 +51,90 @@
   <body>
 	@Partial['partial/header.html'];
 
-	<div class="container-fluid">
-                    <table id="card-table" class="table table-sm table-hover" cellspacing="0" width="100%">
-                        <thead>
-                            <tr>
-							  <th class="col-md-1"><small></small></th>
-							  <th class="col-md-11"><small></small></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-							<tr>
-								<td colspan="2"><img src="@Model.Card.Img" /></td>
-							</tr>
-							<tr>
-								<th scope="row">Name</th>
-								<td>@Model.Card.Name</td>
-							</tr>
-							<tr>
-								<th scope="row">Set</th>
-								<td>
-									<a href="http://gatherer.wizards.com/Pages/Search/Default.aspx?action=advanced&set=[%22@Model.Card.SetName%22]" target="_blank">
-										@Model.Card.SetAsKeyRuneIcon @Model.Card.SetName [@Model.SetCode]
-									</a>
-								</td>
-							</tr>
-							<tr>
-								<th scope="row">Cost</th>
-								<td>@Model.Card.CostWithSymbols</td>
-							</tr>
-							<tr>
-								<th scope="row">Type</th>
-								<td>@Model.Card.FullType</td>
-							</tr>
-							<tr>
-								<th scope="row">Rarity</th>
-								<td>@Model.Card.Rarity</td>
-							</tr>
-							<tr>
-								<th scope="row">Text</th>
-								<td>@Model.Card.DescWithSymbols</td>
-							</tr>
-							<tr>
-								<th scope="row">Gatherer</th>
-								<td>
-									<ul>
-										<li><a href="http://gatherer.wizards.com/Pages/Card/Discussion.aspx?multiverseid=@Model.Card.MultiverseId" target="_blank">Gatherer Discussion</a></li>
-										<li><a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=true&multiverseid=@Model.Card.MultiverseId" target="_blank">Printed</a></li>
-										<li><a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=false&multiverseid=@Model.Card.MultiverseId" target="_blank">Oracle Text</a></li>
-									</ul>
-								</td>
-							</tr>
-							<tr>
-								<th scope="row">Low Price</th>
-								<td>@Model.CardPrices.Low</td>
-							</tr>
-							<tr>
-								<th scope="row">Mid Price</th>
-								<td>@Model.CardPrices.Mid</td>
-							</tr>
-							<tr>
-								<td colspan="2">
-								@If.Card.HasRulings
-								<table class="table table-sm" width="75%">
-									<thead>
-										<tr>
-											<th width="10%">Date</th>
-											<th>Ruling</th>
-										</tr>
-									</thead>
-									<tbody>
-									@Each.Card.Rulings
-										<tr>
-											<td>@Current.ReleasedOnShort</td>
-											<td>@Current.RuleWithSymbols</td>
-										</tr>
-									@EndEach
-									</tbody>
-								</table>
-								@EndIf
-								</td>
-							</tr>
-                        </tbody>
-                    </table>
-        </div>
+  <div class="container-fluid">
+      <table id="card-table" class="table table-sm table-hover" cellspacing="0" width="100%">
+          <thead>
+          <tr>
+              <th class="col-md-1"><small></small></th>
+              <th class="col-md-11"><small></small></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+              <td colspan="2"><img src="@Model.Card.Img" /></td>
+          </tr>
+          <tr>
+              <th scope="row">Name</th>
+              <td>@Model.Card.Name</td>
+          </tr>
+          <tr>
+              <th scope="row">Set</th>
+              <td>
+                  <a href="http://gatherer.wizards.com/Pages/Search/Default.aspx?action=advanced&set=[%22@Model.Card.SetName%22]" target="_blank">
+                      @Model.Card.SetAsKeyRuneIcon @Model.Card.SetName [@Model.SetCode]
+                  </a>
+              </td>
+          </tr>
+          <tr>
+              <th scope="row">Cost</th>
+              <td>@Model.Card.CostWithSymbols</td>
+          </tr>
+          <tr>
+              <th scope="row">Type</th>
+              <td>@Model.Card.FullType</td>
+          </tr>
+          <tr>
+              <th scope="row">Rarity</th>
+              <td>@Model.Card.Rarity</td>
+          </tr>
+          <tr>
+              <th scope="row">Text</th>
+              <td>@Model.Card.DescWithSymbols</td>
+          </tr>
+          <tr>
+              <th scope="row">Gatherer</th>
+              <td>
+                  <ul>
+                      <li><a href="http://gatherer.wizards.com/Pages/Card/Discussion.aspx?multiverseid=@Model.Card.MultiverseId" target="_blank">Gatherer Discussion</a></li>
+                      <li><a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=true&multiverseid=@Model.Card.MultiverseId" target="_blank">Printed</a></li>
+                      <li><a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?printed=false&multiverseid=@Model.Card.MultiverseId" target="_blank">Oracle Text</a></li>
+                  </ul>
+              </td>
+          </tr>
+          <tr>
+              <th scope="row">Low Price</th>
+              <td>@Model.CardPrices.Low</td>
+          </tr>
+          <tr>
+              <th scope="row">Mid Price</th>
+              <td>@Model.CardPrices.Mid</td>
+          </tr>
+          <tr>
+              <td colspan="2">
+                  @If.Card.HasRulings
+                  <table class="table table-sm" width="75%">
+                      <thead>
+                      <tr>
+                          <th width="10%">Date</th>
+                          <th>Ruling</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      @Each.Card.Rulings
+                      <tr>
+                          <td>@Current.ReleasedOnShort</td>
+                          <td>@Current.RuleWithSymbols</td>
+                      </tr>
+                      @EndEach
+                      </tbody>
+                  </table>
+                  @EndIf
+              </td>
+          </tr>
+          </tbody>
+      </table>
+  </div>
+  @Partial['partial/footer.html'];
   </body>
 </html>
 

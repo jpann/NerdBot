@@ -80,54 +80,54 @@
     $(function ()
     {
         var table = $('#cards-table').DataTable(
-        {
-            'ajax' : {
-                'url' : "/api/search/",
-                'type' : "GET",
-                'dataSrc' : "cards"
-            },
-            responsive: true,
-            'deferRender' : true,
-            "processing": true,
-            'searching': false,
-            'columns' : [
-                { "data" : "symbol" },
-                { "data" : "name" },
-                { "data" : "costSymbols" },
-                { "data" : "type" },
-                { "data" : "prices.mid" },
-                { "data" : "prices.low" },
-                { "data" : "img" },
-                { "data" : "multiverseId" },
-                { "data" : "convertedManaCost" }
+            {
+                'ajax' : {
+                    'url' : "/api/search/",
+                    'type' : "GET",
+                    'dataSrc' : "cards"
+                },
+                responsive: true,
+                'deferRender' : true,
+                "processing": true,
+                'searching': false,
+                'columns' : [
+                    { "data" : "symbol" },
+                    { "data" : "name" },
+                    { "data" : "costSymbols" },
+                    { "data" : "type" },
+                    { "data" : "prices.mid" },
+                    { "data" : "prices.low" },
+                    { "data" : "img" },
+                    { "data" : "multiverseId" },
+                    { "data" : "convertedManaCost" }
                  
-            ],
-            'columnDefs': [
-                {
-                    'width': '10px', 'className': 'dt-center', 'targets': 0,
-                },
-                {
-                    "render" : function(data, type, row) {
-                        return `<a rel="popover" role="button" class="btn popovers" data-toggle="popover" data-img="${row.img}" href="/ruling/${row.multiverseId}" target="_blank">${data}</a>`;
+                ],
+                'columnDefs': [
+                    {
+                        'width': '10px', 'className': 'dt-center', 'targets': 0,
                     },
-                    'targets' : 1
-                },
-                {
-                    'targets':  2,
-                    'orderData': 8
-                },
-                { 'visible': false,  'targets': [ 6, 7, 8 ] }
-            ],
-            drawCallback: function() {
-                $('[data-toggle=popover]').popover({
-                    "html": true,
-                    trigger: 'hover',
-                    placement: 'right',
-                    container: 'body',
-                    content: function() { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
-                })
-            }
-        });
+                    {
+                        "render" : function(data, type, row) {
+                            return `<a rel="popover" role="button" class="btn popovers" data-toggle="popover" data-img="${row.img}" href="/ruling/${row.multiverseId}" target="_blank">${data}</a>`;
+                        },
+                        'targets' : 1
+                    },
+                    {
+                        'targets':  2,
+                        'orderData': 8
+                    },
+                    { 'visible': false,  'targets': [ 6, 7, 8 ] }
+                ],
+                drawCallback: function() {
+                    $('[data-toggle=popover]').popover({
+                        "html": true,
+                        trigger: 'hover',
+                        placement: 'right',
+                        container: 'body',
+                        content: function() { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
+                    })
+                }
+            });
 
         $('#btn-search').click(function ()
         {
@@ -141,6 +141,7 @@
         });
     });
 </script>
+@Partial['partial/footer.html'];
 </body>
 
 </html>
