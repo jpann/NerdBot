@@ -55,7 +55,7 @@
 
 <div class="container-fluid">
     <div class="input-group">
-        <input id="search-term" type="text" class="form-control search-term">
+        <input id="search-term" type="text" class="form-control search-term" placeholder="Card Name">
         <span class="input-group-btn">
             <button id="btn-search" class="btn btn-default" type="button">Search</button>
         </span>
@@ -128,6 +128,18 @@
                     })
                 }
             });
+
+        var timeout_id = null;
+        $('#search-term').keyup(function(e) {
+            clearTimeout(timeout_id);
+
+            var search_term = $('#search-term').val();
+
+            if (search_term) 
+            {
+                timeout_id = setTimeout(() => table.ajax.url('/api/search/' + search_term).load(), 500);
+            }
+        });
 
         $('#btn-search').click(function ()
         {
