@@ -98,7 +98,8 @@
                 { "data" : "prices.mid" },
                 { "data" : "prices.low" },
                 { "data" : "img" },
-                { "data" : "multiverseId" }
+                { "data" : "multiverseId" },
+                { "data" : "convertedManaCost" }
                  
             ],
             'columnDefs': [
@@ -109,9 +110,13 @@
                     "render" : function(data, type, row) {
                         return `<a rel="popover" role="button" class="btn popovers" data-toggle="popover" data-img="${row.img}" href="/ruling/${row.multiverseId}" target="_blank">${data}</a>`;
                     },
-                    "targets" : 1
+                    'targets' : 1
                 },
-                { "visible": false,  "targets": [ 6, 7] }
+                {
+                    'targets':  2,
+                    'orderData': 8
+                },
+                { 'visible': false,  'targets': [ 6, 7, 8 ] }
             ],
             drawCallback: function() {
                 $('[data-toggle=popover]').popover({

@@ -90,7 +90,7 @@ namespace NerdBotCommon.Modules
                     Symbol = c.SetAsKeyRuneIcon,
                     Desc = c.Desc,
                     DescSymbols = c.DescWithSymbols,
-                    CMC = c.Cmc,
+                    ConvertedManaCost = c.Cmc,
                     Prices = GetCardPrice(priceStore, c.MultiverseId)
                 }).OrderByDescending(c => c.SearchName);
             
@@ -156,7 +156,7 @@ namespace NerdBotCommon.Modules
                     Symbol = c.SetAsKeyRuneIcon,
                     Desc = c.Desc,
                     DescSymbols = c.DescWithSymbols,
-                    CMC = c.Cmc,
+                    ConvertedManaCost = c.Cmc,
                     Prices = GetCardPrice(priceStore, c.MultiverseId)
                 }).OrderByDescending(c => c.SearchName);
 
@@ -321,7 +321,7 @@ namespace NerdBotCommon.Modules
                     Symbol = c.SetAsKeyRuneIcon,
                     Desc = c.Desc,
                     DescSymbols = c.DescWithSymbols,
-                    CMC = c.Cmc,
+                    ConvertedManaCost = c.Cmc,
                     SetSymbol = c.SetAsKeyRuneIcon
                 }).OrderByDescending(c => c.SearchName);
 

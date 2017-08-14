@@ -119,7 +119,7 @@ namespace NerdBotCommon.Modules
                     Symbol = c.SetAsKeyRuneIcon,
                     Desc = c.Desc,
                     DescSymbols = c.DescWithSymbols,
-                    CMC = c.Cmc,
+                    ConvertedManaCost = c.Cmc,
                     SetSymbol = c.SetAsKeyRuneIcon
                 }).OrderByDescending(c => c.SearchName);
 
