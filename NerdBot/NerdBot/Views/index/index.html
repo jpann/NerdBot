@@ -29,6 +29,8 @@
            height: 90%;
            width: 100%;
         }
+
+        th.dt-center, td.dt-center { text-align: center; }
     </style>
 
     <script src="@Path['~/Content/js/jquery-3.2.1.min.js']"></script>
@@ -77,24 +79,6 @@
 <script>
     $(function ()
     {
-        //var table = $('#cards-table').DataTable({
-        //    responsive: true,
-        //    drawCallback: function() {
-        //        $('[data-toggle=popover]').popover({
-        //            "html": true,
-        //            trigger: 'hover',
-        //            placement: 'right',
-        //            container: 'body',
-        //            content: function() { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
-        //        })
-        //    },
-        //    'searching': false,
-        //    'columnDefs': [
-        //    {
-        //        'width': '25px', 'className' : 'dt-center', 'targets' : [0],
-        //    }]
-        //});
-
         var table = $('#cards-table').DataTable(
         {
             'ajax' : {
@@ -119,7 +103,7 @@
             ],
             'columnDefs': [
                 {
-                    'width': '10px', 'className' : 'dt-center', 'targets' : 0,
+                    'width': '10px', 'className': 'dt-center', 'targets': 0,
                 },
                 {
                     "render" : function(data, type, row) {

@@ -41,48 +41,55 @@
 	    }
 	    body {
 	        font: 12px Helvetica, Arial;
-	        margin: 0px;
-	        height: 100%;
+	        margin: 0;
+	        height: calc(100% - 50px);
 	        width: 100%;
 	    }
 	    .container {
-	        height: 95%;
+	        height: 90%;
 	        width: 100%;
 	    }
 	    .panel {
+	        height: 90%;
+	        width: 100%;
+	    }
+
+	    .panel-body {
 	        height: 100%;
 	        width: 100%;
 	    }
+
+	    th.dt-center, td.dt-center { text-align: center; }
 	</style>
   </head>
   <body>
-	
+  @Partial['partial/header.html'];
 
-	<div class="container">
+	<div class="container-fluid">
 		<div class="panel panel-default">
 			<div class="panel-heading"><b>Seach Term:</b> '@Model.SearchTerm'</div>
 			<div class="panel-body" style="overflow-y: scroll; height: 90%">
 
 				<table id="cards-table" class="table table-sm display responsive nowrap table-hover stripe row-border" cellspacing="0" width="100%">
 					<thead>
-						<tr>
-							<th class="col-md-2"><small>Name</small></th>
-							<th class="col-md-2"><small>Set</small></th>
-							<th class="col-md-9"><small>NerdBot Command</small></th>
-						</tr>
+					<tr>
+					    <th class="col-md-2"><small>Set</small></th>
+					    <th class="col-md-2"><small>Name</small></th>
+					    <th class="col-md-9"><small>NerdBot Command</small></th>
+					</tr>
 					</thead>
 					<tbody>
 					@If.HasCards
 						@Each.Cards
-						<tr>
-							<td><a href="/ruling/@Current.MultiverseId" rel="popover" data-img="@Current.Img">@Current.Name</a></td>
-							<td>
-								<a href="http://gatherer.wizards.com/Pages/Search/Default.aspx?action=advanced&set=[%22@Current.SetName%22]" target="_blank">
-									@Current.SetAsKeyRuneIcon
-								</a>
-							</td>
-							<td>img @Current.SetId&#59;@Current.Name</td>
-						</tr>
+					<tr>
+					    <td>
+					        <a href="http://gatherer.wizards.com/Pages/Search/Default.aspx?action=advanced&set=[%22@Current.SetName%22]" target="_blank">
+					            @Current.SetAsKeyRuneIcon
+					        </a>
+					    </td>
+					    <td><a href="/ruling/@Current.MultiverseId" rel="popover" data-img="@Current.Img">@Current.Name</a></td>
+					    <td>img @Current.SetId&#59;@Current.Name</td>
+					</tr>
 						@EndEach
 					@EndIf
 					</tbody>
@@ -109,19 +116,9 @@
 	        'searching': false,
 	        'columnDefs': [
 	        {
-	            'width': '25px', 'className' : 'dt-center', 'targets' : [0],
+	            'width': '10px', 'className': 'dt-center', 'targets': 0,
 	        }]
 	    });
-
-		$('a[rel=popover]').popover(
-		{
-			html: true,
-			trigger: 'hover',
-			placement: 'right',
-			container: 'body',
-			animation : 'true',
-			content: function () { return '<img src="' + $(this).data('img') + '" style="width: 100%"/>'; }
-		});
 	});
 	</script>
   </body>
