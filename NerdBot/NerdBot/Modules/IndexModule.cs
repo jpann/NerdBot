@@ -226,7 +226,7 @@ namespace NerdBotCommon.Modules
 
                 sw.Stop();
 
-                return View["index/ruling.sshtml", new
+                return View["index/ruling.html", new
                 {
                     Elapsed = sw.Elapsed.ToString(),
                     Card = card,

@@ -242,9 +242,9 @@
     <Content Include="Views\index\search.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Views\index\ruling.sshtml">
+    <Content Include="Views\index\ruling.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NerdBotCommon\NerdBotCommon.csproj">
