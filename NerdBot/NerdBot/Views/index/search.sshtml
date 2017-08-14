@@ -49,7 +49,7 @@
 							<td><a href="/ruling/@Current.MultiverseId" rel="popover" data-img="@Current.Img">@Current.Name</a></td>
 							<td>
 								<a href="http://gatherer.wizards.com/Pages/Search/Default.aspx?action=advanced&set=[%22@Current.SetName%22]" target="_blank">
-									<i class="ss @Current.SetAsKeyRuneIcon ss-2x"></i>
+									@Current.SetAsKeyRuneIcon
 								</a>
 							</td>
 							<td>img @Current.SetId&#59;@Current.Name</td>
