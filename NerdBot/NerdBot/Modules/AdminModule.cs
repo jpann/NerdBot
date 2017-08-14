@@ -158,6 +158,15 @@ namespace NerdBotCommon.Modules
                     }).StatusCode = HttpStatusCode.BadRequest;
                 }
 
+                if (set.Type.ToLower() == "promo")
+                {
+                    return Response.AsJson(new
+                    {
+                        Error = "Set is promo, skipping",
+                        Status = "Error"
+                    }).StatusCode = HttpStatusCode.BadRequest;
+                }
+
                 var status = await importer.Import(set, cards);
 
                 if (status != null)

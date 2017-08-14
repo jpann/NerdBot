@@ -20,10 +20,16 @@ namespace NerdBotCommon.Importer.DataReaders
         private readonly ILoggingService mLoggingService;
 
         private bool mSkipTokens = true;
+        private bool mSkipPromos = true;
 
         public bool SkipTokens
         {
             set { this.mSkipTokens = value; }
+        }
+
+        public bool SkipPromos
+        {
+            set { this.mSkipPromos = value; }
         }
 
         public string FileName

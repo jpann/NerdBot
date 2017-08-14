@@ -9,6 +9,7 @@ namespace NerdBotCommon.Importer.DataReaders
         IEnumerable<Card> ReadCards(string data);
 
         bool SkipTokens { set; }
+        bool SkipPromos { set; }
         string FileName { get; set; }
     }
 }

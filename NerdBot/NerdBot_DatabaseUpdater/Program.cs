@@ -24,6 +24,7 @@ namespace NerdBot_DatabaseUpdater
         private static IMtgDataReader mDataReader;
         private static IFileSystem mFileSystem;
         private static IImporter mImporter;
+        private static bool mSkipPromos = true;
 
         internal class WorkArgs
         {
@@ -72,6 +73,10 @@ namespace NerdBot_DatabaseUpdater
                 p.Setup<bool>("skiptokens")
                    .Callback(value => skipTokens = value)
                    .SetDefault(true);
+
+                p.Setup<bool>("skippromos")
+                    .Callback(value => mSkipPromos = value)
+                    .SetDefault(true);
 
                 p.Parse(args);
 
@@ -196,18 +201,23 @@ namespace NerdBot_DatabaseUpdater
             mLoggingService.Debug("Reading set from '{0}'...", file);
             var setData = mFileSystem.File.ReadAllText(file);
 
-
             var set = mDataReader.ReadSet(setData);
             var cards = mDataReader.ReadCards(setData);
 
             if (set == null)
                 throw new Exception("Set not found! Aborting.");
 
+            if (set.Type.ToLower() == "promo" && mSkipPromos)
+            {
+                mLoggingService.Info("Set '{0}' is a promp; skipping...", set.Name);
+
+                return;
+            }
+
             mLoggingService.Debug("Inserting set '{0}' [{1}]...",
                 set.Name,
                 set.Code);
 
-            //var setInserted = mMtgStore.SetFindAndModify(set).Result;
             var status = mImporter.Import(set, cards).Result;
 
             if (status != null)
