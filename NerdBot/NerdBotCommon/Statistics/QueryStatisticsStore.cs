@@ -66,65 +66,65 @@ namespace NerdBotCommon.Statistics
         {
             var collection = this.mDatabase.GetCollection<CardQueryStat>(cCardQueryCollection);
 
-            var match = new BsonDocument
-	        {
-		        {
-			        "$match", new BsonDocument
-			        {
-				        { "multiverseId", multiverseId }
-			        }
-		        }
-	        };
+         //   var match = new BsonDocument
+	        //{
+		       // {
+			      //  "$match", new BsonDocument
+			      //  {
+				     //   { "multiverseId", multiverseId }
+			      //  }
+		       // }
+	        //};
 
-            var group = new BsonDocument 
-	        { 
-		        { 
-			        "$group", new BsonDocument
-			        {
-				        {
-					        "_id", new BsonDocument
-					        {
-						        { "userName", "$userName" }
-					        }
-				        },
-				        {
-					        "Count", new BsonDocument
-					        {
-						        { "$sum", 1 }
-					        }
-				        }
-			        }
-		        } 
-	        };
+         //   var group = new BsonDocument 
+	        //{ 
+		       // { 
+			      //  "$group", new BsonDocument
+			      //  {
+				     //   {
+					    //    "_id", new BsonDocument
+					    //    {
+						   //     { "userName", "$userName" }
+					    //    }
+				     //   },
+				     //   {
+					    //    "Count", new BsonDocument
+					    //    {
+						   //     { "$sum", 1 }
+					    //    }
+				     //   }
+			      //  }
+		       // } 
+	        //};
 
-            var sort = new BsonDocument
-	        {
-		        {
-			        "$sort", new BsonDocument
-			        {
-				        { "Count", -1 }
-			        }
-		        }
-	        };
+         //   var sort = new BsonDocument
+	        //{
+		       // {
+			      //  "$sort", new BsonDocument
+			      //  {
+				     //   { "Count", -1 }
+			      //  }
+		       // }
+	        //};
 
-            var pipeline = new[] { match, group, sort };
-            var result = collection.Aggregate(pipeline);
+         //   var pipeline = new[] { match, group, sort };
+         //   var result = collection.Aggregate(pipeline);
 
-            var matches = result.ResultDocuments
-                .Select(x => x.AsBsonDocument)
-                .ToList();
+         //   var matches = result.ResultDocuments
+         //       .Select(x => x.AsBsonDocument)
+         //       .ToList();
 
-            if (matches.Any())
-            {
-                CardQueryStatData stat = new CardQueryStatData()
-                {
-                    UserName = matches[0].GetValue("_id")["userName"].AsString,
-                    Count = matches[0].GetValue("Count").ToInt32(),
-                    MultiverseId = multiverseId
-                };
+         //   if (matches.Any())
+         //   {
+         //       CardQueryStatData stat = new CardQueryStatData()
+         //       {
+         //           UserName = matches[0].GetValue("_id")["userName"].AsString,
+         //           Count = matches[0].GetValue("Count").ToInt32(),
+         //           MultiverseId = multiverseId
+         //       };
 
-                return stat;
-            }
+         //       return stat;
+         //   }
 
             return null;
         }

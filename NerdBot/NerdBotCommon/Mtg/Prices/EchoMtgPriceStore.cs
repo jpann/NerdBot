@@ -117,7 +117,7 @@ namespace NerdBotCommon.Mtg.Prices
 
             var removeResult = setPriceCollection.Remove(query);
 
-            if (removeResult.Ok)
+            if (removeResult.Response["ok"] == 1)
                 return true;
             else
                 return false;
@@ -279,7 +279,7 @@ namespace NerdBotCommon.Mtg.Prices
 
             var removeResult = cardPriceCollection.Remove(query);
 
-            if (removeResult.Ok)
+            if (removeResult.Response["ok"] == 1)
                 return true;
             else
                 return false;

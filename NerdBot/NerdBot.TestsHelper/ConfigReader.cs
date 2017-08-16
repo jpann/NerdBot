@@ -1,14 +1,23 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using Nini.Config;
 
 namespace NerdBotCommon.TestsHelper
 {
     public class ConfigReader
     {
+        private string AssemblyLocation()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var codebase = new Uri(assembly.CodeBase);
+            var path = codebase.LocalPath;
+            return path;
+        }
+
         public TestConfiguration Read()
         {
-            string configFile = Path.Combine(Environment.CurrentDirectory, "NerdBot_Tests.ini");
+            string configFile = Path.Combine(Path.GetDirectoryName(AssemblyLocation()), "NerdBot_Tests.ini");
 
             IConfigSource source = new IniConfigSource(configFile);
             TestConfiguration config = new TestConfiguration();

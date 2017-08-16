@@ -61,7 +61,7 @@ namespace NerdBotCommon.Mtg
 
             var result = collection.Insert(card);
 
-            if (result.Ok)
+            if (result.Response["ok"] == 1)
                 return card;
             else
                 return null;
@@ -945,7 +945,7 @@ namespace NerdBotCommon.Mtg
 
             var result = collection.Insert(set);
 
-            if (result.Ok)
+            if (result.Response["ok"] == 1)
                 return set;
             else
                 return null;
