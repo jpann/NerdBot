@@ -202,7 +202,31 @@ namespace NerdBotCardImagePlugin_Tests
 
             messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith(".jpg"))));
         }
-        
+
+        [Test]
+        public void ImgCommand_NoName()
+        {
+            var cmd = new Command()
+            {
+                Cmd = "img",
+                Arguments = new string[]
+                {
+                    ""
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+
+            bool handled = imgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                messengerMock.Object
+            ).Result;
+
+            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.Never);
+            Assert.False(handled);
+        }
 
         [Test]
         public void ImgCommand_ByNameAndSet()
@@ -227,6 +251,58 @@ namespace NerdBotCardImagePlugin_Tests
                 ).Result;
 
             messengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith(".jpg"))));
+        }
+
+        [Test]
+        public void ImgCommand_ByNameAndSet_NoName()
+        {
+            var cmd = new Command()
+            {
+                Cmd = "img",
+                Arguments = new string[]
+                {
+                    "Fallen Empires",
+                    ""
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+
+            bool handled = imgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                messengerMock.Object
+            ).Result;
+
+            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.Never);
+            Assert.False(handled);
+        }
+
+        [Test]
+        public void ImgCommand_ByNameAndSet_NoSet()
+        {
+            var cmd = new Command()
+            {
+                Cmd = "img",
+                Arguments = new string[]
+                {
+                    "",
+                    "Spore Cloud"
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+
+            bool handled = imgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                messengerMock.Object
+            ).Result;
+
+            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.Never);
+            Assert.False(handled);
         }
 
         [Test]
