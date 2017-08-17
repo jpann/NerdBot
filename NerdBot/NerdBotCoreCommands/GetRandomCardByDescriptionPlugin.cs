@@ -14,7 +14,7 @@ using NerdBotCommon.UrlShortners;
 
 namespace NerdBotCoreCommands
 {
-    public class GetRAndomCardByDescriptionPlugin : PluginBase
+    public class GetRandomCardByDescriptionPlugin : PluginBase
     {
         public override string Name
         {
@@ -46,7 +46,7 @@ namespace NerdBotCoreCommands
             get { return string.Format("{0} example usage: 'desc flying' or 'desc greater comes into play '", this.Command); }
         }
 
-        public GetRAndomCardByDescriptionPlugin(
+        public GetRandomCardByDescriptionPlugin(
                 IMtgStore store,
                 ICardPriceStore priceStore,
                 ICommandParser commandParser,
