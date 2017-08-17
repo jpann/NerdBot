@@ -153,6 +153,30 @@ namespace UrbanDictionaryPlugin_Tests
         }
 
         [Test]
+        public void GetDefinition_IsAn()
+        {
+            var cmd = new Command()
+            {
+                Cmd = "wtf",
+                Arguments = new string[]
+                {
+                    "is an butt"
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+            bool handled =
+                plugin.OnCommand(
+                    cmd,
+                    msg,
+                    messengerMock.Object
+                ).Result;
+
+            messengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.AtLeastOnce);
+        }
+
+        [Test]
         public void GetDefinition_Is()
         {
             var cmd = new Command()
