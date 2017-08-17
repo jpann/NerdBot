@@ -8,7 +8,7 @@ using NerdBotCommon.Utilities;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
-namespace NerdBotCommon.Tests.PriceStore
+namespace NerdBot.Tests.PriceStore
 {
     [TestFixture]
     class EchoMtgPriceStore_Remove_Tests

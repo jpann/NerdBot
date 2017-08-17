@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NerdBotCommon;
+using NerdBot;
+using NerdBot.Parsers;
+using NerdBot.Plugin;
+using NerdBotCardPrices.PriceFetchers;
 using NerdBotCommon.Http;
 using NerdBotCommon.Messengers;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
 using NerdBotCommon.Parsers;
-using NerdBotCommon.Plugin;
 using NerdBotCommon.UrlShortners;
-using NerdBotCardPrices.PriceFetchers;
 
 namespace NerdBotCardPrices
 {

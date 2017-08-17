@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using Nini.Config;
 
-namespace NerdBotCommon.TestsHelper
+namespace NerdBot.TestsHelper
 {
     public class ConfigReader
     {

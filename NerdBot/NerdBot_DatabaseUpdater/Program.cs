@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Abstractions;
 using System.Threading;
-using NerdBotCommon.Mtg;
 using SimpleLogging.Core;
 using TinyIoC;
 using Fclp;
@@ -12,6 +11,7 @@ using NerdBotCommon.Importer;
 using NerdBotCommon.Importer.DataReaders;
 using NerdBotCommon.Importer.Mapper;
 using NerdBotCommon.Importer.MtgData;
+using NerdBotCommon.Mtg;
 
 namespace NerdBot_DatabaseUpdater
 {

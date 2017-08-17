@@ -1,4 +1,4 @@
-﻿namespace NerdBotCommon.Web.Queries
+﻿namespace NerdBot.Web.Queries
 {
     public class SearchQuery
     {

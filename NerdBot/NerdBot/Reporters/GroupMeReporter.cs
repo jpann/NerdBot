@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NerdBotCommon.Messengers;
 
-namespace NerdBotCommon.Reporters
+namespace NerdBot.Reporters
 {
     public class GroupMeReporter : IReporter
     {

@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Moq;
+using NerdBot.TestsHelper;
 using NerdBotCommon.Mtg;
-using NerdBotCommon.TestsHelper;
 using NerdBotCommon.Utilities;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
-namespace NerdBotCommon.Tests
+namespace NerdBot.Tests
 {
     [TestFixture]
     class MtgStore_Tests

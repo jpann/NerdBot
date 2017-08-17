@@ -1,15 +1,15 @@
-﻿using NerdBotCommon.Http;
-using NerdBotCommon.Messengers;
-using NerdBotCommon.Mtg;
-using NerdBotCommon.Mtg.Prices;
-using NerdBotCommon.Parsers;
-using NerdBotCommon.Plugin;
-using NerdBotCommon.UrlShortners;
+﻿using NerdBot.Parsers;
+using NerdBot.Plugin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NerdBotCommon.Http;
+using NerdBotCommon.Messengers;
+using NerdBotCommon.Mtg;
+using NerdBotCommon.Mtg.Prices;
+using NerdBotCommon.UrlShortners;
 
 namespace NerdBotRedditTopCommentResponsePlugin
 {

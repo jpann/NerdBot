@@ -8,7 +8,7 @@ using NerdBotCommon.Messengers.GroupMe;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
-namespace NerdBotCommon.Tests
+namespace NerdBot.Tests
 {
     [TestFixture]
     class GroupMeMessenger_Tests

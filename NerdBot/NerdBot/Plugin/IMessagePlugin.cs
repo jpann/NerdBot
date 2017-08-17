@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
+using NerdBot.Parsers;
 using NerdBotCommon.Http;
 using NerdBotCommon.Messengers;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
-using NerdBotCommon.Parsers;
 using NerdBotCommon.UrlShortners;
 
-namespace NerdBotCommon.Plugin
+namespace NerdBot.Plugin
 {
     public interface IMessagePlugin
     {

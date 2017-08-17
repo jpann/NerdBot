@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NerdBot.Parsers;
+using NerdBot.Plugin;
 using NerdBotCommon.Messengers;
 using NerdBotCommon.Parsers;
-using NerdBotCommon.Plugin;
 
-namespace NerdBotCommon
+namespace NerdBot
 {
     public interface IPluginManager
     {

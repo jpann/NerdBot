@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NerdBotCommon.Reporters
+namespace NerdBot.Reporters
 {
     public interface IReporter
     {

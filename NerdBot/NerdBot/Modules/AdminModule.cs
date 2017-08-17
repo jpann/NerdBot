@@ -7,16 +7,15 @@ using Nancy.Extensions;
 using Nancy.ModelBinding;
 using Nancy.Routing;
 using Nancy.Security;
-using NerdBotCommon.Admin;
+using NerdBot.Admin;
 using NerdBotCommon.Http;
 using NerdBotCommon.Importer;
 using NerdBotCommon.Importer.DataReaders;
-using NerdBotCommon.Importer.Mapper;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
 using SimpleLogging.Core;
 
-namespace NerdBotCommon.Modules
+namespace NerdBot.Modules
 {
     public class AdminModule : NancyModule
     {

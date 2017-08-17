@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using NerdBot.Parsers;
+using NerdBot.Plugin;
 using NerdBotCommon.Http;
 using NerdBotCommon.Messengers;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
-using NerdBotCommon.Parsers;
-using NerdBotCommon.Plugin;
 using NerdBotCommon.UrlShortners;
 
 namespace NerdBotRepeatMessagePlugin

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Nini.Config;
 
-namespace NerdBotCommon
+namespace NerdBot
 {
     using System;
     using Nancy.Hosting.Self;

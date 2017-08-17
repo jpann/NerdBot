@@ -4,17 +4,16 @@ using System.Diagnostics;
 using System.Linq;
 using Nancy.Extensions;
 using Nancy.ModelBinding;
+using NerdBot.Parsers;
+using NerdBot.Reporters;
+using NerdBot.Web.Queries;
 using NerdBotCommon.Messengers;
 using NerdBotCommon.Messengers.GroupMe;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
-using NerdBotCommon.Parsers;
-using NerdBotCommon.Reporters;
-using NerdBotCommon.Utilities;
-using NerdBotCommon.Web.Queries;
 using SimpleLogging.Core;
 
-namespace NerdBotCommon.Modules
+namespace NerdBot.Modules
 {
     using Nancy;
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Nancy.Security;
 
-namespace NerdBotCommon.Admin
+namespace NerdBot.Admin
 {
     public class AuthenticatedUser : IUserIdentity
     {

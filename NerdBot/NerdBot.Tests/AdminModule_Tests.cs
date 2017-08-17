@@ -5,17 +5,17 @@ using System.Threading.Tasks;
 using Moq;
 using Nancy;
 using Nancy.Testing;
-using NerdBotCommon.Admin;
+using NerdBot.Admin;
+using NerdBot.Modules;
 using NerdBotCommon.Http;
 using NerdBotCommon.Importer;
 using NerdBotCommon.Importer.DataReaders;
-using NerdBotCommon.Modules;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
-namespace NerdBotCommon.Tests
+namespace NerdBot.Tests
 {
     [TestFixture]
     class AdminModule_Tests

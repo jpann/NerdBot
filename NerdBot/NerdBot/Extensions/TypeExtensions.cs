@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace NerdBotCommon.Extensions
+namespace NerdBot.Extensions
 {
     public static class TypeExtensions
     {

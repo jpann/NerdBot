@@ -8,7 +8,7 @@ using NerdBotCommon.Mtg;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
-namespace NerdBotCommon.Tests
+namespace NerdBot.Tests
 {
     [TestFixture]
     class MtgImporter_Tests

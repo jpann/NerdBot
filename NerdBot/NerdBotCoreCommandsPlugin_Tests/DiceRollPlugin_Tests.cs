@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Moq;
-using NerdBotCommon;
+using NerdBot;
+using NerdBot.Parsers;
 using NerdBotCommon.Http;
 using NerdBotCommon.Messengers;
 using NerdBotCommon.Messengers.GroupMe;

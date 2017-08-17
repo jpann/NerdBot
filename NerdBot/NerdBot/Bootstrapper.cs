@@ -7,7 +7,9 @@ using Nancy.Authentication.Forms;
 using Nancy.Bootstrapper;
 using Nancy.Json;
 using Nancy.TinyIoc;
-using NerdBotCommon.Admin;
+using NerdBot.Admin;
+using NerdBot.Parsers;
+using NerdBot.Reporters;
 using NerdBotCommon.Http;
 using NerdBotCommon.Importer;
 using NerdBotCommon.Importer.Mapper;
@@ -16,8 +18,6 @@ using NerdBotCommon.Messengers;
 using NerdBotCommon.Messengers.GroupMe;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
-using NerdBotCommon.Parsers;
-using NerdBotCommon.Reporters;
 using NerdBotCommon.Statistics;
 using NerdBotCommon.UrlShortners;
 using NerdBotCommon.Utilities;
@@ -25,7 +25,7 @@ using Nini.Config;
 using SimpleLogging.Core;
 using SimpleLogging.NLog;
 
-namespace NerdBotCommon
+namespace NerdBot
 {
     using Nancy;
 

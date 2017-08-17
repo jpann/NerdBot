@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Moq;
-using NerdBotCommon;
+using NerdBot;
+using NerdBot.Parsers;
+using NerdBot.TestsHelper;
+using NerdBotCardPrices;
 using NerdBotCommon.Http;
 using NerdBotCommon.Messengers;
 using NerdBotCommon.Messengers.GroupMe;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
 using NerdBotCommon.Parsers;
-using NerdBotCommon.TestsHelper;
 using NerdBotCommon.UrlShortners;
 using NerdBotCommon.Utilities;
-using NerdBotCardPrices;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
