@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBot", "NerdBot\NerdBot.csproj", "{35460AA4-B94A-4B64-9418-7243EC3D2F01}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBot.Tests", "NerdBot.Tests\NerdBot.Tests.csproj", "{F5F2713F-5087-44B2-8AAA-13B9C9DB1FF4}"
@@ -48,6 +50,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBot.TestsHelper", "NerdBot.TestsHelper\NerdBot.TestsHelper.csproj", "{5B10D135-CFD5-43B2-B229-1415BDDB2909}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotCommon", "NerdBotCommon\NerdBotCommon.csproj", "{28D62611-0C89-4C9C-BFDA-20A52768807F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotGiphyPlugin_Tests", "NerdBotGiphyPlugin_Tests\NerdBotGiphyPlugin_Tests.csproj", "{D7F59F96-291B-49A4-81CA-650084EDDDB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -151,6 +155,10 @@ Global
 		{28D62611-0C89-4C9C-BFDA-20A52768807F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28D62611-0C89-4C9C-BFDA-20A52768807F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28D62611-0C89-4C9C-BFDA-20A52768807F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7F59F96-291B-49A4-81CA-650084EDDDB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7F59F96-291B-49A4-81CA-650084EDDDB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7F59F96-291B-49A4-81CA-650084EDDDB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7F59F96-291B-49A4-81CA-650084EDDDB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
