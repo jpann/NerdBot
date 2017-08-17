@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CardSetsListPlugin_Tests.cs" />
+    <Compile Include="CoinFlipPlugin_Tests.cs" />
     <Compile Include="RandomFlavorTextPlugin_Tests.cs" />
     <Compile Include="DiceRollPlugin_Tests.cs" />
     <Compile Include="GetRandomCardByDescriptionPlugin_Tests.cs" />
