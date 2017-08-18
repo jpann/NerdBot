@@ -53,6 +53,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotCommon", "NerdBotCom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBotGiphyPlugin_Tests", "NerdBotGiphyPlugin_Tests\NerdBotGiphyPlugin_Tests.csproj", "{D7F59F96-291B-49A4-81CA-650084EDDDB4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdBot_PriceUpdater_Tests", "NerdBot_PriceUpdater_Tests\NerdBot_PriceUpdater_Tests.csproj", "{F4EC108A-1F71-466C-A7E9-A1BEE00AD7F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +161,10 @@ Global
 		{D7F59F96-291B-49A4-81CA-650084EDDDB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7F59F96-291B-49A4-81CA-650084EDDDB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7F59F96-291B-49A4-81CA-650084EDDDB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4EC108A-1F71-466C-A7E9-A1BEE00AD7F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4EC108A-1F71-466C-A7E9-A1BEE00AD7F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4EC108A-1F71-466C-A7E9-A1BEE00AD7F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4EC108A-1F71-466C-A7E9-A1BEE00AD7F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
