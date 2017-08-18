@@ -64,6 +64,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TappedOutComboDecksPlugin_Tests.cs" />
+    <Compile Include="TappedOutDecksHubPlugin_Tests.cs" />
     <Compile Include="TappedOutFeaturedPlugin_Tests.cs" />
     <Compile Include="TappedOutLatestEDHPlugin_Tests.cs" />
     <Compile Include="TappedOutLatestTop8Plugin_Tests.cs" />

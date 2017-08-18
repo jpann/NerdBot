@@ -120,7 +120,7 @@ namespace NerdBotTappedOut
                         }
 
                         string[] latestDecks = latestData.Select(s =>
-                            string.Format("{0} [{1}]", s.Name, this.mUrlShortener.ShortenUrl(s.Url)))
+                                string.Format("{0} [{1}]", s.Name, this.mUrlShortener.ShortenUrl(s.Url)))
                             .Take(cLimit)
                             .ToArray();
 
@@ -133,6 +133,10 @@ namespace NerdBotTappedOut
                         messenger.SendMessage(msg);
 
                         return true;
+                    }
+                    else
+                    {
+                        messenger.SendMessage(string.Format("No deck hub found for '{0}'... Check http://tappedout.net/mtg-deck-builder/ for the hub name.", listSlug));
                     }
                 }
                 else
