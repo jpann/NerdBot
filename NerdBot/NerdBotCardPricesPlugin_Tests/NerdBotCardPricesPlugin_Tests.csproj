@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="CardPricePlugin_Tests.cs" />
     <Compile Include="EbayPriceFetcher_Tests.cs" />
+    <Compile Include="EbayPricePlugin_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WhatsHotPlugin_Tests.cs" />
     <Compile Include="WhatsNotPlugin_Tests.cs" />
