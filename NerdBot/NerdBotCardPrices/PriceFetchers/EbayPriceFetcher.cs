@@ -1,27 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using HtmlAgilityPack;
+using NerdBotCommon.Http;
+using SimpleLogging.Core;
 
 namespace NerdBotCardPrices.PriceFetchers
 {
-    //TODO This implementation is horrible
     public class EbayPriceFetcher
     {
-        public EbayPriceFetcher()
+        private IHttpClient mHttpClient;
+        private ILoggingService mLoggingService;
+
+        public EbayPriceFetcher(IHttpClient httpClient, ILoggingService loggingService)
         {
+            if (httpClient == null)
+                throw new ArgumentNullException("httpClient");
+
+            if (loggingService == null)
+                throw new ArgumentNullException("loggingService");
+
+            this.mHttpClient = httpClient;
+            this.mLoggingService = loggingService;
         }
 
-        public string GetPageSource(string url)
-        {
-            using (WebClient wc = new WebClient())
-            {
-                string html = wc.DownloadString(url);
-
-                return html;
-            }
-        }
 
         public string[] GetPrice(string name, string setName = "")
         {
@@ -37,7 +37,7 @@ namespace NerdBotCardPrices.PriceFetchers
 
             url += Uri.EscapeDataString(" mtg nm");
 
-            string pageSource = this.GetPageSource(url);
+            string pageSource = this.mHttpClient.GetPageSource(url);
 
             HtmlDocument htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(pageSource);
@@ -46,14 +46,23 @@ namespace NerdBotCardPrices.PriceFetchers
 
             if (priceNode != null)
             {
+                string price = priceNode.InnerText.Trim();
+
+                this.mLoggingService.Trace("Price '{0}' found in url '{1}' for name '{2}' and set '{3}'",
+                    price, url, name, setName);
+
                 return new string[]
                 {
-                    priceNode.InnerText.Trim(),
+                    price,
                     url
                 };
             }
             else
+            {
+                this.mLoggingService.Warning("No 'price node' in url '{0}'", url);
+
                 return null;
+            }
         }
     }
 }

@@ -121,7 +121,8 @@ namespace NerdBotCardPrices
 
                 if (card != null)
                 {
-                    var ebay = new EbayPriceFetcher();
+                    var ebay = new EbayPriceFetcher(this.mHttpClient, this.mLoggingService);
+
                     string[] ebayPrice = ebay.GetPrice(card.Name);
 
                     if (ebayPrice != null)
