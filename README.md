@@ -5,7 +5,7 @@ This is a GroupMe bot that lets people in chat query Magic: The Gathering card i
 The bot uses a MongoDB database that contains card information that is imported from mtgjson.com (*Set + Extras* json format). You will have to import this information yourself using the [DatabaseUpdater](https://github.com/jpann/NerdBot/tree/master/NerdBot/NerdBot_DatabaseUpdater).
 
 ### Build
-Builds in Visual Studio 2012 and Xamarin Studio 5.7.
+Builds in Visual Studio 2015 and Xamarin Studio 5.7.
 
 Tested on Windows 7, Windows 10 x64 and Ubuntu 14.04, 15.04 x86_64 using Mono 3.2.8.
 
