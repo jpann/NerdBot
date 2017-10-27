@@ -757,23 +757,15 @@ namespace NerdBotCommon.Mtg
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            int count = (int)collection.Count();
+            var query = Query.And(
+                Query.NE("flavor", BsonString.Empty),
+                Query.NE("multiverseId", 0));
+
+            int count = (int)collection.Find(query).Count();
+
             var random = new Random();
             var r = random.Next(count);
             Card card = collection.FindAll().Skip(r).FirstOrDefault();
-
-            if (card == null)
-            {
-                int maxTries = 5;
-                int tries = 0;
-
-                do
-                {
-                    var randomNum = random.Next(count);
-                    card = collection.FindAll().Skip(randomNum).FirstOrDefault();
-                } 
-                while (card == null && tries < maxTries);
-            }
 
             watch.Stop();
 
