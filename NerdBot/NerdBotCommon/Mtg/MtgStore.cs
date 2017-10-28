@@ -759,6 +759,7 @@ namespace NerdBotCommon.Mtg
 
             var query = Query.And(
                 Query.NE("flavor", BsonString.Empty),
+                Query.NE("flavor", BsonNull.Value),
                 Query.NE("multiverseId", 0));
 
             int count = (int)collection.Find(query).Count();
