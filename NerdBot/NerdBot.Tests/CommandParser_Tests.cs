@@ -57,6 +57,18 @@ namespace NerdBot.Tests
         }
 
         [Test]
+        public void ImageCommand_WithApostrophe()
+        {
+            string message = "img krark’s thumb";
+
+            var cmd = commandParser.Parse(message);
+
+            Assert.AreEqual("img", cmd.Cmd);
+            Assert.AreEqual(1, cmd.Arguments.Length);
+            Assert.AreEqual("krark’s thumb", cmd.Arguments[0]);
+        }
+
+        [Test]
         public void ImageCommand_WithCommaAndWildcard()
         {
             string message = "img shu yun, the % tempest";
