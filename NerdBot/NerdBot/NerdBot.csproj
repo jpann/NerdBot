@@ -108,6 +108,7 @@
     <Compile Include="Admin\AuthenticatedUser.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="BotConfig.cs" />
+    <Compile Include="Diagnostics\CardSearchDiagnosticsProvider.cs" />
     <Compile Include="Extensions\RequestBodyExtension.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="IPluginManager.cs" />
@@ -297,6 +298,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(SolutionDir)NerdBotCommon\bin\Debug\System.Runtime.InteropServices.RuntimeInformation.dll $(TargetDir)System.Runtime.InteropServices.RuntimeInformation.dll

@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="NerdBot.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="NerdBotCommon.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="test" Type="System.String" Scope="User">
@@ -28,6 +28,12 @@
     </Setting>
     <Setting Name="UrlShort_Key" Type="System.String" Scope="User">
       <Value Profile="(Default)">KEY</Value>
+    </Setting>
+    <Setting Name="EnableDiagnostics" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DiagnosticsPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">test</Value>
     </Setting>
   </Settings>
 </SettingsFile>

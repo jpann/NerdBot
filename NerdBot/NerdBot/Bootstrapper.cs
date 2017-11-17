@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Nancy.Authentication.Forms;
 using Nancy.Bootstrapper;
+using Nancy.Diagnostics;
 using Nancy.Json;
 using Nancy.TinyIoc;
 using NerdBot.Admin;
@@ -39,6 +40,10 @@ namespace NerdBot
 
     public class Bootstrapper : DefaultNancyBootstrapper
     {
+        protected override DiagnosticsConfiguration DiagnosticsConfiguration
+        {
+            get { return new DiagnosticsConfiguration { Password = NerdBotCommon.Properties.Settings.Default.DiagnosticsPassword }; }
+        }
 
         // Use custom IRootPathProvider to prevent multiple root path provider exception
         protected override IRootPathProvider RootPathProvider
