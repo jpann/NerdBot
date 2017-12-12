@@ -173,7 +173,7 @@ namespace NerdBotCardImage
 
                         messenger.SendMessage(msg);
 
-                        string url = string.Format(cSearchUrl, name);
+                        string url = string.Format(cSearchUrl, this.Config.HostUrl, name);
 
                         messenger.SendMessage(string.Format("Or try seeing if your card is here: {0}", url));
                     }

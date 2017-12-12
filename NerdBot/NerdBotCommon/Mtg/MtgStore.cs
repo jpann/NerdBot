@@ -18,9 +18,8 @@ namespace NerdBotCommon.Mtg
 
         private readonly string mConnectionString;
         private readonly string mDatabaseName;
-        private readonly MongoClient mClient;
-        private readonly MongoServer mServer;
-        private readonly MongoDatabase mDatabase;
+        private readonly IMongoClient mClient;
+        private readonly IMongoDatabase mDatabase;
         private readonly ILoggingService mLoggingService;
         private readonly SearchUtility mSearchUtility;
 
@@ -45,8 +44,7 @@ namespace NerdBotCommon.Mtg
             this.mConnectionString = connectionString;
             this.mDatabaseName = databaseName;
             this.mClient = new MongoClient(this.mConnectionString);
-            this.mServer = this.mClient.GetServer();
-            this.mDatabase = this.mServer.GetDatabase(this.mDatabaseName);
+            this.mDatabase = this.mClient.GetDatabase(this.mDatabaseName);
             this.mLoggingService = loggingService;
             this.mSearchUtility = searchUtility;
         }
@@ -59,12 +57,9 @@ namespace NerdBotCommon.Mtg
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
-            var result = collection.Insert(card);
+            collection.InsertOne(card);
 
-            if (result.Response["ok"] == 1)
-                return card;
-            else
-                return null;
+            return card;
         }
 
         public async Task<Card> CardFindAndModify(Card card)
@@ -75,13 +70,13 @@ namespace NerdBotCommon.Mtg
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             // Query for this card
-            var cardQuery = Query.And(
-                Query.EQ("name", card.Name),
-                Query.EQ("setId", card.SetId),
-                Query.EQ("multiverseId", card.MultiverseId)
+            var cardQuery = Builders<Card>.Filter.And(
+                Builders<Card>.Filter.Eq("name", card.Name),
+                Builders<Card>.Filter.Eq("setId", card.SetId),
+                Builders<Card>.Filter.Eq("multiverseId", card.MultiverseId)
                 );
 
-            var cardSoryBy = SortBy.Descending("name");
+            var cardSoryBy = Builders<Card>.Sort.Descending("name");
 
             // Create BsonDocumentWrapper for the card's Colors array
             var colorsDocument = BsonDocumentWrapper.CreateMultiple(card.Colors);
@@ -101,7 +96,7 @@ namespace NerdBotCommon.Mtg
             var typesArray = new BsonArray(typesDocument);
 
             // Update document
-            var cardUpdate = Update
+            var cardUpdate = Builders<Card>.Update
                 .Set("relatedCardId", card.RelatedCardId)
                 .Set("name", card.Name)
                 .Set("searchName", card.SearchName)
@@ -131,18 +126,14 @@ namespace NerdBotCommon.Mtg
                 .Set("variations", variationsArray)
                 .Set("types", typesArray);
 
-            // Find and modify document. If document doesnt exist, insert it
-            FindAndModifyArgs findModifyArgs = new FindAndModifyArgs();
-            findModifyArgs.SortBy = cardSoryBy;
-            findModifyArgs.Query = cardQuery;
-            findModifyArgs.Upsert = true;
-            findModifyArgs.Update = cardUpdate;
-            findModifyArgs.VersionReturned = FindAndModifyDocumentVersion.Modified;
+            var options = new FindOneAndUpdateOptions<Card>();
+            options.Sort = cardSoryBy;
+            options.IsUpsert = true;
+            options.ReturnDocument = ReturnDocument.After;
 
-            var cardResult = collection.FindAndModify(findModifyArgs);
-            var cardModified = cardResult.GetModifiedDocumentAs<Card>();
+            var cardResult = collection.FindOneAndUpdate(cardQuery, cardUpdate, options);
 
-            return cardModified;
+            return cardResult;
         }
         #endregion
 
@@ -151,7 +142,7 @@ namespace NerdBotCommon.Mtg
         {
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
-            var query = Query<Card>.EQ(e => e.MultiverseId, multiverseId);
+            var query = Builders<Card>.Filter.Eq(e => e.MultiverseId, multiverseId);
 
             long qty = collection.Count(query);
 
@@ -169,11 +160,10 @@ namespace NerdBotCommon.Mtg
             name = this.mSearchUtility.GetSearchValue(name);
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
-
             
-            var query = Query.And(
-                Query<Card>.EQ(e => e.SearchName, name),
-                Query.NE("multiverseId", 0));
+            var query = Builders<Card>.Filter.And(
+                Builders<Card>.Filter.Eq(e => e.SearchName, name),
+                Builders<Card>.Filter.Ne("multiverseId", 0));
 
             long qty = collection.Count(query);
 
@@ -196,10 +186,10 @@ namespace NerdBotCommon.Mtg
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
-            var query = Query.And(
-                Query<Card>.EQ(e => e.SearchName, name),
-                Query<Card>.EQ(e => e.SetSearchName, setName),
-                Query.NE("multiverseId", 0)
+            var query = Builders<Card>.Filter.And(
+                Builders<Card>.Filter.Eq(e => e.SearchName, name),
+                Builders<Card>.Filter.Eq(e => e.SetSearchName, setName),
+                Builders<Card>.Filter.Ne("multiverseId", 0)
                 );
 
             long qty = collection.Count(query);
@@ -218,13 +208,13 @@ namespace NerdBotCommon.Mtg
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
-            var query = Query<Card>.EQ(e => e.MultiverseId, multiverseId);
-            var sortBy = SortBy.Ascending("searchName");
+            var query = Builders<Card>.Filter.Eq(e => e.MultiverseId, multiverseId);
+            var sortBy = Builders<Card>.Sort.Ascending("searchName");
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            var cardResult = collection.FindAs<Card>(query).SetSortOrder(sortBy).SetLimit(1);
+            var cardResult = collection.Find<Card>(query).Sort(sortBy).Limit(1);
 
             watch.Stop();
 
@@ -260,16 +250,16 @@ namespace NerdBotCommon.Mtg
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
-            var query = Query.And(
-                Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i")),
-                Query.NE("multiverseId", 0));
+            var query = Builders<Card>.Filter.And(
+                Builders<Card>.Filter.Regex(e => e.SearchName, new BsonRegularExpression(name, "i")),
+                Builders<Card>.Filter.Ne("multiverseId", 0));
 
-            var sortBy = SortBy.Ascending("searchName");
+            var sortBy = Builders<Card>.Sort.Ascending("searchName");
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            var cardResult = collection.FindAs<Card>(query).SetSortOrder(sortBy).SetLimit(1);
+            var cardResult = collection.Find<Card>(query).Sort(sortBy).Limit(1);
 
             watch.Stop();
 
@@ -311,20 +301,20 @@ namespace NerdBotCommon.Mtg
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
             // Search both the set's search name and set id
-            var query = Query.And(
-                Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i")),
-                Query.NE("multiverseId", 0),
-                Query.Or(
-                    Query<Card>.Matches(e => e.SetSearchName, new BsonRegularExpression(setName, "i")),
-                    Query<Card>.EQ(e => e.SetId, new BsonRegularExpression(setCode, "i")))
+            var query = Builders<Card>.Filter.And(
+                Builders<Card>.Filter.Regex(e => e.SearchName, new BsonRegularExpression(name, "i")),
+                Builders<Card>.Filter.Ne("multiverseId", 0),
+                Builders<Card>.Filter.Or(
+                    Builders<Card>.Filter.Regex(e => e.SetSearchName, new BsonRegularExpression(setName, "i")),
+                    Builders<Card>.Filter.Regex(e => e.SetId, new BsonRegularExpression(setCode, "i")))
                 );
 
-            var sortBy = SortBy.Ascending("searchName");
+            var sortBy = Builders<Card>.Sort.Ascending("searchName");
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            var cardResult = collection.FindAs<Card>(query).SetSortOrder(sortBy).SetLimit(1);
+            var cardResult = collection.Find<Card>(query).Sort(sortBy).Limit(1);
 
             watch.Stop();
             
@@ -360,10 +350,10 @@ namespace NerdBotCommon.Mtg
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            MongoCursor <Card> cursor = collection.FindAll()
-                .SetSortOrder("searchName");
+            var cursor = collection.Find(new BsonDocument())
+                .Sort(Builders<Card>.Sort.Ascending("searchName")).ToCursor();
 
-            foreach (Card card in cursor)
+            foreach (Card card in cursor.ToEnumerable())
             {
                 cards.Add(card);
             }
@@ -389,131 +379,21 @@ namespace NerdBotCommon.Mtg
             Stopwatch watch = new Stopwatch();
             watch.Start();
 				                
-            var query = Query.And(
-                Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i")),
-                Query.NE("multiverseId", 0));
+            var query = Builders<Card>.Filter.And(
+                Builders<Card>.Filter.Regex(e => e.SearchName, new BsonRegularExpression(name, "i")),
+                Builders<Card>.Filter.Ne("multiverseId", 0));
 
-            MongoCursor<Card> cursor = collection.Find(query)
-                .SetSortOrder("searchName");
+            var filter = collection.Find(query)
+                .Sort(Builders<Card>.Sort.Ascending("searchName"));
+
+            IAsyncCursor<Card> cursor = null;
 
             if (limit > 0)
-                cursor.SetLimit(limit);
-
-            foreach (Card card in cursor)
-            {
-                cards.Add(card);
-            }
-
-            watch.Stop();
-
-            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
-
-            return cards;
-        }
-
-		public async Task<List<Card>> SearchCards(string name, int limit = 0)
-		{
-			if (string.IsNullOrEmpty(name))
-				throw new ArgumentException("name");
-
-			List<Card> cards = new List<Card>();
-
-			string regex_name = this.mSearchUtility.GetRegexSearchValue(name);
-
-			var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
-
-			Stopwatch watch = new Stopwatch();
-			watch.Start();
-
-			IMongoQuery query = null;
-			MongoCursor<Card> cursor = null;
-
-			string[] names = name.Split(' ');
-			if (names.Length > 1)
-			{
-				List<IMongoQuery> nameQueries = new List<IMongoQuery>();
-
-				foreach (string n in names)
-				{
-					nameQueries.Add(Query.And(
-                        Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(n, "i")),
-                        Query.NE("multiverseId", 0)));
-				}
-
-				cursor = collection.Find(Query.Or(nameQueries))
-					.SetSortOrder("searchName");
-			}
-			else
-			{
-				query = Query.And(
-                    Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(regex_name, "i")),
-                    Query.NE("multiverseId", 0));
-
-				cursor = collection.Find(query)
-					.SetSortOrder("searchName");
-			}
-
-			if (limit > 0)
-				cursor.SetLimit(limit);
-
-			foreach (Card card in cursor)
-			{
-				cards.Add(card);
-			}
-
-			watch.Stop();
-
-			this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
-
-			return cards;
-		}
-
-        public async Task<List<Card>> AdvancedSearchCards(string name, int limit = 0)
-        {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("name");
-
-            List<Card> cards = new List<Card>();
-
-            string regex_name = this.mSearchUtility.GetRegexAdvancedSearchValue(name);
-
-            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
-
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
-
-            IMongoQuery query = null;
-            MongoCursor<Card> cursor = null;
-
-            string[] names = name.Split(' ');
-            if (names.Length > 1)
-            {
-                List<IMongoQuery> nameQueries = new List<IMongoQuery>();
-
-                foreach (string n in names)
-                {
-                    nameQueries.Add(Query.And(
-                        Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(this.mSearchUtility.GetRegexAdvancedSearchValue(n), "i")),
-                        Query.NE("multiverseId", 0)));
-                }
-
-                cursor = collection.Find(Query.And(nameQueries))
-                    .SetSortOrder("searchName");
-            }
+                cursor = filter.Limit(limit).ToCursor();
             else
-            {
-                query = Query.And(
-                    Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(regex_name, "i")),
-                    Query.NE("multiverseId", 0));
+                cursor = filter.ToCursor();
 
-                cursor = collection.Find(query)
-                    .SetSortOrder("searchName");
-            }
-
-            if (limit > 0)
-                cursor.SetLimit(limit);
-
-            foreach (Card card in cursor)
+            foreach (Card card in cursor.ToEnumerable())
             {
                 cards.Add(card);
             }
@@ -524,6 +404,120 @@ namespace NerdBotCommon.Mtg
 
             return cards;
         }
+
+		//public async Task<List<Card>> SearchCards(string name, int limit = 0)
+		//{
+		//	if (string.IsNullOrEmpty(name))
+		//		throw new ArgumentException("name");
+
+		//	List<Card> cards = new List<Card>();
+
+		//	string regex_name = this.mSearchUtility.GetRegexSearchValue(name);
+
+		//	var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
+
+		//	Stopwatch watch = new Stopwatch();
+		//	watch.Start();
+
+		//	IMongoQuery query = null;
+		//	MongoCursor<Card> cursor = null;
+
+		//	string[] names = name.Split(' ');
+		//	if (names.Length > 1)
+		//	{
+		//		List<IMongoQuery> nameQueries = new List<IMongoQuery>();
+
+		//		foreach (string n in names)
+		//		{
+		//			nameQueries.Add(Query.And(
+  //                      Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(n, "i")),
+  //                      Query.NE("multiverseId", 0)));
+		//		}
+
+		//		cursor = collection.Find(Query.Or(nameQueries))
+		//			.SetSortOrder("searchName");
+		//	}
+		//	else
+		//	{
+		//		query = Query.And(
+  //                  Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(regex_name, "i")),
+  //                  Query.NE("multiverseId", 0));
+
+		//		cursor = collection.Find(query)
+		//			.SetSortOrder("searchName");
+		//	}
+
+		//	if (limit > 0)
+		//		cursor.SetLimit(limit);
+
+		//	foreach (Card card in cursor)
+		//	{
+		//		cards.Add(card);
+		//	}
+
+		//	watch.Stop();
+
+		//	this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+		//	return cards;
+		//}
+
+        //public async Task<List<Card>> AdvancedSearchCards(string name, int limit = 0)
+        //{
+        //    if (string.IsNullOrEmpty(name))
+        //        throw new ArgumentException("name");
+
+        //    List<Card> cards = new List<Card>();
+
+        //    string regex_name = this.mSearchUtility.GetRegexAdvancedSearchValue(name);
+
+        //    var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
+
+        //    Stopwatch watch = new Stopwatch();
+        //    watch.Start();
+
+        //    IMongoQuery query = null;
+        //    MongoCursor<Card> cursor = null;
+
+        //    string[] names = name.Split(' ');
+        //    if (names.Length > 1)
+        //    {
+        //        List<IMongoQuery> nameQueries = new List<IMongoQuery>();
+
+        //        foreach (string n in names)
+        //        {
+        //            nameQueries.Add(Query.And(
+        //                Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(this.mSearchUtility.GetRegexAdvancedSearchValue(n), "i")),
+        //                Query.NE("multiverseId", 0)));
+        //        }
+
+        //        cursor = collection.Find(Query.And(nameQueries))
+        //            .SetSortOrder("searchName");
+        //    }
+        //    else
+        //    {
+        //        query = Query.And(
+        //            Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(regex_name, "i")),
+        //            Query.NE("multiverseId", 0));
+
+        //        cursor = collection.Find(query)
+        //            .SetSortOrder("searchName");
+        //    }
+
+        //    if (limit > 0)
+        //        cursor.SetLimit(limit);
+
+        //    foreach (Card card in cursor)
+        //    {
+        //        cards.Add(card);
+        //    }
+
+        //    watch.Stop();
+
+        //    this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+        //    return cards;
+        //}
 
         public async Task<List<Card>> SearchCards(string name, int skipRecords = 0, int limit = 100)
         {
@@ -539,39 +533,39 @@ namespace NerdBotCommon.Mtg
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            IMongoQuery query = null;
-            MongoCursor<Card> cursor = null;
+            FilterDefinition<Card> query = null;
+            IAsyncCursor<Card> cursor = null;
 
             string[] names = name.Split(' ');
             if (names.Length > 1)
             {
-                List<IMongoQuery> nameQueries = new List<IMongoQuery>();
+                List<FilterDefinition<Card>> nameQueries = new List<FilterDefinition<Card>>();
 
                 foreach (string n in names)
                 {
-                    nameQueries.Add(Query.And(
-                        Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(n, "i")),
-                        Query.NE("multiverseId", 0)));
+                    nameQueries.Add(Builders<Card>.Filter.And(
+                        Builders<Card>.Filter.Regex(e => e.SearchName, new BsonRegularExpression(n, "i")),
+                        Builders<Card>.Filter.Ne("multiverseId", 0)));
                 }
 
-                cursor = collection.Find(Query.Or(nameQueries))
-                    .SetSkip(skipRecords)
-                    .SetLimit(limit)
-                    .SetSortOrder("searchName");
+                cursor = collection.Find(Builders<Card>.Filter.Or(nameQueries))
+                    .Skip(skipRecords)
+                    .Limit(limit)
+                    .Sort(Builders<Card>.Sort.Ascending("searchName")).ToCursor();
             }
             else
             {
-                query = Query.And(
-                    Query<Card>.Matches(e => e.SearchName, new BsonRegularExpression(regex_name, "i")),
-                    Query.NE("multiverseId", 0));
+                query = Builders<Card>.Filter.And(
+                    Builders<Card>.Filter.Regex(e => e.SearchName, new BsonRegularExpression(regex_name, "i")),
+                    Builders<Card>.Filter.Ne("multiverseId", 0));
 
                 cursor = collection.Find(query)
-                    .SetSkip(skipRecords)
-                    .SetLimit(limit)
-                    .SetSortOrder("searchName");
+                    .Skip(skipRecords)
+                    .Limit(limit)
+                    .Sort(Builders<Card>.Sort.Ascending("searchName")).ToCursor();
             }
 
-            foreach (Card card in cursor)
+            foreach (Card card in cursor.ToEnumerable())
             {
                 cards.Add(card);
             }
@@ -595,7 +589,15 @@ namespace NerdBotCommon.Mtg
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            cards = collection.Find(Query.Text(term)).SetLimit(limit).ToList();
+            var filter = Builders<Card>.Filter.Text(term);
+            var projection = Builders<Card>.Projection.MetaTextScore("TextMatchScore");
+            var sort = Builders<Card>.Sort.MetaTextScore("TextMatchScore");
+
+            cards = collection.Find(filter)
+                .Project<Card>(projection)
+                .Sort(sort)
+                .Limit(limit)
+                .ToList();
 
             watch.Stop();
 
@@ -626,9 +628,9 @@ namespace NerdBotCommon.Mtg
                 artist = "^" + artist;
             }
 
-            var query = Query.And(
-                Query<Card>.Matches(e => e.Artist, new BsonRegularExpression(artist, "i")),
-                Query.NE("multiverseId", 0));
+            var query = Builders<Card>.Filter.And(
+                Builders<Card>.Filter.Regex(e => e.Artist, new BsonRegularExpression(artist, "i")),
+                Builders<Card>.Filter.Ne("multiverseId", 0));
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -656,11 +658,11 @@ namespace NerdBotCommon.Mtg
             string setCode = setName;
             setName = this.mSearchUtility.GetSearchValue(setName);
 
-            var query = Query.And(
-                    Query.NE("multiverseId", 0),
-                    Query.Or(
-                    Query<Card>.Matches(e => e.SetSearchName, new BsonRegularExpression(setName, "i")),
-                    Query<Card>.EQ(e => e.SetId, new BsonRegularExpression(setCode, "i")))
+            var query = Builders<Card>.Filter.And(
+                    Builders<Card>.Filter.Ne("multiverseId", 0),
+                    Builders<Card>.Filter.Or(
+                        Builders<Card>.Filter.Regex(e => e.SetSearchName, new BsonRegularExpression(setName, "i")),
+                        Builders<Card>.Filter.Regex(e => e.SetId, new BsonRegularExpression(setCode, "i")))
                     );
 
             Stopwatch watch = new Stopwatch();
@@ -686,10 +688,10 @@ namespace NerdBotCommon.Mtg
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            int count = (int)collection.Count();
+            int count = (int) collection.Count(new BsonDocument());
             var random = new Random();
             var r = random.Next(count);
-            var card = collection.FindAll().Skip(r).FirstOrDefault();
+            var card = collection.Find(new BsonDocument()).Skip(r).FirstOrDefault();
 
             watch.Stop();
 
@@ -712,11 +714,11 @@ namespace NerdBotCommon.Mtg
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
-            var query = Query.And(
-                Query.NE("multiverseId", 0),
-                Query<Card>.Matches(e => e.Desc, new BsonRegularExpression(text, "i")));
+            var query = Builders<Card>.Filter.And(
+                Builders<Card>.Filter.Ne("multiverseId", 0),
+                Builders<Card>.Filter.Regex(e => e.Desc, new BsonRegularExpression(text, "i")));
 
-            var sortBy = SortBy.Ascending("multiverseId");
+            var sortBy = Builders<Card>.Sort.Ascending("multiverseId");
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -725,7 +727,7 @@ namespace NerdBotCommon.Mtg
 
             var rand = new Random();
             var r = rand.Next(count);
-            var card = collection.Find(query).SetSortOrder(sortBy).Skip(r).FirstOrDefault();
+            var card = collection.Find(query).Sort(sortBy).Skip(r).FirstOrDefault();
 
             watch.Stop();
 
@@ -749,11 +751,11 @@ namespace NerdBotCommon.Mtg
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
-            var query = Query.And(
-                Query<Card>.Matches(e => e.Desc, new BsonRegularExpression(text, "i")),
-                Query.NE("multiverseId", 0));
+            var query = Builders<Card>.Filter.And(
+                Builders<Card>.Filter.Regex(e => e.Desc, new BsonRegularExpression(text, "i")),
+                Builders<Card>.Filter.Ne("multiverseId", 0));
 
-            var sortBy = SortBy.Ascending("multiverseId");
+            var sortBy = Builders<Card>.Sort.Ascending("multiverseId");
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -762,7 +764,7 @@ namespace NerdBotCommon.Mtg
 
             var rand = new Random();
             var r = rand.Next(count);
-            var card = collection.Find(query).SetSortOrder(sortBy).Skip(r).FirstOrDefault();
+            var card = collection.Find(query).Sort(sortBy).Skip(r).FirstOrDefault();
 
             watch.Stop();
 
@@ -778,16 +780,16 @@ namespace NerdBotCommon.Mtg
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            var query = Query.And(
-                Query.NE("flavor", BsonString.Empty),
-                Query.NE("flavor", BsonNull.Value),
-                Query.NE("multiverseId", 0));
+            var query = Builders<Card>.Filter.And(
+                Builders<Card>.Filter.Ne("flavor", BsonString.Empty),
+                Builders<Card>.Filter.Ne("flavor", BsonNull.Value),
+                Builders<Card>.Filter.Ne("multiverseId", 0));
 
             int count = (int)collection.Find(query).Count();
 
             var random = new Random();
             var r = random.Next(count);
-            Card card = collection.FindAll().Skip(r).FirstOrDefault();
+            Card card = collection.Find(new BsonDocument()).Skip(r).FirstOrDefault();
 
             watch.Stop();
 
@@ -806,37 +808,37 @@ namespace NerdBotCommon.Mtg
             var setsCollection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 
             // Query to get the card with this multiverseId
-            var cardMultiverseIdQuery = Query<Card>.EQ(e => e.MultiverseId, multiverseId);
+            var cardMultiverseIdQuery = Builders<Card>.Filter.Eq(e => e.MultiverseId, multiverseId);
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            var card = cardsCollection.FindOne(cardMultiverseIdQuery);
+            var card = cardsCollection.Find(cardMultiverseIdQuery).FirstOrDefault();
 
             if (card != null)
             {
                 // Queries to get all other cards that share the card's name
-                var cardNameQuery = Query.And(
-                    Query.NE("multiverseId", 0),
-                    Query<Card>.EQ(e => e.SearchName, card.SearchName));
+                var cardNameQuery = Builders<Card>.Filter.And(
+                    Builders<Card>.Filter.Ne("multiverseId", 0),
+                    Builders<Card>.Filter.Eq(e => e.SearchName, card.SearchName));
 
-                MongoCursor<Card> cursor = cardsCollection.Find(cardNameQuery)
-                    .SetSortOrder("setName");
+                IAsyncCursor<Card> cursor = cardsCollection.Find(cardNameQuery)
+                    .Sort(Builders<Card>.Sort.Ascending("setName")).ToCursor();
 
-                List<IMongoQuery> setQueries = new List<IMongoQuery>();
+                List<FilterDefinition<Set>> setQueries = new List<FilterDefinition<Set>>();
 
-                // Go throug each card that shares this name and add create a set query for it
-                foreach (Card c in cursor)
+                // Go through each card that shares this name and add create a set query for it
+                foreach (Card c in cursor.ToEnumerable())
                 {
-                    setQueries.Add(Query<Set>.EQ(e => e.SearchName, c.SetSearchName));
+                    setQueries.Add(Builders<Set>.Filter.Eq(e => e.SearchName, c.SetSearchName));
                 }
 
                 // Get all sets for cards that share this name
-                MongoCursor<Set> setCursor = setsCollection.Find(Query.Or(setQueries))
-                    .SetSortOrder("name")
-                    .SetLimit(limit);
+                IAsyncCursor<Set> setCursor = setsCollection.Find(Builders<Set>.Filter.Or(setQueries))
+                    .Sort(Builders<Set>.Sort.Ascending("name"))
+                    .Limit(limit).ToCursor();
 
-                foreach (Set s in setCursor)
+                foreach (Set s in setCursor.ToEnumerable())
                 {
                     sets.Add(s);
                 }
@@ -859,47 +861,47 @@ namespace NerdBotCommon.Mtg
             var setsCollection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 
             // Query to get the card with this multiverseId
-            var cardMultiverseIdQuery = Query.And(
-                Query.NE("multiverseId", 0),
-                Query<Card>.EQ(e => e.MultiverseId, multiverseId));
+            var cardMultiverseIdQuery = Builders<Card>.Filter.And(
+                Builders<Card>.Filter.Ne("multiverseId", 0),
+                Builders<Card>.Filter.Eq(e => e.MultiverseId, multiverseId));
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            var card = cardsCollection.FindOne(cardMultiverseIdQuery);
+            var card = cardsCollection.Find(cardMultiverseIdQuery).FirstOrDefault();
 
             if (card != null)
             {
                 // Queries to get all other cards that do not have this multiverseId but share the card's name
-                var cardNotMultiverseIdQuery = Query.And(
-                    Query.NE("multiverseId", 0),
-                    Query<Card>.NE(e => e.MultiverseId, multiverseId));
+                var cardNotMultiverseIdQuery = Builders<Card>.Filter.And(
+                    Builders<Card>.Filter.Ne("multiverseId", 0),
+                    Builders<Card>.Filter.Ne(e => e.MultiverseId, multiverseId));
 
-                var cardNameQuery = Query<Card>.EQ(e => e.SearchName, card.SearchName);
+                var cardNameQuery = Builders<Card>.Filter.Eq(e => e.SearchName, card.SearchName);
 
-                var cardOtherQuery = Query.And(
+                var cardOtherQuery = Builders<Card>.Filter.And(
                     cardNotMultiverseIdQuery,
                     cardNameQuery
                     );
 
-                MongoCursor<Card> cursor = cardsCollection.Find(cardOtherQuery)
-                    .SetSortOrder("name");
+                IAsyncCursor<Card> cursor = cardsCollection.Find(cardOtherQuery)
+                    .Sort(Builders<Card>.Sort.Ascending("name")).ToCursor();
 
-                List<IMongoQuery> setQueries = new List<IMongoQuery>();
+                List<FilterDefinition<Set>> setQueries = new List<FilterDefinition<Set>>();
 
                 // Go throug each card that shares this name and add create a set query for it
-                foreach (Card c in cursor)
+                foreach (Card c in cursor.ToEnumerable())
                 {
-                    setQueries.Add(Query<Set>.EQ(e => e.SearchName, c.SetSearchName));
+                    setQueries.Add(Builders<Set>.Filter.Eq(e => e.SearchName, c.SetSearchName));
                 }
 
                 if (setQueries.Any())
                 {
                     // Get all sets for cards that share this name
-                    MongoCursor<Set> setCursor = setsCollection.Find(Query.Or(setQueries))
-                        .SetSortOrder("name");
+                    IAsyncCursor<Set> setCursor = setsCollection.Find(Builders<Set>.Filter.Or(setQueries))
+                        .Sort(Builders<Set>.Sort.Ascending("name")).ToCursor();
 
-                    foreach (Set s in setCursor)
+                    foreach (Set s in setCursor.ToEnumerable())
                     {
                         sets.Add(s);
                     }
@@ -926,17 +928,17 @@ namespace NerdBotCommon.Mtg
 
             var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
 
-            var query = Query.And(
-                Query.NE("multiverseId", 0),
-                Query<Card>.EQ(e => e.SetSearchName, setName));
+            var query = Builders<Card>.Filter.And(
+                Builders<Card>.Filter.Ne("multiverseId", 0),
+                Builders<Card>.Filter.Eq(e => e.SetSearchName, setName));
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            MongoCursor<Card> cursor = collection.Find(query)
-                .SetSortOrder("name");
+           var cursor = collection.Find(query)
+                .Sort(Builders<Card>.Sort.Ascending("name")).ToCursor();
 
-            foreach (Card card in cursor)
+            foreach (Card card in cursor.ToEnumerable())
             {
                 cards.Add(card);
             }
@@ -957,12 +959,9 @@ namespace NerdBotCommon.Mtg
 
             var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 
-            var result = collection.Insert(set);
+            collection.InsertOne(set);
 
-            if (result.Response["ok"] == 1)
-                return set;
-            else
-                return null;
+            return set;
         }
 
         public async Task<Set> SetFindAndModify(Set set)
@@ -973,15 +972,15 @@ namespace NerdBotCommon.Mtg
             var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 
             // Query for this set
-            var cardQuery = Query.And(
-                Query.EQ("name", set.Name),
-                Query.EQ("code", set.Code)
+            var setQuery = Builders<Set>.Filter.And(
+                Builders<Set>.Filter.Eq("name", set.Name),
+                Builders<Set>.Filter.Eq("code", set.Code)
                 );
 
-            var setSortBy = SortBy.Descending("name");
+            var setSortBy = Builders<Set>.Sort.Descending("name");
 
             // Update document
-            var setUpdate = Update
+            var setUpdate = Builders<Set>.Update
                 .Set("name", set.Name)
                 .Set("searchName", set.SearchName)
                 .Set("code", set.Code)
@@ -1000,17 +999,14 @@ namespace NerdBotCommon.Mtg
                 .Set("magicCardsInfoCode", set.MagicCardsInfoCode ?? "");
 
             // Find and modify document. If document doesnt exist, insert it
-            FindAndModifyArgs findModifyArgs = new FindAndModifyArgs();
-            findModifyArgs.SortBy = setSortBy;
-            findModifyArgs.Query = cardQuery;
-            findModifyArgs.Upsert = true;
-            findModifyArgs.Update = setUpdate;
-            findModifyArgs.VersionReturned = FindAndModifyDocumentVersion.Modified;
+            var options = new FindOneAndUpdateOptions<Set>();
+            options.Sort = setSortBy;
+            options.IsUpsert = true;
+            options.ReturnDocument = ReturnDocument.After;
 
-            var setResult = collection.FindAndModify(findModifyArgs);
-            var setModified = setResult.GetModifiedDocumentAs<Set>();
+            var setResult = collection.FindOneAndUpdate(setQuery, setUpdate, options);
 
-            return setModified;
+            return setResult;
         }
         #endregion
 
@@ -1024,7 +1020,7 @@ namespace NerdBotCommon.Mtg
 
             var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 
-            var query = Query<Set>.EQ(e => e.SearchName, name);
+            var query = Builders<Set>.Filter.Eq(e => e.SearchName, name);
      
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -1048,7 +1044,7 @@ namespace NerdBotCommon.Mtg
 
             var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 
-            var query = Query<Set>.EQ(e => e.Code, code);
+            var query = Builders<Set>.Filter.Eq(e => e.Code, code);
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -1076,12 +1072,12 @@ namespace NerdBotCommon.Mtg
 
             var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 
-            var query = Query<Set>.Matches(e => e.SearchName, new BsonRegularExpression(name, "i"));
+            var query = Builders<Set>.Filter.Regex(e => e.SearchName, new BsonRegularExpression(name, "i"));
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            var set = collection.FindOne(query);
+            var set = collection.Find(query).FirstOrDefault();
 
             watch.Stop();
 
@@ -1098,12 +1094,12 @@ namespace NerdBotCommon.Mtg
             var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
 
             // BsonRegEx in order to do a case insensitive match
-            var query = Query<Set>.Matches(e => e.Code, new BsonRegularExpression(code, "i"));
+            var query = Builders<Set>.Filter.Regex(e => e.Code, new BsonRegularExpression(code, "i"));
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            var sets = collection.FindOne(query);
+            var sets = collection.Find(query).FirstOrDefault();
 
             watch.Stop();
 
@@ -1121,9 +1117,9 @@ namespace NerdBotCommon.Mtg
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            MongoCursor<Set> cursor = collection.FindAll().SetSortOrder("name");
+            var cursor = collection.Find(new BsonDocument()).Sort(Builders<Set>.Sort.Ascending("name")).ToCursor();
 
-            foreach (Set set in cursor)
+            foreach (Set set in cursor.ToEnumerable())
             {
                 sets.Add(set);
             }

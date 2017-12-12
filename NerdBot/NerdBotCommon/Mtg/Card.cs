@@ -193,6 +193,9 @@ namespace NerdBotCommon.Mtg
         [JsonProperty("mciNumber")]
         [BsonElement("mciNumber")]
         public string McINumber { get; set; }
+
+        [BsonIgnoreIfNull]
+        public double? TextMatchScore { get; set; }
     }
 
     public class Ruling
