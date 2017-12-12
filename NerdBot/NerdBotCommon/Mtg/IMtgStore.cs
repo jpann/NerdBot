@@ -22,6 +22,8 @@ namespace NerdBotCommon.Mtg
         Task<List<Card>> AdvancedSearchCards(string name, int limit = 0);
         Task<List<Card>> SearchCards(string name, int skipRecords = 0, int limit = 100);
 
+        Task<List<Card>> FullTextSearch(string term, int limit = 1000);
+
         Task<Card> GetRandomCardByArtist(string artist);
         Task<Card> GetRandomCardInSet(string setName);
         Task<Card> GetRandomCard();

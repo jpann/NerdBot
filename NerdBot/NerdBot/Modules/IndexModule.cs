@@ -57,7 +57,7 @@ namespace NerdBot.Modules
                     });
                 }
 
-                var db_cards = await mtgStore.AdvancedSearchCards(term, limit);
+                var db_cards = await mtgStore.FullTextSearch(term, limit);
 
                 if (db_cards == null)
                 {
@@ -306,7 +306,7 @@ namespace NerdBot.Modules
                     return HttpStatusCode.Accepted;
                 }
 
-                var cards = await mtgStore.SearchCards(name, limit);
+                var cards = await mtgStore.FullTextSearch(name, limit);
 
                 if (cards == null)
                 {

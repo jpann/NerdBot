@@ -582,6 +582,27 @@ namespace NerdBotCommon.Mtg
 
             return cards;
         }
+
+        public async Task<List<Card>> FullTextSearch(string term, int limit = 1000)
+        {
+            if (string.IsNullOrEmpty(term))
+                throw new ArgumentException("term");
+
+            List<Card> cards = new List<Card>();
+
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            cards = collection.Find(Query.Text(term)).SetLimit(limit).ToList();
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return cards;
+        }
         #endregion
 
         #region GetRandomCards
