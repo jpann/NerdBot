@@ -7,6 +7,8 @@ namespace NerdBotCommon.Mtg
     {
         Task<Card> AddCard(Card card);
         Task<Card> CardFindAndModify(Card card);
+        Task<int> RemoveCard(Card card);
+        Task<int> RemoveCard(int multiverseId);
 
         Task<bool> CardExists(int multiverseId);
         Task<bool> CardExists(string name);
@@ -40,6 +42,8 @@ namespace NerdBotCommon.Mtg
 
         Task<Set> AddSet(Set set);
         Task<Set> SetFindAndModify(Set set);
+
+        Task<int> RemoveSet(Set set);
 
         Task<bool> SetExists(string name);
         Task<bool> SetExistsByCode(string code);

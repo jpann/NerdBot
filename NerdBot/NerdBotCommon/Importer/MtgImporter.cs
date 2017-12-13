@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NerdBotCommon.Mtg;
 using SimpleLogging.Core;
@@ -51,6 +52,14 @@ namespace NerdBotCommon.Importer
             {
                 this.mLoggingService.Debug("Read card '{0}'...", card.Name);
 
+                // Don't import card if multiverseId is 0
+                if (card.MultiverseId == 0)
+                {
+                    this.mLoggingService.Warning("Not importing card '{0}' since multiverseId is '0'!", card.Name);
+
+                    continue;
+                }
+
                 var cardInserted = this.mStore.CardFindAndModify(card);
 
                 if (cardInserted.Result != null)
@@ -71,8 +80,21 @@ namespace NerdBotCommon.Importer
                 }
             }
 
-            status.ImportedCards = inserted_Cards;
-            status.FailedCards = failed_Cards;
+            // If no cards were imported, remove the imported set
+            if (!inserted_Cards.Any())
+            {
+                var deleted = this.mStore.RemoveSet(set);
+
+                status.ImportedCards = new List<Card>();
+                status.FailedCards = failed_Cards;
+            }
+            else
+            {
+                status.ImportedCards = inserted_Cards;
+                status.FailedCards = failed_Cards;
+            }
+
+            
 
             return status;
         }

@@ -135,6 +135,31 @@ namespace NerdBotCommon.Mtg
 
             return cardResult;
         }
+
+        public async Task<int> RemoveCard(Card card)
+        {
+            if (card == null)
+                throw new ArgumentNullException("card");
+
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
+
+            var filter = Builders<Card>.Filter.Eq("_id", card.Id);
+
+            var result = collection.DeleteOne(filter);
+
+            return (int)result.DeletedCount;
+        }
+
+        public async Task<int> RemoveCard(int multiverseId)
+        {
+            var collection = this.mDatabase.GetCollection<Card>(cCardsCollectionName);
+
+            var filter = Builders<Card>.Filter.Eq("multiverseId", multiverseId);
+
+            var result = collection.DeleteOne(filter);
+
+            return (int)result.DeletedCount;
+        }
         #endregion
 
         #region CardExists
@@ -1007,6 +1032,20 @@ namespace NerdBotCommon.Mtg
             var setResult = collection.FindOneAndUpdate(setQuery, setUpdate, options);
 
             return setResult;
+        }
+
+        public async Task<int> RemoveSet(Set set)
+        {
+            if (set == null)
+                throw new ArgumentNullException("set");
+
+            var collection = this.mDatabase.GetCollection<Set>(cSetsCollectionName);
+
+            var filter = Builders<Set>.Filter.Eq("_id", set.Id);
+
+            var result = collection.DeleteOne(filter);
+
+            return (int)result.DeletedCount;
         }
         #endregion
 
