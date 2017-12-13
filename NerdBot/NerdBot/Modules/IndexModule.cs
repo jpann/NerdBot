@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Nancy.Extensions;
 using Nancy.ModelBinding;
+using Nancy.Responses;
 using NerdBot.Parsers;
 using NerdBot.Reporters;
 using NerdBot.Web.Queries;
@@ -353,6 +354,13 @@ namespace NerdBot.Modules
                 string setCode = parameters.set;
 
                 var set = await mtgStore.GetSetByCode(setCode);
+
+                // If set doesnt exist, redirect back to sets list
+                if (set == null)
+                {
+                    return Response.AsRedirect("/sets", RedirectResponse.RedirectType.Temporary);
+                }
+
                 var db_cards = await mtgStore.GetCardsBySet(set.Name);
 
                 // Get price information
