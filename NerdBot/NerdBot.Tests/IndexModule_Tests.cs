@@ -8,8 +8,11 @@ using Nancy.Testing;
 using NerdBot.Modules;
 using NerdBot.Parsers;
 using NerdBot.Reporters;
+using NerdBotCommon.Factories;
 using NerdBotCommon.Http;
 using NerdBotCommon.Messengers;
+using NerdBotCommon.Messengers.GroupMe;
+using NerdBotCommon.Modules;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
 using NerdBotCommon.Parsers;
@@ -28,6 +31,7 @@ namespace NerdBot.Tests
         private Mock<ILoggingService> loggerMock;
         private Mock<IPluginManager> pluginManagerMock;
         private Mock<IMessenger> messengerMock;
+        private Mock<IMessengerFactory> messengerFactoryMock;
         private Mock<ICommandParser> commandParserMock;
         private Mock<IReporter> reporterMock;
         private Mock<ICardPriceStore> priceStoreMock;
@@ -35,8 +39,8 @@ namespace NerdBot.Tests
         private List<Card> cardData = new List<Card>();
         private List<Set> setData = new List<Set>();
 
-        private string secretTokenGood = "TOKEN";
-        private string secretTokenBad = "BADTOKEN";
+        private string[] secretTokenGood = new string[] { "TOKEN" };
+        private string[] secretTokenBad = new string[] { "BADTOKEN" };
 
         private void SetUp_Data()
         {
@@ -288,6 +292,7 @@ namespace NerdBot.Tests
             loggerMock = new Mock<ILoggingService>();
             pluginManagerMock = new Mock<IPluginManager>();
             messengerMock = new Mock<IMessenger>();
+            messengerFactoryMock = new Mock<IMessengerFactory>();
             commandParserMock = new Mock<ICommandParser>();
             reporterMock = new Mock<IReporter>();
             priceStoreMock = new Mock<ICardPriceStore>();
@@ -309,12 +314,16 @@ namespace NerdBot.Tests
                     Arguments = new string[] { "boros charm" }
                 });
 
+            // MessengerFactoryMock
+            messengerFactoryMock.Setup(c => c.Create(secretTokenGood[0]))
+                .Returns(() => messengerMock.Object);
+
             // Setup the Browser object
             browserGoodToken = new Browser(with =>
             {
-                with.Module<IndexModule>();
+                with.Module<BotModule>();
                 with.Dependency<IMtgStore>(storeMock.Object);
-                with.Dependency<IMessenger>(messengerMock.Object);
+                with.Dependency<IMessengerFactory>(messengerFactoryMock.Object);
                 with.Dependency<IPluginManager>(pluginManagerMock.Object);
                 with.Dependency<ICommandParser>(commandParserMock.Object);
                 with.Dependency<ILoggingService>(loggerMock.Object);
@@ -322,7 +331,15 @@ namespace NerdBot.Tests
                 with.Dependency<ICardPriceStore>(priceStoreMock.Object);
                 with.Dependency<BotConfig>(new BotConfig()
                 {
-                    SecretToken = secretTokenGood
+                    BotName = "BotName",
+                    BotRoutes = new List<BotRoute>()
+                    {
+                        new BotRoute()
+                        {
+                            SecretToken = secretTokenGood[0],
+                            BotId = "BOTID"
+                        }
+                    }
                 });
             });
         }
@@ -344,7 +361,7 @@ namespace NerdBot.Tests
 ]
 }";
 
-            var response = browserGoodToken.Post("/bot/" + secretTokenGood,
+            var response = browserGoodToken.Post("/bot/" + secretTokenGood[0],
             with =>
             {
                 with.HttpRequest();
@@ -374,7 +391,7 @@ namespace NerdBot.Tests
 ]
 }";
 
-            var response = browserGoodToken.Post("/bot/" + secretTokenGood,
+            var response = browserGoodToken.Post("/bot/" + secretTokenGood[0],
             with =>
             {
                 with.HttpRequest();
@@ -402,7 +419,7 @@ namespace NerdBot.Tests
 ]
 }";
 
-            var response = browserGoodToken.Post("/bot/" + secretTokenBad,
+            var response = browserGoodToken.Post("/bot/" + secretTokenBad[0],
             with =>
             {
                 with.HttpRequest();

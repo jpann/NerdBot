@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -90,11 +91,11 @@ namespace NerdBot
             string dbConnectionString;
             string dbName;
             string priceDbName;
-            string msgrBotId;
+            string[] msgrBotId;
             string msgrBotName;
             string msgrEndPointUrl;
             string[] msgrIgnoreNames;
-            string botRouteToken;
+            string[] botRouteToken;
             string urlUser;
             string urlKey;
             string reporterBotId;
@@ -141,7 +142,7 @@ namespace NerdBot
                 dbName,
                 container.Resolve<ILoggingService>(),
                 container.Resolve<SearchUtility>());
-            container.Register<IMtgStore>(mtgStore);
+            container.Register<IMtgStore, MtgStore>(mtgStore);
 
             // Register the instance of IQueryStatisticsStore
             var queryStatStore = new QueryStatisticsStore(
@@ -157,16 +158,30 @@ namespace NerdBot
             // Register the instance of ICommandParser
             container.Register<ICommandParser, CommandParser>();
 
-            // Register the main instance of IMessenger
-            var groupMeMessenger = new GroupMeMessenger(
-                msgrBotId,
-                msgrBotName,
-                msgrIgnoreNames,
-                msgrEndPointUrl,
-                container.Resolve<IHttpClient>(),
-                container.Resolve<ILoggingService>());
+            // Register IMessenger with names for each BotID.
+            List<BotRoute> botRoutes = new List<BotRoute>();
 
-            container.Register<IMessenger>(groupMeMessenger);
+            for (int i = 0; i < msgrBotId.Length; i++)
+            {
+                var token = botRouteToken[i];
+
+                // Register the new bot instance of IMessenger using the botID as the registration name
+                var groupMeMessenger = new GroupMeMessenger(
+                    msgrBotId[i],
+                    msgrBotName,
+                    msgrIgnoreNames,
+                    msgrEndPointUrl,
+                    container.Resolve<IHttpClient>(),
+                    container.Resolve<ILoggingService>());
+
+                container.Register<IMessenger, GroupMeMessenger>(groupMeMessenger, token);
+
+                botRoutes.Add(new BotRoute()
+                {
+                    SecretToken = token,
+                    BotId = msgrBotId[i]
+                });
+            }
 
             // Register IReporter
             var reporterMessenger = new GroupMeMessenger(
@@ -189,13 +204,14 @@ namespace NerdBot
             container.Register<ICardPriceStore>(priceStore);
 
             // Register BotConfig
-            string secretToken = botRouteToken;
+            string[] secretToken = botRouteToken;
             var botConfig = new BotConfig()
             {
-                SecretToken = secretToken,
+                BotName = msgrBotName,
                 HostUrl = hostUrl,
                 AdminUser = adminUser,
-                AdminPassword =  adminPassword
+                AdminPassword =  adminPassword,
+                BotRoutes = botRoutes
             };
             container.Register(botConfig);
 
@@ -234,11 +250,11 @@ namespace NerdBot
             out string dbConnectionString,
             out string dbName,
             out string priceDbName,
-            out string msgrBotId,
+            out string[] msgrBotId,
             out string msgrBotName,
             out string msgrEndPointUrl,
             out string[] msgrIgnoreNames,
-            out string botRouteToken,
+            out string[] botRouteToken,
             out string urlUser,
             out string urlKey,
             out string reporterBotId,
@@ -263,8 +279,8 @@ namespace NerdBot
             if (string.IsNullOrEmpty(priceDbName))
                 throw new Exception("Configuration file is missing 'priceDbName' setting in section 'Database'.");
 
-            msgrBotId = source.Configs["Messenger"].Get("botId");
-            if (string.IsNullOrEmpty(msgrBotId))
+            msgrBotId = source.Configs["Messenger"].Get("botId").Split('|');
+            if (msgrBotId.Length < 1)
                 throw new Exception("Configuration file is missing 'botId' setting in section 'Messenger'.");
 
             msgrBotName = source.Configs["Messenger"].Get("botName");
@@ -283,9 +299,12 @@ namespace NerdBot
                     msgrIgnoreNames = ignoreNames.Split('|').ToArray();
             }
 
-            botRouteToken = source.Configs["Bot"].Get("routeToken");
-            if (string.IsNullOrEmpty(botRouteToken))
+            botRouteToken = source.Configs["Bot"].Get("routeToken").Split('|');
+            if (botRouteToken.Length < 1)
                 throw new Exception("Configuration file is missing 'routeToken' setting in section 'Bot'.");
+
+            if (botRouteToken.Length < msgrBotId.Length)
+                throw new Exception("Configuration file 'routeToken' setting in section 'Messenger' should have the same number of elements as 'botId', separated by '|'.");
 
             urlUser = source.Configs["UrlShorten"].Get("user");
             if (string.IsNullOrEmpty(urlUser))

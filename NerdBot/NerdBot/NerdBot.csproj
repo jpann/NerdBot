@@ -113,6 +113,7 @@
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="IPluginManager.cs" />
     <Compile Include="Modules\AdminModule.cs" />
+    <Compile Include="Modules\BotModule.cs" />
     <Compile Include="Modules\IndexModule.cs" />
     <Compile Include="Plugin\IMessagePlugin.cs" />
     <Compile Include="Plugin\MessagePluginBase.cs" />
