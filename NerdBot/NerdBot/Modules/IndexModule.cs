@@ -82,7 +82,7 @@ namespace NerdBot.Modules
                     DescSymbols = c.DescWithSymbols,
                     ConvertedManaCost = c.Cmc,
                     Prices = GetCardPrice(priceStore, c.MultiverseId)
-                }).OrderByDescending(c => c.SearchName);
+                });
             
                 sw.Stop();
 
