@@ -31,6 +31,8 @@
         }
 
         th.dt-center, td.dt-center { text-align: center; }
+        table.dataTable tr.odd { background-color: #efefef; } 
+        table.dataTable tr.even { background-color: white; }
     </style>
 
     <script src="@Path['~/Content/js/jquery-3.2.1.min.js']"></script>
@@ -65,9 +67,10 @@
         <thead>
         <tr>
             <th class="col-md-1 dt-body-center"><small>Set</small></th>
-            <th class="col-md-2"><small>Name</small></th>
+            <th class="col-md-1"><small>Name</small></th>
             <th class="col-md-1"><small>Cost</small></th>
-            <th class="col-md-6"><small>Type</small></th>
+            <th class="col-md-2"><small>Type</small></th>
+            <th class="col-md-6"><small>Text</small></th>
             <th class="col-md-1"><small>Price - Mid</small></th>
             <th class="col-md-1"><small>Price - Low</small></th>
         </tr>
@@ -94,7 +97,8 @@
                     { "data" : "symbol" },
                     { "data" : "name" },
                     { "data" : "costSymbols" },
-                    { "data" : "type" },
+                    { "data": "type" },
+                    { "data": "descSymbols" },
                     { "data" : "prices.mid" },
                     { "data" : "prices.low" },
                     { "data" : "img" },
@@ -114,9 +118,9 @@
                     },
                     {
                         'targets':  2,
-                        'orderData': 8
+                        'orderData': 9
                     },
-                    { 'visible': false,  'targets': [ 6, 7, 8 ] }
+                    { 'visible': false,  'targets': [ 7, 8, 9 ] }
                 ],
                 drawCallback: function() {
                     $('[data-toggle=popover]').popover({
