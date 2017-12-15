@@ -284,24 +284,24 @@ namespace NerdBot.Modules
             };
 
             // Get search results
-            Get["/search/{name}", true] = async (parameters, ct) =>
+            Get["/search/{term}", true] = async (parameters, ct) =>
             {
                 var sw = Stopwatch.StartNew();
 
-                int limit = 100;
+                int limit = 1000;
 
-                string name = parameters.name;
+                string term = parameters.term;
 
-                if (string.IsNullOrEmpty(name))
+                if (string.IsNullOrEmpty(term))
                 {
                     return HttpStatusCode.Accepted;
                 }
 
-                var cards = await mtgStore.FullTextSearch(name, limit);
+                var db_cards = await mtgStore.FullTextSearch(term, limit);
 
-                if (cards == null)
+                if (db_cards == null)
                 {
-                    string msg = string.Format("No cards found using name '{0}'", name);
+                    string msg = string.Format("No cards found using name '{0}'", term);
 
                     loggingService.Error(msg);
 
@@ -310,12 +310,34 @@ namespace NerdBot.Modules
 
                 sw.Stop();
 
+                // Get price information
+                var cards = db_cards.Select(c => new
+                {
+                    Name = c.Name,
+                    Code = c.SetId,
+                    Set = c.SetName,
+                    Cost = c.Cost,
+                    CostSymbols = c.CostWithSymbols,
+                    Type = c.FullType,
+                    Rarity = c.Rarity,
+                    Img = c.Img,
+                    MultiverseId = c.MultiverseId,
+                    SearchName = c.SearchName,
+                    Symbol = c.SetAsKeyRuneIcon,
+                    Desc = c.Desc,
+                    DescSymbols = c.DescWithSymbols,
+                    ConvertedManaCost = c.Cmc,
+                    Prices = GetCardPrice(priceStore, c.MultiverseId)
+                }).ToList();
+
+                sw.Stop();
+
                 return View["index/search.html", new
                 {
-                    SearchTerm = name, 
+                    SearchTerm = term,
                     Limit = limit,
                     Elapsed = sw.Elapsed.ToString(),
-                    Cards = cards
+                    Cards = cards,
                 }];
             };
 
