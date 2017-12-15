@@ -119,7 +119,8 @@ namespace NerdBot.Modules
                     Desc = c.Desc,
                     DescSymbols = c.DescWithSymbols,
                     ConvertedManaCost = c.Cmc,
-                    SetSymbol = c.SetAsKeyRuneIcon
+                    SetSymbol = c.SetAsKeyRuneIcon,
+                    Prices = GetCardPrice(priceStore, c.MultiverseId)
                 }).OrderByDescending(c => c.SearchName);
 
                 return View["set.html", new
@@ -225,6 +226,20 @@ namespace NerdBot.Modules
             };
 
             #endregion
+        }
+
+        private dynamic GetCardPrice(ICardPriceStore priceStore, int multiverseId)
+        {
+            var price = priceStore.GetCardPrice(multiverseId);
+
+            return new
+            {
+                Url = price != null ? price.Url : "",
+                Low = price != null ? price.PriceLow : "",
+                Mid = price != null ? price.PriceMid : "",
+                Foil = price != null ? price.PriceFoil : "",
+                Diff = price != null ? price.PriceDiff : "",
+            };
         }
     }
 }

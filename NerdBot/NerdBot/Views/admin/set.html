@@ -73,11 +73,13 @@
             <table id="cards-table" class="display responsive table-hover stripe row-border" cellspacing="0" width="100%">
                 <thead>
                 <tr>
-                    <th class="col-md-1"><small>Set</small></th>
-                    <th class="col-md-2"><small>Name</small></th>
+                    <th class="col-md-1 dt-body-center"><small>Set</small></th>
+                    <th class="col-md-1"><small>Name</small></th>
                     <th class="col-md-1"><small>Cost</small></th>
-                    <th class="col-md-3"><small>Type</small></th>
-                    <th class="col-md-5"><small>Text</small></th>
+                    <th class="col-md-2"><small>Type</small></th>
+                    <th class="col-md-6"><small>Text</small></th>
+                    <th class="col-md-1"><small>Price - Mid</small></th>
+                    <th class="col-md-1"><small>Price - Low</small></th>
                     <th class="col-md-1"><small>CMC</small></th>
                 </tr>
                 </thead>
@@ -91,6 +93,8 @@
                     <td>@Current.CostSymbols</td>
                     <td>@Current.Type</td>
                     <td>@Current.DescSymbols</td>
+                    <td>@Current.Prices.Mid</td>
+                    <td>@Current.Prices.Low</td>
                     <td>@Current.ConvertedManaCost</td>
                 </tr>
                 @EndEach
@@ -120,9 +124,9 @@
                 },
                 {
                     'targets': [2],
-                    'orderData': 5
+                    'orderData': 7
                 },
-                { 'visible': false, 'targets': [5] }]
+                { 'visible': false, 'targets': [7] }]
         });
     });
 </script>

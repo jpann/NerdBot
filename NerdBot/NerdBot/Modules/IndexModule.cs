@@ -392,7 +392,8 @@ namespace NerdBot.Modules
                     Desc = c.Desc,
                     DescSymbols = c.DescWithSymbols,
                     ConvertedManaCost = c.Cmc,
-                    SetSymbol = c.SetAsKeyRuneIcon
+                    SetSymbol = c.SetAsKeyRuneIcon,
+                    Prices = GetCardPrice(priceStore, c.MultiverseId)
                 }).OrderByDescending(c => c.SearchName);
 
                 return View["set.html", new
