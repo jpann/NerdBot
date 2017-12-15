@@ -3,14 +3,13 @@ using System.Linq;
 using Nancy;
 using Nancy.Extensions;
 using Nancy.ModelBinding;
-using NerdBot;
 using NerdBot.Parsers;
 using NerdBot.Reporters;
 using NerdBotCommon.Factories;
 using NerdBotCommon.Messengers.GroupMe;
 using SimpleLogging.Core;
 
-namespace NerdBotCommon.Modules
+namespace NerdBot.Modules
 {
     public class BotModule : NancyModule
     {
