@@ -107,7 +107,7 @@
     <Compile Include="PriceStore\EchoMtgPriceStore_Remove_Tests.cs" />
     <Compile Include="PriceStore\EchoMtgPriceStore_Tests.cs" />
     <Compile Include="GroupMeMessenger_Tests.cs" />
-    <Compile Include="IndexModule_Tests.cs" />
+    <Compile Include="BotModule_Tests.cs" />
     <Compile Include="MtgStore_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -21,7 +21,7 @@ using SimpleLogging.Core;
 namespace NerdBot.Tests
 {
     [TestFixture]
-    class IndexModule_Tests
+    class BotModule_Tests
     {
         private Browser browserGoodToken;
 
@@ -313,6 +313,13 @@ namespace NerdBot.Tests
                     Arguments = new string[] { "boros charm" }
                 });
 
+            commandParserMock.Setup(c => c.Parse("help img"))
+                .Returns(() => new Command()
+                {
+                    Cmd = "help",
+                    Arguments = new string[] { "img" }
+                });
+
             // MessengerFactoryMock
             messengerFactoryMock.Setup(c => c.Create(secretTokenGood[0]))
                 .Returns(() => messengerMock.Object);
@@ -370,6 +377,92 @@ namespace NerdBot.Tests
 
             // Verify that the command parser was given this message to try and parse
             commandParserMock.Verify(c => c.Parse("img boros charm"));
+
+            Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
+        }
+
+        [Test]
+        public void ValidMessage_FromBotName()
+        {
+            string groupMeMessageBody = @"{
+""id"":""141909488216484256"",
+""source_guid"":""b4182bb58a18ba162b29434"",
+""created_at"":1419094882,
+""user_id"":""111111"",
+""group_id"":""9999999"",
+""name"":""BotName"",
+""avatar_url"":""https://i.groupme.com/668x401.jpeg"",
+""text"":""Bot Message"",
+""system"":false,
+""attachments"":[
+]
+}";
+
+            var response = browserGoodToken.Post("/bot/" + secretTokenGood[0],
+                with =>
+                {
+                    with.HttpRequest();
+                    with.Body(groupMeMessageBody);
+                    with.Header("content-type", "application/json");
+                });
+
+            Assert.AreEqual(HttpStatusCode.NotAcceptable, response.StatusCode);
+        }
+
+        [Test]
+        public void ValidMessage_EmptyText()
+        {
+            string groupMeMessageBody = @"{
+""id"":""141909488216484256"",
+""source_guid"":""b4182bb58a18ba162b29434"",
+""created_at"":1419094882,
+""user_id"":""111111"",
+""group_id"":""9999999"",
+""name"":""User Name"",
+""avatar_url"":""https://i.groupme.com/668x401.jpeg"",
+""text"":"""",
+""system"":false,
+""attachments"":[
+]
+}";
+
+            var response = browserGoodToken.Post("/bot/" + secretTokenGood[0],
+                with =>
+                {
+                    with.HttpRequest();
+                    with.Body(groupMeMessageBody);
+                    with.Header("content-type", "application/json");
+                });
+
+            Assert.AreEqual(HttpStatusCode.NotAcceptable, response.StatusCode);
+        }
+
+        [Test]
+        public void ValidMessage_HelpCommand()
+        {
+            string groupMeMessageBody = @"{
+""id"":""141909488216484256"",
+""source_guid"":""b4182bb58a18ba162b29434"",
+""created_at"":1419094882,
+""user_id"":""111111"",
+""group_id"":""9999999"",
+""name"":""User Name"",
+""avatar_url"":""https://i.groupme.com/668x401.jpeg"",
+""text"":""help img"",
+""system"":false,
+""attachments"":[
+]
+}";
+
+            var response = browserGoodToken.Post("/bot/" + secretTokenGood[0],
+                with =>
+                {
+                    with.HttpRequest();
+                    with.Body(groupMeMessageBody);
+                    with.Header("content-type", "application/json");
+                });
+
+            pluginManagerMock.Verify(c => c.HandledHelpCommand(It.Is<Command>(cmd => cmd.Cmd == "help" && cmd.Arguments[0] == "img"), It.IsAny<IMessenger>()));
 
             Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
         }
