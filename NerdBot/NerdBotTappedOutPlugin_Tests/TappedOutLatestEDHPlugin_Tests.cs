@@ -65,47 +65,6 @@ namespace NerdBotTappedOutPlugin_Tests
    }
 ]";
 
-        public string GetSearchValue(string text)
-        {
-            Regex rgx = new Regex("[^a-zA-Z0-9.^*]");
-
-            string searchValue = text.ToLower();
-
-            // Remove all non a-zA-Z0-9.^ characters
-            searchValue = rgx.Replace(searchValue, "");
-
-            // Remove all spaces
-            searchValue = searchValue.Replace(" ", "");
-
-            return searchValue;
-        }
-
-        public string GetRegexSearchValue(string text)
-        {
-            Regex rgx = new Regex("[^a-zA-Z0-9.^*]");
-
-            string searchValue = text.ToLower();
-
-            // Replace * and % with a regex '*' char
-            searchValue = searchValue.Replace("%", ".*");
-
-            // If the first character of the searchValue is not '*', 
-            // meaning the user does not want to do a contains search,
-            // explicitly use a starts with regex
-            if (!searchValue.StartsWith(".*"))
-            {
-                searchValue = "^" + searchValue;
-            }
-
-            // Remove all non a-zA-Z0-9.^ characters
-            searchValue = rgx.Replace(searchValue, "");
-
-            // Remove all spaces
-            searchValue = searchValue.Replace(" ", "");
-
-            return searchValue;
-        }
-
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
@@ -116,10 +75,10 @@ namespace NerdBotTappedOutPlugin_Tests
             queryStatisticsStoreMock = new Mock<IQueryStatisticsStore>();
 
             searchUtilityMock.Setup(s => s.GetSearchValue(It.IsAny<string>()))
-                .Returns((string s) => this.GetSearchValue(s));
+                .Returns((string s) => SearchHelper.GetSearchValue(s));
 
             searchUtilityMock.Setup(s => s.GetRegexSearchValue(It.IsAny<string>()))
-                .Returns((string s) => this.GetRegexSearchValue(s));
+                .Returns((string s) => SearchHelper.GetRegexSearchValue(s));
 
             mtgStore = new MtgStore(
                 testConfig.Url, 
