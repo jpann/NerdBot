@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using NerdBotCommon.Http;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
+using NerdBotCommon.Statistics;
 using NerdBotCommon.Utilities;
 using NerdBot_PriceUpdater.PriceUpdaters;
 using Nini.Config;
@@ -37,10 +38,19 @@ namespace NerdBot_PriceUpdater
             // Register the instance of IHttpClient
              TinyIoCContainer.Current.Register<IHttpClient, SimpleHttpClient>();
 
+            // Register the instance of IQueryStatisticsStore
+            var queryStatStore = new QueryStatisticsStore(
+                dbConnectionString,
+                dbConnectionString,
+                TinyIoCContainer.Current.Resolve<ILoggingService>()
+            );
+            TinyIoCContainer.Current.Register<IQueryStatisticsStore>(queryStatStore);
+
             // Register the instance of IMtgStore
             var mtgStore = new MtgStore(
                 dbConnectionString,
                 mtgDbName,
+                TinyIoCContainer.Current.Resolve<IQueryStatisticsStore>(),
                 TinyIoCContainer.Current.Resolve<ILoggingService>(),
                 TinyIoCContainer.Current.Resolve<SearchUtility>());
             TinyIoCContainer.Current.Register<IMtgStore>(mtgStore);

@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using NerdBot;
-using NerdBot.Parsers;
 using NerdBot.Plugin;
-using NerdBotCommon.Http;
 using NerdBotCommon.Messengers;
 using NerdBotCommon.Mtg;
-using NerdBotCommon.Mtg.Prices;
 using NerdBotCommon.Parsers;
-using NerdBotCommon.UrlShortners;
 
 namespace NerdBotCoreCommands
 {
@@ -48,19 +41,11 @@ namespace NerdBotCoreCommands
         }
 
         public RandomSetCardPlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener,
+                IBotServices services,
                 BotConfig config
             )
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
         }
@@ -91,7 +76,7 @@ namespace NerdBotCoreCommands
 
             if (command.Arguments.Length == 1)
             {
-                Card card = await base.Store.GetRandomCardInSet(command.Arguments[0]);
+                Card card = await this.Services.Store.GetRandomCardInSet(command.Arguments[0]);
 
                 if (card != null)
                 {

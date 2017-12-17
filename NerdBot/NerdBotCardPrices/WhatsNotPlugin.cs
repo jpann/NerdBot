@@ -47,19 +47,11 @@ namespace NerdBotCardPrices
         }
 
         public WhatsNotPlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener,
+                IBotServices services,
                 BotConfig config
             )
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
         }
@@ -88,7 +80,7 @@ namespace NerdBotCardPrices
             if (messenger == null)
                 throw new ArgumentNullException("messenger");
 
-            List <CardPrice> hotCards = this.PriceStore.GetCardsByPriceDecrease(5);
+            List <CardPrice> hotCards = this.Services.PriceStore.GetCardsByPriceDecrease(5);
 
             if (hotCards != null)
             {

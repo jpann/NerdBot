@@ -47,19 +47,11 @@ namespace NerdBotCoreCommands
         }
 
         public GetRandomCardByDescriptionPlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener,
+                IBotServices services,
                 BotConfig config
             )
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
         }
@@ -99,7 +91,7 @@ namespace NerdBotCoreCommands
                     if (string.IsNullOrEmpty(ability))
                         return false;
 
-                    card = await this.Store.GetRandomCardWithDescription(ability);
+                    card = await this.Services.Store.GetRandomCardWithDescription(ability);
                 }
 
                 if (card != null)
@@ -107,7 +99,7 @@ namespace NerdBotCoreCommands
                     messenger.SendMessage(card.Img);
 
                     // Get other sets card is in
-                    List<Set> otherSets = await base.Store.GetCardOtherSets(card.MultiverseId);
+                    List<Set> otherSets = await this.Services.Store.GetCardOtherSets(card.MultiverseId);
                     if (otherSets.Any())
                     {
                         string msg = string.Format("Also in sets: {0}",

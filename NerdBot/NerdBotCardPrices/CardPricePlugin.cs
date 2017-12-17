@@ -49,19 +49,11 @@ namespace NerdBotCardPrices
         }
 
         public CardPricePlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener,
+                IBotServices services,
                 BotConfig config
             )
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
         }
@@ -102,7 +94,7 @@ namespace NerdBotCardPrices
                         return false;
 
                     // Get card using only name
-                    card = await this.mStore.GetCard(name);
+                    card = await this.Services.Store.GetCard(name);
                 }
                 else if (command.Arguments.Length == 2)
                 {
@@ -116,17 +108,17 @@ namespace NerdBotCardPrices
                         return false;
 
                     // Get card using only name
-                    card = await this.mStore.GetCard(name, set);
+                    card = await this.Services.Store.GetCard(name, set);
                 }
 
                 if (card != null)
                 {
-                    var tcgPrice = this.mPriceStore.GetCardPrice(card.Name, card.SetId);
+                    var tcgPrice = this.Services.PriceStore.GetCardPrice(card.Name, card.SetId);
 
                     // If price is null, check again without using set code
                     if (tcgPrice == null)
                     {
-                        tcgPrice = this.mPriceStore.GetCardPrice(card.Name);
+                        tcgPrice = this.Services.PriceStore.GetCardPrice(card.Name);
                     }
 
                     if (tcgPrice != null)
@@ -150,7 +142,7 @@ namespace NerdBotCardPrices
                                 !string.IsNullOrEmpty(tcgPrice.PriceDiff) ? tcgPrice.PriceDiff : "0%");
 
                         // Get other sets card is in
-                        List<Set> otherSets = await base.Store.GetCardOtherSets(card.MultiverseId);
+                        List<Set> otherSets = await this.Services.Store.GetCardOtherSets(card.MultiverseId);
                         if (otherSets.Any())
                         {
                             msg += string.Format(". Also appears in sets: {0}",
@@ -181,7 +173,7 @@ namespace NerdBotCardPrices
 
                     name = name.Replace(" ", "%");
 
-                    card = await this.Store.GetCard(name);
+                    card = await this.Services.Store.GetCard(name);
 					if (card != null)
 					{
 						LoggingService.Trace("Second try using '{0}' returned a card. Suggesting '{0}'...", name, card.Name);

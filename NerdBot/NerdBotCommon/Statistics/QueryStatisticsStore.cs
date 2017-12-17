@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using SimpleLogging.Core;
@@ -9,12 +11,12 @@ namespace NerdBotCommon.Statistics
     {
         private readonly string mConnectionString;
         private readonly string mDatabaseName;
-        private readonly MongoClient mClient;
-        private readonly MongoServer mServer;
-        private readonly MongoDatabase mDatabase;
+        private readonly IMongoClient mClient;
+        private readonly IMongoDatabase mDatabase;
         private readonly ILoggingService mLoggingService;
 
         private const string cCardQueryCollection = "card_query_stats";
+        private const string cQueryCollection = "query_stats";
 
         public QueryStatisticsStore(
             string connectionString, 
@@ -33,12 +35,11 @@ namespace NerdBotCommon.Statistics
             this.mConnectionString = connectionString;
             this.mDatabaseName = databaseName;
             this.mClient = new MongoClient(this.mConnectionString);
-            this.mServer = this.mClient.GetServer();
-            this.mDatabase = this.mServer.GetDatabase(this.mDatabaseName);
+            this.mDatabase = this.mClient.GetDatabase(this.mDatabaseName);
             this.mLoggingService = loggingService;
         }
 
-        public async Task<bool> InsertCardQueryStat(string userName, int userId, int multiverseId)
+        public async Task<bool> InsertCardQueryStat(string userName, string userId, int multiverseId, string searchTerm)
         {
             if (string.IsNullOrEmpty(userName))
                 throw new ArgumentNullException("userName");
@@ -48,94 +49,197 @@ namespace NerdBotCommon.Statistics
                 UserId = userId,
                 UserName = userName,
                 MultiverseId = multiverseId,
+                SearchTerm = searchTerm,
                 Date = DateTime.Now
             };
 
             var collection = this.mDatabase.GetCollection<CardQueryStat>(cCardQueryCollection);
 
-            collection.Save(stat);
+            collection.InsertOne(stat);
 
             return true;
         }
 
-        public async Task<CardQueryStatData> GetCardQueryStatByMultiverseId(int multiverseId)
+        public async Task<List<CardQueryStat>> GetCardQueryStatsByMultiverseId(int multiverseId)
         {
             var collection = this.mDatabase.GetCollection<CardQueryStat>(cCardQueryCollection);
 
-         //   var match = new BsonDocument
-	        //{
-		       // {
-			      //  "$match", new BsonDocument
-			      //  {
-				     //   { "multiverseId", multiverseId }
-			      //  }
-		       // }
-	        //};
+            List<CardQueryStat> stats = new List<CardQueryStat>();
 
-         //   var group = new BsonDocument 
-	        //{ 
-		       // { 
-			      //  "$group", new BsonDocument
-			      //  {
-				     //   {
-					    //    "_id", new BsonDocument
-					    //    {
-						   //     { "userName", "$userName" }
-					    //    }
-				     //   },
-				     //   {
-					    //    "Count", new BsonDocument
-					    //    {
-						   //     { "$sum", 1 }
-					    //    }
-				     //   }
-			      //  }
-		       // } 
-	        //};
+            var query = Builders<CardQueryStat>.Filter.Eq("multiverseId", multiverseId);
 
-         //   var sort = new BsonDocument
-	        //{
-		       // {
-			      //  "$sort", new BsonDocument
-			      //  {
-				     //   { "Count", -1 }
-			      //  }
-		       // }
-	        //};
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
 
-         //   var pipeline = new[] { match, group, sort };
-         //   var result = collection.Aggregate(pipeline);
+            var cursor = collection.Find(query)
+                .Sort(Builders<CardQueryStat>.Sort.Ascending("dateTime")).ToCursor();
 
-         //   var matches = result.ResultDocuments
-         //       .Select(x => x.AsBsonDocument)
-         //       .ToList();
+            foreach (CardQueryStat stat in cursor.ToEnumerable())
+            {
+                stats.Add(stat);
+            }
 
-         //   if (matches.Any())
-         //   {
-         //       CardQueryStatData stat = new CardQueryStatData()
-         //       {
-         //           UserName = matches[0].GetValue("_id")["userName"].AsString,
-         //           Count = matches[0].GetValue("Count").ToInt32(),
-         //           MultiverseId = multiverseId
-         //       };
+            watch.Stop();
 
-         //       return stat;
-         //   }
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
 
-            return null;
+            return stats;
         }
 
-        public async Task<CardQueryStatData> GetCardQueryStatByUserId(int userId)
+        public async Task<List<CardQueryStat>> GetCardQueryStatsByUserId(string userId)
         {
-            throw new NotImplementedException();
+            var collection = this.mDatabase.GetCollection<CardQueryStat>(cCardQueryCollection);
+
+            List<CardQueryStat> stats = new List<CardQueryStat>();
+
+            var query = Builders<CardQueryStat>.Filter.Eq("userId", userId);
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            var cursor = collection.Find(query)
+                .Sort(Builders<CardQueryStat>.Sort.Ascending("dateTime")).ToCursor();
+
+            foreach (CardQueryStat stat in cursor.ToEnumerable())
+            {
+                stats.Add(stat);
+            }
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return stats;
         }
 
-        public async Task<CardQueryStatData> GetCardQueryStatByUserName(string userName)
+        public async Task<List<CardQueryStat>> GetCardQueryStatsByUserName(string userName)
         {
             if (string.IsNullOrEmpty(userName))
                 throw new ArgumentNullException("userName");
 
-            throw new NotImplementedException();
+            var collection = this.mDatabase.GetCollection<CardQueryStat>(cCardQueryCollection);
+
+            List<CardQueryStat> stats = new List<CardQueryStat>();
+
+            var query = Builders<CardQueryStat>.Filter.Eq("userName", userName);
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            var cursor = collection.Find(query)
+                .Sort(Builders<CardQueryStat>.Sort.Ascending("dateTime")).ToCursor();
+
+            foreach (CardQueryStat stat in cursor.ToEnumerable())
+            {
+                stats.Add(stat);
+            }
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return stats;
+        }
+
+        public async Task<List<CardQueryStat>> GetCardQueryStatsBySearchTerm(string searchTerm)
+        {
+            if (string.IsNullOrEmpty(searchTerm))
+                throw new ArgumentNullException("searchTerm");
+
+            var collection = this.mDatabase.GetCollection<CardQueryStat>(cCardQueryCollection);
+
+            List<CardQueryStat> stats = new List<CardQueryStat>();
+
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            var filter = Builders<CardQueryStat>.Filter.Text(searchTerm);
+            var projection = Builders<CardQueryStat>.Projection.MetaTextScore("TextMatchScore");
+            var sort = Builders<CardQueryStat>.Sort.MetaTextScore("TextMatchScore");
+
+            stats = collection.Find(filter)
+                .Project<CardQueryStat>(projection)
+                .Sort(sort)
+                .ToList();
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return stats;
+        }
+
+        public async void InsertQueryStat(string searchTerm, int multiverseId)
+        {
+            if (string.IsNullOrEmpty(searchTerm))
+                throw new ArgumentNullException("searchTerm");
+
+            QueryStat stat = new QueryStat()
+            {
+                MultiverseId = multiverseId,
+                SearchTerm = searchTerm,
+                Date = DateTime.Now
+            };
+
+            var collection = this.mDatabase.GetCollection<QueryStat>(cQueryCollection);
+
+            collection.InsertOne(stat);
+        }
+
+        public async Task<List<QueryStat>> GetQueryStatsBySearchTerm(string searchTerm)
+        {
+            if (string.IsNullOrEmpty(searchTerm))
+                throw new ArgumentNullException("searchTerm");
+
+            var collection = this.mDatabase.GetCollection<QueryStat>(cQueryCollection);
+
+            List<QueryStat> stats = new List<QueryStat>();
+
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            var filter = Builders<QueryStat>.Filter.Text(searchTerm);
+            var projection = Builders<QueryStat>.Projection.MetaTextScore("TextMatchScore");
+            var sort = Builders<QueryStat>.Sort.MetaTextScore("TextMatchScore");
+
+            stats = collection.Find(filter)
+                .Project<QueryStat>(projection)
+                .Sort(sort)
+                .ToList();
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return stats;
+        }
+
+        public async Task<List<QueryStat>> GetQueryStatsByMultiverseId(int multiverseId)
+        {
+            var collection = this.mDatabase.GetCollection<QueryStat>(cQueryCollection);
+
+            List<QueryStat> stats = new List<QueryStat>();
+
+            var query = Builders<QueryStat>.Filter.Eq("multiverseId", multiverseId);
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            var cursor = collection.Find(query)
+                .Sort(Builders<QueryStat>.Sort.Ascending("dateTime")).ToCursor();
+
+            foreach (QueryStat stat in cursor.ToEnumerable())
+            {
+                stats.Add(stat);
+            }
+
+            watch.Stop();
+
+            this.mLoggingService.Trace("Elapsed time: {0}", watch.Elapsed);
+
+            return stats;
         }
     }
 }

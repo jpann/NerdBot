@@ -10,12 +10,14 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using NerdBot.Plugin;
 using NerdBot.TestsHelper;
 using NerdBotCommon.Http;
 using NerdBotCommon.Messengers;
 using NerdBotCommon.Messengers.GroupMe;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
+using NerdBotCommon.Statistics;
 using NerdBotCommon.UrlShortners;
 using NerdBotCommon.Utilities;
 
@@ -35,6 +37,8 @@ namespace NerdBotRedditTopCommentResponsePlugin_Tests
         private Mock<IMessenger> messengerMock;
         private Mock<ILoggingService> loggingServiceMock;
         private Mock<ICardPriceStore> priceStoreMock;
+        private Mock<IBotServices> servicesMock;
+        private Mock<IQueryStatisticsStore> queryStatisticsStoreMock;
         private Mock<SearchUtility> searchUtilityMock;
 
         public string GetSearchValue(string text)
@@ -85,6 +89,7 @@ namespace NerdBotRedditTopCommentResponsePlugin_Tests
 
             loggingServiceMock = new Mock<ILoggingService>();
             searchUtilityMock = new Mock<SearchUtility>();
+            queryStatisticsStoreMock = new Mock<IQueryStatisticsStore>();
 
             searchUtilityMock.Setup(s => s.GetSearchValue(It.IsAny<string>()))
                 .Returns((string s) => this.GetSearchValue(s));
@@ -95,6 +100,7 @@ namespace NerdBotRedditTopCommentResponsePlugin_Tests
             mtgStore = new MtgStore(
                 testConfig.Url,
                 testConfig.Database,
+                queryStatisticsStoreMock.Object,
                 loggingServiceMock.Object,
                 searchUtilityMock.Object);
         }
@@ -116,12 +122,28 @@ namespace NerdBotRedditTopCommentResponsePlugin_Tests
             // Setup IMessenger Mocks
             messengerMock = new Mock<IMessenger>();
 
-            plugin = new RedditTopCommentPlugin(
-                mtgStore,
-                priceStoreMock.Object,
-                commandParserMock.Object,
-                httpClient,
-                urlShortenerMock.Object);
+            // Setup IBotServices Mocks
+            servicesMock = new Mock<IBotServices>();
+
+            servicesMock.SetupGet(s => s.QueryStatisticsStore)
+                .Returns(queryStatisticsStoreMock.Object);
+
+            servicesMock.SetupGet(s => s.Store)
+                .Returns(mtgStore);
+
+            servicesMock.SetupGet(s => s.PriceStore)
+                .Returns(priceStoreMock.Object);
+
+            servicesMock.SetupGet(s => s.CommandParser)
+                .Returns(commandParserMock.Object);
+
+            servicesMock.SetupGet(s => s.HttpClient)
+                .Returns(httpClient);
+
+            servicesMock.SetupGet(s => s.UrlShortener)
+                .Returns(urlShortenerMock.Object);
+
+            plugin = new RedditTopCommentPlugin(servicesMock.Object);
 
             plugin.BotName = "TEST";
 

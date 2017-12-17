@@ -48,19 +48,11 @@ namespace NerdBotCoreCommands
         }
 
         public GetCardStaticAbilityPlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener,
+                IBotServices services,
                 BotConfig config
             )
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
         }
@@ -100,7 +92,7 @@ namespace NerdBotCoreCommands
                     if (string.IsNullOrEmpty(ability))
                         return false;
 
-                    card = await this.Store.GetRandomCardWithStaticAbility(ability);
+                    card = await this.Services.Store.GetRandomCardWithStaticAbility(ability);
                 }
 
                 if (card != null)

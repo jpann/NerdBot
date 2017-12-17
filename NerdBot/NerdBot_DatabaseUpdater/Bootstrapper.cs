@@ -5,6 +5,7 @@ using NerdBotCommon.Importer;
 using NerdBotCommon.Importer.Mapper;
 using NerdBotCommon.Importer.MtgData;
 using NerdBotCommon.Mtg;
+using NerdBotCommon.Statistics;
 using NerdBotCommon.Utilities;
 using Nini.Config;
 using SimpleLogging.Core;
@@ -32,10 +33,19 @@ namespace NerdBot_DatabaseUpdater
             // Register the instance of ILoggingService
             TinyIoCContainer.Current.Register<ILoggingService>((c, p) => new NLogLoggingService());
 
+            // Register the instance of IQueryStatisticsStore
+            var queryStatStore = new QueryStatisticsStore(
+                dbConnectionString,
+                mtgDbName,
+                TinyIoCContainer.Current.Resolve<ILoggingService>()
+            );
+            TinyIoCContainer.Current.Register<IQueryStatisticsStore>(queryStatStore);
+
             // Register the instance of IMtgStore
             var mtgStore = new MtgStore(
                 dbConnectionString,
                 mtgDbName,
+                TinyIoCContainer.Current.Resolve<IQueryStatisticsStore>(),
                 TinyIoCContainer.Current.Resolve<ILoggingService>(),
                 TinyIoCContainer.Current.Resolve<SearchUtility>());
             TinyIoCContainer.Current.Register<IMtgStore>(mtgStore);

@@ -48,19 +48,11 @@ namespace NerdBotCoreCommands
         }
 
         public RandomArtistPlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener,
+                IBotServices services,
                 BotConfig config
             )
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
         }
@@ -91,7 +83,7 @@ namespace NerdBotCoreCommands
 
             if (command.Arguments.Length == 1)
             {
-                Card card = await base.Store.GetRandomCardByArtist(command.Arguments[0]);
+                Card card = await this.Services.Store.GetRandomCardByArtist(command.Arguments[0]);
 
                 if (card != null)
                 {

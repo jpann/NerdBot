@@ -49,19 +49,11 @@ namespace NerdBotGiphyPlugin
         }
 
         public GiphyPlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener,
+                IBotServices services,
                 BotConfig config
             )
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
         }
@@ -94,7 +86,7 @@ namespace NerdBotGiphyPlugin
 
 			try
 			{
-	            var giphyFetcher = new GiphyFetcher(url, base.HttpClient);
+	            var giphyFetcher = new GiphyFetcher(url, this.Services.HttpClient);
 
 	            if (command.Arguments.Any())
 	            {

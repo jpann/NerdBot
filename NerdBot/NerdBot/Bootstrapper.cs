@@ -11,6 +11,7 @@ using Nancy.Json;
 using Nancy.TinyIoc;
 using NerdBot.Admin;
 using NerdBot.Parsers;
+using NerdBot.Plugin;
 using NerdBot.Reporters;
 using NerdBotCommon.Http;
 using NerdBotCommon.Importer;
@@ -20,6 +21,7 @@ using NerdBotCommon.Messengers;
 using NerdBotCommon.Messengers.GroupMe;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
+using NerdBotCommon.Plugin;
 using NerdBotCommon.Statistics;
 using NerdBotCommon.UrlShortners;
 using NerdBotCommon.Utilities;
@@ -136,21 +138,22 @@ namespace NerdBot
                 urlKey);
             container.Register<IUrlShortener>(bitlyUrl);
 
-            // Register the instance of IMtgStore
-            var mtgStore = new MtgStore(
-                dbConnectionString,
-                dbName,
-                container.Resolve<ILoggingService>(),
-                container.Resolve<SearchUtility>());
-            container.Register<IMtgStore, MtgStore>(mtgStore);
-
             // Register the instance of IQueryStatisticsStore
             var queryStatStore = new QueryStatisticsStore(
                 dbConnectionString,
                 dbName,
                 container.Resolve<ILoggingService>()
-                );
+            );
             container.Register<IQueryStatisticsStore>(queryStatStore);
+
+            // Register the instance of IMtgStore
+            var mtgStore = new MtgStore(
+                dbConnectionString,
+                dbName,
+                container.Resolve<IQueryStatisticsStore>(),
+                container.Resolve<ILoggingService>(),
+                container.Resolve<SearchUtility>());
+            container.Register<IMtgStore, MtgStore>(mtgStore);
 
             // Register the instance of IHttpClient
             container.Register<IHttpClient, SimpleHttpClient>();
@@ -202,6 +205,9 @@ namespace NerdBot
                 container.Resolve<ILoggingService>(),
                 container.Resolve<SearchUtility>());
             container.Register<ICardPriceStore>(priceStore);
+
+            // Register the instance of IBotServices
+            container.Register<IBotServices, BotServices>();
 
             // Register BotConfig
             string[] secretToken = botRouteToken;

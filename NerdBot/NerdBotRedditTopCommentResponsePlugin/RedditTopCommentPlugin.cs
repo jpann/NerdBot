@@ -37,23 +37,15 @@ namespace NerdBotRedditTopCommentResponsePlugin
         }
 
         public RedditTopCommentPlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener)
+                IBotServices services)
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener)
+                services)
         {
         }
 
         public override void OnLoad()
         {
-            this.mFetcher = new RedditTopFetcher(this.mHttpClient);
+            this.mFetcher = new RedditTopFetcher(this.Services.HttpClient);
             this.mRandom = new Random();
         }
 

@@ -50,19 +50,11 @@ namespace NerdBotCoreCommands
         }
 
         public RulingPlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener,
+                IBotServices services,
                 BotConfig config
             )
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
         }
@@ -103,7 +95,7 @@ namespace NerdBotCoreCommands
                         return false;
 
                     // Get card using only name
-                    card = await this.Store.GetCard(name);
+                    card = await this.Services.Store.GetCard(name);
                 }
                 else if (command.Arguments.Length == 2)
                 {
@@ -117,7 +109,7 @@ namespace NerdBotCoreCommands
                         return false;
 
                     // Get card using only name
-                    card = await this.Store.GetCard(name, set);
+                    card = await this.Services.Store.GetCard(name, set);
                 }
 
                 if (card != null)

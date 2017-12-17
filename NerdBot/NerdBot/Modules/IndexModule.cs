@@ -34,7 +34,7 @@ namespace NerdBot.Modules
             {
                 var sw = Stopwatch.StartNew();
 
-                int limit = 200;
+                int limit = 1000;
 
                 string term = parameters.term;
 

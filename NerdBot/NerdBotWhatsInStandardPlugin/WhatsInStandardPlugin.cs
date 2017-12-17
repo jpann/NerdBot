@@ -48,19 +48,11 @@ namespace NerdBotWhatsInStandardPlugin
         }
 
         public WhatsInStandardPlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener,
+                IBotServices services,
                 BotConfig config
             )
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
         }
@@ -89,7 +81,7 @@ namespace NerdBotWhatsInStandardPlugin
             if (messenger == null)
                 throw new ArgumentNullException("messenger");
 
-            var whatsInStandard = new WhatsInStandardFetcher(base.HttpClient);
+            var whatsInStandard = new WhatsInStandardFetcher(this.Services.HttpClient);
 
             List<WhatsInStandardSetData> data = null;
 

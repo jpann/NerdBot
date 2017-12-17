@@ -115,6 +115,8 @@
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\BotModule.cs" />
     <Compile Include="Modules\IndexModule.cs" />
+    <Compile Include="Plugin\BotServices.cs" />
+    <Compile Include="Plugin\IBotServices.cs" />
     <Compile Include="Plugin\IMessagePlugin.cs" />
     <Compile Include="Plugin\MessagePluginBase.cs" />
     <Compile Include="Reporters\GroupMeReporter.cs" />

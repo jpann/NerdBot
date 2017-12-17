@@ -50,19 +50,11 @@ namespace NerdBotCardImage
         }
 
         public ImgCommand(
-            IMtgStore store,
-            ICardPriceStore priceStore,
-            ICommandParser commandParser,
-            IHttpClient httpClient,
-            IUrlShortener urlShortener,
+            IBotServices services,
             BotConfig config
             )
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
         }
@@ -97,6 +89,8 @@ namespace NerdBotCardImage
             {
                 Card card = null;
 
+                string searchTerm = null;
+
                 if (command.Arguments.Length == 1)
                 {
                     string name = command.Arguments[0];
@@ -106,8 +100,10 @@ namespace NerdBotCardImage
 
                     this.mLoggingService.Trace("Using Name: {0}", name);
 
+                    searchTerm = name;
+
                     // Get card using only name
-                    card = await this.Store.GetCard(name);
+                    card = await this.Services.Store.GetCard(name);
                 }
                 else if (command.Arguments.Length == 2)
                 {
@@ -122,8 +118,11 @@ namespace NerdBotCardImage
 
                     this.mLoggingService.Trace("Using Name: {0}; Set: {1}", name, set);
 
+                    searchTerm = string.Join(" ", command.Arguments);
+
                     // Get card using name and set name or code
-                    card = await this.Store.GetCard(name, set);
+                    card = await this.Services.Store.GetCard(name, set);
+
                 }
 
                 if (card != null)
@@ -131,6 +130,9 @@ namespace NerdBotCardImage
                     this.mLoggingService.Trace("Found card '{0}' in set '{1}'.",
                         card.Name,
                         card.SetName);
+
+                    this.Services.QueryStatisticsStore.InsertCardQueryStat(message.name, message.user_id,
+                        card.MultiverseId, searchTerm);
 
                     // Default to high resolution image.
                     string imgUrl = card.ImgHires;
@@ -140,7 +142,7 @@ namespace NerdBotCardImage
                     messenger.SendMessage(imgUrl);
 
                     // Get other sets card is in
-                    List<Set> otherSets = await base.Store.GetCardOtherSets(card.MultiverseId);
+                    List<Set> otherSets = await this.Services.Store.GetCardOtherSets(card.MultiverseId);
                     if (otherSets.Any())
                     {
                         string msg = string.Format("Also in sets: {0}",
@@ -164,7 +166,7 @@ namespace NerdBotCardImage
 
                     string wildCardName = name.Replace(" ", "%");
 
-                    card = await this.Store.GetCard(wildCardName);
+                    card = await this.Services.Store.GetCard(wildCardName);
                     if (card != null)
                     {
                         LoggingService.Trace("Second try using '{0}' returned a card. Suggesting '{0}'...", wildCardName, card.Name);

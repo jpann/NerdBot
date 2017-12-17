@@ -1,7 +1,14 @@
 ﻿using System;
 using Moq;
+using NerdBot.Parsers;
+using NerdBot.Plugin;
 using NerdBotCardPrices.PriceFetchers;
 using NerdBotCommon.Http;
+using NerdBotCommon.Messengers;
+using NerdBotCommon.Mtg;
+using NerdBotCommon.Mtg.Prices;
+using NerdBotCommon.Statistics;
+using NerdBotCommon.UrlShortners;
 using NUnit.Framework;
 using SimpleLogging.Core;
 
@@ -12,6 +19,7 @@ namespace NerdBotCardPricesPlugin_Tests
     {
         private EbayPriceFetcher priceFetcher;
         private IHttpClient httpClient;
+
         private Mock<ILoggingService> loggingServiceMock;
 
         [TestFixtureSetUp]
@@ -27,6 +35,8 @@ namespace NerdBotCardPricesPlugin_Tests
         {
             httpClient = new SimpleHttpClient(loggingServiceMock.Object);
 
+            loggingServiceMock = new Mock<ILoggingService>();
+            
             priceFetcher = new EbayPriceFetcher(httpClient, loggingServiceMock.Object);
         }
 

@@ -33,18 +33,9 @@ namespace NerdBotRepeatMessagePlugin
             get { return "Detects repeated messages and has fun with it."; }
         }
 
-        public RepeatMessagePlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener)
+        public RepeatMessagePlugin(IBotServices services)
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener)
+                services)
         {
         }
 

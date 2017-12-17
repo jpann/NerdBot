@@ -57,18 +57,10 @@ namespace NerdBotWolframAlpha
         }
 
         public WolframAlphaPlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener,
+                IBotServices services,
                 BotConfig config)
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
             string configFile = Path.Combine(Environment.CurrentDirectory, "Wolfram.ini");

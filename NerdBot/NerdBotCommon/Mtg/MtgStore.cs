@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using NerdBotCommon.Statistics;
 using NerdBotCommon.Utilities;
 using SimpleLogging.Core;
 
@@ -21,11 +22,13 @@ namespace NerdBotCommon.Mtg
         private readonly IMongoClient mClient;
         private readonly IMongoDatabase mDatabase;
         private readonly ILoggingService mLoggingService;
+        private readonly IQueryStatisticsStore mQueryStatisticsStore;
         private readonly SearchUtility mSearchUtility;
 
         public MtgStore(
             string connectionString, 
             string databaseName,
+            IQueryStatisticsStore queryStatisticsStore,
             ILoggingService loggingService,
             SearchUtility searchUtility)
         {
@@ -34,6 +37,9 @@ namespace NerdBotCommon.Mtg
 
             if (string.IsNullOrEmpty(databaseName))
                 throw new ArgumentException("databaseName");
+
+            if (queryStatisticsStore == null)
+                throw new ArgumentNullException("queryStatisticsStore");
 
             if (loggingService == null)
                 throw new ArgumentNullException("loggingService");
@@ -45,9 +51,18 @@ namespace NerdBotCommon.Mtg
             this.mDatabaseName = databaseName;
             this.mClient = new MongoClient(this.mConnectionString);
             this.mDatabase = this.mClient.GetDatabase(this.mDatabaseName);
+
+            this.mQueryStatisticsStore = queryStatisticsStore;
             this.mLoggingService = loggingService;
             this.mSearchUtility = searchUtility;
         }
+
+        #region Properties
+        public IQueryStatisticsStore QueryStatisticsStore
+        {
+            get { return this.mQueryStatisticsStore; }
+        }
+        #endregion
 
         #region AddCard
         public async Task<Card> AddCard(Card card)

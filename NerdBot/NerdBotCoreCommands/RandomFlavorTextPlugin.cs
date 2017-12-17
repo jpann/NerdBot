@@ -45,19 +45,11 @@ namespace NerdBotCoreCommands
         }
 
         public RandomFlavorTextPlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener,
+                IBotServices services,
                 BotConfig config
             )
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
         }
@@ -86,7 +78,7 @@ namespace NerdBotCoreCommands
             if (messenger == null)
                 throw new ArgumentNullException("messenger");
 
-            string flavor = await base.Store.GetRandomFlavorText();
+            string flavor = await this.Services.Store.GetRandomFlavorText();
 
             if (!string.IsNullOrEmpty(flavor))
             {

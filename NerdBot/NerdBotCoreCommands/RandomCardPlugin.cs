@@ -48,19 +48,11 @@ namespace NerdBotCoreCommands
         }
 
         public RandomCardPlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener,
+                IBotServices services,
                 BotConfig config
             )
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
         }
@@ -89,7 +81,7 @@ namespace NerdBotCoreCommands
             if (messenger == null)
                 throw new ArgumentNullException("messenger");
 
-            Card card = await base.Store.GetRandomCard();
+            Card card = await this.Services.Store.GetRandomCard();
 
             if (card != null)
             {

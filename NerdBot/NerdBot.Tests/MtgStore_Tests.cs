@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Moq;
 using NerdBot.TestsHelper;
 using NerdBotCommon.Mtg;
+using NerdBotCommon.Statistics;
 using NerdBotCommon.Utilities;
 using NUnit.Framework;
 using SimpleLogging.Core;
@@ -70,6 +71,7 @@ namespace NerdBot.Tests
         {
             loggingServiceMock = new Mock<ILoggingService>();
             searchUtilityMock = new Mock<SearchUtility>();
+            var queryStatisticsStoreMock = new Mock<IQueryStatisticsStore>();
 
             searchUtilityMock.Setup(s => s.GetSearchValue(It.IsAny<string>()))
                 .Returns((string s) => this.GetSearchValue(s));
@@ -77,7 +79,7 @@ namespace NerdBot.Tests
             searchUtilityMock.Setup(s => s.GetRegexSearchValue(It.IsAny<string>()))
                 .Returns((string s) => this.GetRegexSearchValue(s));
 
-            mtgStore = new MtgStore(testConfig.Url, testConfig.Database, loggingServiceMock.Object, searchUtilityMock.Object);
+            mtgStore = new MtgStore(testConfig.Url, testConfig.Database, queryStatisticsStoreMock.Object, loggingServiceMock.Object, searchUtilityMock.Object);
         }
 
         #region CardExists

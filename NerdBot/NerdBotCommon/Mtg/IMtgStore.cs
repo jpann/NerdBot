@@ -1,10 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using NerdBotCommon.Statistics;
 
 namespace NerdBotCommon.Mtg
 {
     public interface IMtgStore
     {
+        #region Properties
+        IQueryStatisticsStore QueryStatisticsStore { get; }
+        #endregion
+
         Task<Card> AddCard(Card card);
         Task<Card> CardFindAndModify(Card card);
         Task<int> RemoveCard(Card card);

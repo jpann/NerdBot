@@ -52,19 +52,11 @@ namespace NerdBotTappedOut
         }
 
         public TappedOutLatestEDHPlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener,
+                IBotServices services,
                 BotConfig config
             )
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
         }
@@ -93,7 +85,7 @@ namespace NerdBotTappedOut
             if (messenger == null)
                 throw new ArgumentNullException("messenger");
 
-            var latestFetcher = new TappedOutLatestFetcher("http://tappedout.net/api/deck/latest/edh/", this.HttpClient);
+            var latestFetcher = new TappedOutLatestFetcher("http://tappedout.net/api/deck/latest/edh/", this.Services.HttpClient);
             List<TappedOutLatestDeckData> latestData = await latestFetcher.GetLatest();
 
             if (latestData != null)
@@ -110,7 +102,7 @@ namespace NerdBotTappedOut
                     }
 
                     string[] latestDecks = latestData.Select(s =>
-                        string.Format("{0} [{1}]", s.Name, this.mUrlShortener.ShortenUrl(s.Url)))
+                        string.Format("{0} [{1}]", s.Name, this.Services.UrlShortener.ShortenUrl(s.Url)))
                         .Take(cLimit)
                         .ToArray();
 

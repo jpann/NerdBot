@@ -48,19 +48,11 @@ namespace NerdBotCoreCommands
         }
 
         public GetSetPlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener,
+                IBotServices services,
                 BotConfig config
             )
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
         }
@@ -103,11 +95,11 @@ namespace NerdBotCoreCommands
                     // Get card using only name
                     if (name.Length == 3)
                     {
-                        set = await this.Store.GetSetByCode(name);
+                        set = await this.Services.Store.GetSetByCode(name);
                     }
                     else
                     {
-                        set = await this.Store.GetSet(name);
+                        set = await this.Services.Store.GetSet(name);
                     }
                 }
 

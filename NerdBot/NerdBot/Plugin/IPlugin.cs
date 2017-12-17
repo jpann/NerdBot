@@ -1,25 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NerdBot.Parsers;
-using NerdBotCommon.Http;
+﻿using System.Threading.Tasks;
 using NerdBotCommon.Messengers;
-using NerdBotCommon.Mtg;
-using NerdBotCommon.Mtg.Prices;
 using NerdBotCommon.Parsers;
-using NerdBotCommon.UrlShortners;
 
 namespace NerdBot.Plugin
 {
     public interface IPlugin
     {
-        IMtgStore Store { get; set; }
-        ICommandParser CommandParser { get; set; }
-        IHttpClient HttpClient { get; set; }
-        IUrlShortener UrlShortener { get; set; }
-        ICardPriceStore PriceStore { get; set; }
+        IBotServices Services { get; set; }
         BotConfig Config { get; set; }
 
         string Name { get; }

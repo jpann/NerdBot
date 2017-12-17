@@ -48,19 +48,11 @@ namespace NerdBotUrbanDictionary
         }
 
         public UrbanDictionaryPlugin(
-                IMtgStore store,
-                ICardPriceStore priceStore,
-                ICommandParser commandParser,
-                IHttpClient httpClient,
-                IUrlShortener urlShortener,
+                IBotServices services,
                 BotConfig config
             )
             : base(
-                store,
-                priceStore,
-                commandParser,
-                httpClient,
-                urlShortener,
+                services,
                 config)
         {
         }
@@ -91,7 +83,7 @@ namespace NerdBotUrbanDictionary
 
             string url = "http://api.urbandictionary.com/v0/define?page=http://ikonzeh.org&term={0}";
 
-            var urbanDict = new UrbanDictionaryFetcher(url, base.HttpClient);
+            var urbanDict = new UrbanDictionaryFetcher(url, this.Services.HttpClient);
 
             if (command.Arguments.Any())
             {

@@ -5,6 +5,7 @@ using MongoDB.Driver;
 using Moq;
 using NerdBot.TestsHelper;
 using NerdBotCommon.Mtg;
+using NerdBotCommon.Statistics;
 using NerdBotCommon.Utilities;
 using NUnit.Framework;
 using SimpleLogging.Core;
@@ -376,6 +377,7 @@ namespace NerdBot.Tests
         {
             loggingServiceMock = new Mock<ILoggingService>();
             searchUtilityMock = new Mock<SearchUtility>();
+            var queryStatisticsStoreMock = new Mock<IQueryStatisticsStore>();
 
             searchUtilityMock.Setup(s => s.GetSearchValue(It.IsAny<string>()))
                 .Returns((string s) => this.GetSearchValue(s));
@@ -385,7 +387,8 @@ namespace NerdBot.Tests
 
             mtgStore = new MtgStore(
                 testConfig.Url,
-                testConfig.TestDb, 
+                testConfig.TestDb,
+                queryStatisticsStoreMock.Object,
                 loggingServiceMock.Object, 
                 searchUtilityMock.Object);
 
