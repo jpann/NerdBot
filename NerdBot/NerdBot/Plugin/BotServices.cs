@@ -1,13 +1,12 @@
 ﻿using System;
 using NerdBot.Parsers;
-using NerdBot.Plugin;
 using NerdBotCommon.Http;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
 using NerdBotCommon.Statistics;
 using NerdBotCommon.UrlShortners;
 
-namespace NerdBotCommon.Plugin
+namespace NerdBot.Plugin
 {
     public class BotServices : IBotServices
     {

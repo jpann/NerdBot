@@ -21,7 +21,6 @@ using NerdBotCommon.Messengers;
 using NerdBotCommon.Messengers.GroupMe;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
-using NerdBotCommon.Plugin;
 using NerdBotCommon.Statistics;
 using NerdBotCommon.UrlShortners;
 using NerdBotCommon.Utilities;
