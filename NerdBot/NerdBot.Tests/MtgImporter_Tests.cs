@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
+using NerdBot.TestsHelper;
 using NerdBotCommon.Importer;
 using NerdBotCommon.Mtg;
 using NUnit.Framework;
-using SimpleLogging.Core;
 
 namespace NerdBot.Tests
 {
     [TestFixture]
     class MtgImporter_Tests
     {
-        private Mock<IMtgStore> storeMock;
-        private Mock<ILoggingService> loggerMock;
+        private UnitTestContext unitTestContext;
 
         private IImporter importer;
         private List<Card> cardData = new List<Card>();
@@ -266,12 +265,9 @@ namespace NerdBot.Tests
         {
             Setup_Data();
 
-            loggerMock = new Mock<ILoggingService>();
+            unitTestContext = new UnitTestContext();
 
-            // Create a mock set and IMtgStore
-            storeMock = new Mock<IMtgStore>();
-
-            importer = new MtgImporter(storeMock.Object, loggerMock.Object);
+            importer = new MtgImporter(unitTestContext.StoreMock.Object, unitTestContext.LoggingServiceMock.Object);
         }
 
         [Test]
@@ -280,10 +276,10 @@ namespace NerdBot.Tests
             var set = setData.Where(s => s.Code == "GTC").FirstOrDefault();
             var cards = cardData.Where(c => c.SetId == "GTC").AsEnumerable<Card>();
 
-            storeMock.Setup(s => s.SetFindAndModify(set))
+            unitTestContext.StoreMock.Setup(s => s.SetFindAndModify(set))
                 .ReturnsAsync(set);
 
-            storeMock.Setup(s => s.CardFindAndModify(It.IsAny<Card>()))
+            unitTestContext.StoreMock.Setup(s => s.CardFindAndModify(It.IsAny<Card>()))
                 .Returns((Card card) => Task.FromResult(card));
 
             var actual = importer.Import(set, cards).Result;
@@ -291,7 +287,6 @@ namespace NerdBot.Tests
             Assert.NotNull(actual);
             Assert.AreEqual(actual.ImportedSet.Name, set.Name);
             Assert.AreEqual(actual.ImportedCards.Count, cards.Count());
-            
         }
     }
 }

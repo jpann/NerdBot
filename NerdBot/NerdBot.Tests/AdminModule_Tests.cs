@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Moq;
 using Nancy;
 using Nancy.Testing;
 using NerdBot.Admin;
 using NerdBot.Modules;
+using NerdBot.TestsHelper;
 using NerdBotCommon.Http;
 using NerdBotCommon.Importer;
 using NerdBotCommon.Importer.DataReaders;
@@ -22,12 +22,7 @@ namespace NerdBot.Tests
     {
         private Browser browser;
 
-        private Mock<IMtgStore> storeMock;
-        private Mock<IHttpClient> httpClientMock;
-        private Mock<ILoggingService> loggerMock;
-        private Mock<ICardPriceStore> priceStoreMock;
-        private Mock<IMtgDataReader> mtgDataReaderMock;
-        private Mock<IImporter> importerMock;
+        private UnitTestContext unitTestContext;
 
         private List<Card> cardData = new List<Card>();
         private List<Set> setData = new List<Set>();
@@ -569,14 +564,7 @@ namespace NerdBot.Tests
         {
             Setup_Data();
 
-            httpClientMock = new Mock<IHttpClient>();
-            loggerMock = new Mock<ILoggingService>();
-            priceStoreMock = new Mock<ICardPriceStore>();
-            mtgDataReaderMock = new Mock<IMtgDataReader>();
-            importerMock = new Mock<IImporter>();
-
-            // Create a mock set and IMtgStore
-            storeMock = new Mock<IMtgStore>();
+            unitTestContext = new UnitTestContext();
 
             // Setup the Browser object
             browser = new Browser(with =>
@@ -586,19 +574,19 @@ namespace NerdBot.Tests
                 {
                     context.CurrentUser = new AuthenticatedUser { UserName = "admin" };
                 });
-                with.Dependency<IMtgStore>(storeMock.Object);
-                with.Dependency<ILoggingService>(loggerMock.Object);
-                with.Dependency<ICardPriceStore>(priceStoreMock.Object);
-                with.Dependency<IMtgDataReader>(mtgDataReaderMock.Object);
-                with.Dependency<IHttpClient>(httpClientMock.Object);
-                with.Dependencies<IImporter>(importerMock.Object);
+                with.Dependency<IMtgStore>(unitTestContext.StoreMock.Object);
+                with.Dependency<ILoggingService>(unitTestContext.LoggingServiceMock.Object);
+                with.Dependency<ICardPriceStore>(unitTestContext.PriceStoreMock.Object);
+                with.Dependency<IMtgDataReader>(unitTestContext.MtgDataReaderMock.Object);
+                with.Dependency<IHttpClient>(unitTestContext.HttpClientMock.Object);
+                with.Dependencies<IImporter>(unitTestContext.ImporterMock.Object);
             });
         }
 
         [Test]
         public void ListSets()
         {
-            storeMock.Setup(s => s.GetSets())
+            unitTestContext.StoreMock.Setup(s => s.GetSets())
                 .ReturnsAsync(setData);
 
             var response = browser.Get("/admin/sets",
@@ -613,10 +601,10 @@ namespace NerdBot.Tests
         [Test]
         public void ListCardsBySet()
         {
-            storeMock.Setup(s => s.GetSetByCode("GTC"))
+            unitTestContext.StoreMock.Setup(s => s.GetSetByCode("GTC"))
                 .ReturnsAsync(setData.Where(s => s.Code == "GTC").FirstOrDefault());
 
-            storeMock.Setup(s => s.GetCardsBySet("Gatecrash"))
+            unitTestContext.StoreMock.Setup(s => s.GetCardsBySet("Gatecrash"))
                 .ReturnsAsync(cardData.Where(c => c.SetId == "GTC").ToList());
 
             var response = browser.Get("/admin/set/GTC",
@@ -648,16 +636,16 @@ namespace NerdBot.Tests
             var set = setData.Where(s => s.Code == "GTC").FirstOrDefault();
             var cards = cardData.Where(c => c.SetId == "GTC").AsEnumerable<Card>();
 
-            httpClientMock.Setup(h => h.GetAsJson("http://localhost/test.json"))
+            unitTestContext.HttpClientMock.Setup(h => h.GetAsJson("http://localhost/test.json"))
                 .ReturnsAsync(setAddPostData);
 
-            mtgDataReaderMock.Setup(d => d.ReadSet(setAddPostData))
+            unitTestContext.MtgDataReaderMock.Setup(d => d.ReadSet(setAddPostData))
                 .Returns(() => set);
 
-            mtgDataReaderMock.Setup(d => d.ReadCards(setAddPostData))
+            unitTestContext.MtgDataReaderMock.Setup(d => d.ReadCards(setAddPostData))
                 .Returns(() => cards);
 
-            importerMock.Setup(i => i.Import(set, cards))
+            unitTestContext.ImporterMock.Setup(i => i.Import(set, cards))
                 .ReturnsAsync(new ImportStatus()
                 {
                     ImportedSet = set,

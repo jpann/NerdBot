@@ -1,17 +1,7 @@
-﻿using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Moq;
-using NerdBot.Parsers;
+﻿using System.Threading.Tasks;
 using NerdBot.TestsHelper;
-using NerdBotCommon.Http;
-using NerdBotCommon.Messengers;
-using NerdBotCommon.Mtg;
-using NerdBotCommon.Mtg.Prices;
-using NerdBotCommon.UrlShortners;
-using NerdBotCommon.Utilities;
 using NerdBotGiphyPlugin;
 using NUnit.Framework;
-using SimpleLogging.Core;
 
 namespace NerdBotGiphyPlugin_Tests
 {
@@ -19,8 +9,7 @@ namespace NerdBotGiphyPlugin_Tests
     public class GiphyFetcher_Tests
     {
         private GiphyFetcher fetcher;
-        private Mock<IHttpClient> httpClientMock;
-        private Mock<ILoggingService> loggingServiceMock;
+        private UnitTestContext unitTestContext;
 
         private string url = "http://localhost/{0}";
         private string giphyUrl = @"https://media1.giphy.com/media/xT77XZrTKOxycjaYvK/giphy.gif";
@@ -46,7 +35,7 @@ namespace NerdBotGiphyPlugin_Tests
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            httpClientMock = new Mock<IHttpClient>();
+            unitTestContext = new UnitTestContext();
         }
 
         [SetUp]
@@ -54,7 +43,7 @@ namespace NerdBotGiphyPlugin_Tests
         {
             string url = "http://localhost/{0}";
 
-            fetcher = new GiphyFetcher(url, httpClientMock.Object);
+            fetcher = new GiphyFetcher(url, unitTestContext.HttpClientMock.Object);
         }
 
         [Test]
@@ -65,7 +54,7 @@ namespace NerdBotGiphyPlugin_Tests
             var httpJsonTask = new TaskCompletionSource<string>();
             httpJsonTask.SetResult(giphydata);
 
-            httpClientMock.Setup(h => h.GetAsJson(string.Format(url, keyword)))
+            unitTestContext.HttpClientMock.Setup(h => h.GetAsJson(string.Format(url, keyword)))
                 .Returns(httpJsonTask.Task);
 
             string actual = fetcher.GetGiphyGif(keyword).Result;

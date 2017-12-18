@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
-using Moq;
 using NerdBot.TestsHelper;
 using NerdBotCommon.Mtg.Prices;
-using NerdBotCommon.Utilities;
 using NUnit.Framework;
-using SimpleLogging.Core;
 
 namespace NerdBot.Tests.PriceStore
 {
@@ -19,11 +15,9 @@ namespace NerdBot.Tests.PriceStore
         private const string testDataTag = "http://TEST-DATA";
 
         private ICardPriceStore priceStore;
-        private Mock<ILoggingService> loggingServiceMock;
-
         private CardPrice cardPriceToRemove;
-        private Mock<SearchUtility> searchUtilityMock;
-        
+        private UnitTestContext unitTestContext = new UnitTestContext();
+
         #region Method to add test data
         private void AddTestData()
         {
@@ -166,20 +160,11 @@ namespace NerdBot.Tests.PriceStore
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            loggingServiceMock = new Mock<ILoggingService>();
-            searchUtilityMock = new Mock<SearchUtility>();
-
-            searchUtilityMock.Setup(s => s.GetSearchValue(It.IsAny<string>()))
-                .Returns((string s) => SearchHelper.GetSearchValue(s));
-
-            searchUtilityMock.Setup(s => s.GetRegexSearchValue(It.IsAny<string>()))
-                .Returns((string s) => SearchHelper.GetRegexSearchValue(s));
-
             priceStore = new EchoMtgPriceStore(
                 connectionString, 
-                databaseName, 
-                loggingServiceMock.Object,
-                searchUtilityMock.Object);
+                databaseName,
+                unitTestContext.LoggingServiceMock.Object,
+                unitTestContext.SearchUtilityMock.Object);
         }
 
         [SetUp]

@@ -1,22 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using Moq;
-using NerdBot;
-using NerdBot.Parsers;
-using NerdBot.Plugin;
 using NerdBot.TestsHelper;
 using NerdBotCardPrices;
-using NerdBotCommon.Http;
-using NerdBotCommon.Messengers;
 using NerdBotCommon.Messengers.GroupMe;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
 using NerdBotCommon.Parsers;
-using NerdBotCommon.Statistics;
-using NerdBotCommon.UrlShortners;
-using NerdBotCommon.Utilities;
 using NUnit.Framework;
-using SimpleLogging.Core;
 
 namespace NerdBotCardPricesPlugin_Tests
 {
@@ -28,90 +18,38 @@ namespace NerdBotCardPricesPlugin_Tests
         private IMtgStore mtgStore;
         private WhatsNotPlugin plugin;
 
-        private Mock<ICommandParser> commandParserMock;
-        private Mock<IHttpClient> httpClientMock;
-        private Mock<IUrlShortener> urlShortenerMock;
-        private Mock<IMessenger> messengerMock;
-        private Mock<ILoggingService> loggingServiceMock;
-        private Mock<ICardPriceStore> priceStoreMock;
-        private Mock<SearchUtility> searchUtilityMock;
-        private Mock<IBotServices> servicesMock;
-        private Mock<IQueryStatisticsStore> queryStatisticsStoreMock;
-        
+        private UnitTestContext unitTestContext;
+
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
             testConfig = new ConfigReader().Read();
 
-            loggingServiceMock = new Mock<ILoggingService>();
-            searchUtilityMock = new Mock<SearchUtility>();
-            queryStatisticsStoreMock = new Mock<IQueryStatisticsStore>();
-
-            searchUtilityMock.Setup(s => s.GetSearchValue(It.IsAny<string>()))
-                .Returns((string s) => SearchHelper.GetSearchValue(s));
-
-            searchUtilityMock.Setup(s => s.GetRegexSearchValue(It.IsAny<string>()))
-                .Returns((string s) => SearchHelper.GetRegexSearchValue(s));
+            unitTestContext = new UnitTestContext();
 
             mtgStore = new MtgStore(
                 testConfig.Url,
                 testConfig.Database,
-                queryStatisticsStoreMock.Object,
-                loggingServiceMock.Object,
-                searchUtilityMock.Object);
+                unitTestContext.QueryStatisticsStoreMock.Object,
+                unitTestContext.LoggingServiceMock.Object,
+                unitTestContext.SearchUtilityMock.Object);
         }
 
         [SetUp]
         public void SetUp()
         {
-            // Setup ICardPriceStore Mocks
-            priceStoreMock = new Mock<ICardPriceStore>();
-
-            // Setup ICommandParser Mocks
-            commandParserMock = new Mock<ICommandParser>();
-
-            // Setup IHttpClient Mocks
-            httpClientMock = new Mock<IHttpClient>();
-
-            // Setup IUrlShortener Mocks
-            urlShortenerMock = new Mock<IUrlShortener>();
-
-            // Setup IMessenger Mocks
-            messengerMock = new Mock<IMessenger>();
-
-            // Setup IBotServices Mocks
-            servicesMock = new Mock<IBotServices>();
-
-            servicesMock.SetupGet(s => s.QueryStatisticsStore)
-                .Returns(queryStatisticsStoreMock.Object);
-
-            servicesMock.SetupGet(s => s.Store)
-                .Returns(mtgStore);
-
-            servicesMock.SetupGet(s => s.PriceStore)
-                .Returns(priceStoreMock.Object);
-
-            servicesMock.SetupGet(s => s.CommandParser)
-                .Returns(commandParserMock.Object);
-
-            servicesMock.SetupGet(s => s.HttpClient)
-                .Returns(httpClientMock.Object);
-
-            servicesMock.SetupGet(s => s.UrlShortener)
-                .Returns(urlShortenerMock.Object);
-
             plugin = new WhatsNotPlugin(
-                servicesMock.Object,
-                new BotConfig());
+                unitTestContext.BotServicesMock.Object,
+                unitTestContext.BotConfig);
 
-            plugin.LoggingService = loggingServiceMock.Object;
+            plugin.LoggingService = unitTestContext.LoggingServiceMock.Object;
         }
 
         [Test]
         public void WhatsNot()
         {
             // Setup ICardPriceStore mock
-            priceStoreMock.Setup(ps => ps.GetCardsByPriceDecrease(It.IsAny<int>()))
+            unitTestContext.PriceStoreMock.Setup(ps => ps.GetCardsByPriceDecrease(It.IsAny<int>()))
                 .Returns(() => new List<CardPrice>()
                 {
                     new CardPrice()
@@ -181,10 +119,10 @@ namespace NerdBotCardPricesPlugin_Tests
             bool handled = plugin.OnCommand(
                     cmd,
                     msg,
-                    messengerMock.Object
+                    unitTestContext.MessengerMock.Object
                     ).Result;
 
-            messengerMock.Verify(m =>
+            unitTestContext.MessengerMock.Verify(m =>
                 m.SendMessage("Today's Not-So-Hot Cards - Collected Company [DTK]: $9.24 down -106%, Dack Fayden [CNS]: $48.14 down -72%, Inkmoth Nexus [MBS]: $23.00 down -65%, Dimir Signet [ARC]: $0.70 down -46%, Elvish Archers [LEB]: $90.00 down -36%"),
                 Times.Once);
         }

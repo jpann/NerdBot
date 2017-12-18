@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Moq;
 using Nancy;
 using Nancy.Testing;
 using NerdBot.Modules;
 using NerdBot.Parsers;
 using NerdBot.Reporters;
+using NerdBot.TestsHelper;
 using NerdBotCommon.Factories;
-using NerdBotCommon.Http;
 using NerdBotCommon.Messengers;
-using NerdBotCommon.Messengers.GroupMe;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
 using NerdBotCommon.Parsers;
@@ -25,15 +22,7 @@ namespace NerdBot.Tests
     {
         private Browser browserGoodToken;
 
-        private Mock<IMtgStore> storeMock;
-        private Mock<IHttpClient> httpClientMock;
-        private Mock<ILoggingService> loggerMock;
-        private Mock<IPluginManager> pluginManagerMock;
-        private Mock<IMessenger> messengerMock;
-        private Mock<IMessengerFactory> messengerFactoryMock;
-        private Mock<ICommandParser> commandParserMock;
-        private Mock<IReporter> reporterMock;
-        private Mock<ICardPriceStore> priceStoreMock;
+        private UnitTestContext unitTestContext;
 
         private List<Card> cardData = new List<Card>();
         private List<Set> setData = new List<Set>();
@@ -287,66 +276,35 @@ namespace NerdBot.Tests
         {
             SetUp_Data();
 
-            httpClientMock = new Mock<IHttpClient>();
-            loggerMock = new Mock<ILoggingService>();
-            pluginManagerMock = new Mock<IPluginManager>();
-            messengerMock = new Mock<IMessenger>();
-            messengerFactoryMock = new Mock<IMessengerFactory>();
-            commandParserMock = new Mock<ICommandParser>();
-            reporterMock = new Mock<IReporter>();
-            priceStoreMock = new Mock<ICardPriceStore>();
-            
-            // Create a mock set and IMtgStore
-            storeMock = new Mock<IMtgStore>();
-
-            // Mock IMessenger properties so a null object reference exception is not thrown in IndexModule
-            messengerMock.Setup(p => p.BotName)
-                .Returns("BotName");
-            messengerMock.Setup(p => p.BotId)
-                .Returns("BOTID");
+            unitTestContext = new UnitTestContext();
 
             // ICommandParser Mocks
-            commandParserMock.Setup(c => c.Parse("img boros charm"))
+            unitTestContext.CommandParserMock.Setup(c => c.Parse("img boros charm"))
                 .Returns(() => new Command()
                 {
                     Cmd = "img",
                     Arguments = new string[] { "boros charm" }
                 });
 
-            commandParserMock.Setup(c => c.Parse("help img"))
+            unitTestContext.CommandParserMock.Setup(c => c.Parse("help img"))
                 .Returns(() => new Command()
                 {
                     Cmd = "help",
                     Arguments = new string[] { "img" }
                 });
 
-            // MessengerFactoryMock
-            messengerFactoryMock.Setup(c => c.Create(secretTokenGood[0]))
-                .Returns(() => messengerMock.Object);
-
             // Setup the Browser object
             browserGoodToken = new Browser(with =>
             {
                 with.Module<BotModule>();
-                with.Dependency<IMtgStore>(storeMock.Object);
-                with.Dependency<IMessengerFactory>(messengerFactoryMock.Object);
-                with.Dependency<IPluginManager>(pluginManagerMock.Object);
-                with.Dependency<ICommandParser>(commandParserMock.Object);
-                with.Dependency<ILoggingService>(loggerMock.Object);
-                with.Dependency<IReporter>(reporterMock.Object);
-                with.Dependency<ICardPriceStore>(priceStoreMock.Object);
-                with.Dependency<BotConfig>(new BotConfig()
-                {
-                    BotName = "BotName",
-                    BotRoutes = new List<BotRoute>()
-                    {
-                        new BotRoute()
-                        {
-                            SecretToken = secretTokenGood[0],
-                            BotId = "BOTID"
-                        }
-                    }
-                });
+                with.Dependency<IMtgStore>(unitTestContext.StoreMock.Object);
+                with.Dependency<IMessengerFactory>(unitTestContext.MessengerFactoryMock.Object);
+                with.Dependency<IPluginManager>(unitTestContext.PluginManagerMock.Object);
+                with.Dependency<ICommandParser>(unitTestContext.CommandParserMock.Object);
+                with.Dependency<ILoggingService>(unitTestContext.LoggingServiceMock.Object);
+                with.Dependency<IReporter>(unitTestContext.ReporterMock.Object);
+                with.Dependency<ICardPriceStore>(unitTestContext.PriceStoreMock.Object);
+                with.Dependency<BotConfig>(unitTestContext.BotConfig);
             });
         }
 
@@ -376,7 +334,7 @@ namespace NerdBot.Tests
             });
 
             // Verify that the command parser was given this message to try and parse
-            commandParserMock.Verify(c => c.Parse("img boros charm"));
+            unitTestContext.CommandParserMock.Verify(c => c.Parse("img boros charm"));
 
             Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
         }
@@ -462,7 +420,7 @@ namespace NerdBot.Tests
                     with.Header("content-type", "application/json");
                 });
 
-            pluginManagerMock.Verify(c => c.HandledHelpCommand(It.Is<Command>(cmd => cmd.Cmd == "help" && cmd.Arguments[0] == "img"), It.IsAny<IMessenger>()));
+            unitTestContext.PluginManagerMock.Verify(c => c.HandledHelpCommand(It.Is<Command>(cmd => cmd.Cmd == "help" && cmd.Arguments[0] == "img"), It.IsAny<IMessenger>()));
 
             Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
         }

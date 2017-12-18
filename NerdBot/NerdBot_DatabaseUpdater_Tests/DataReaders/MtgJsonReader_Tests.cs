@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Moq;
 using NerdBot.TestsHelper;
 using NerdBotCommon.Importer.DataReaders;
 using NerdBotCommon.Importer.Mapper;
 using NerdBotCommon.Importer.MtgData;
 using NerdBotCommon.Mtg;
-using NerdBotCommon.Utilities;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using SimpleLogging.Core;
 
 namespace NerdBot_DatabaseUpdater_Tests.DataReaders
 {
@@ -21,11 +18,10 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
     class MtgJsonReader_Tests
     {
         private MtgJsonReader reader;
+        private UnitTestContext unitTestContext;
 
         private Mock<IMtgDataMapper<MtgJsonCard, MtgJsonSet>> dataMapperMock;
-        private Mock<SearchUtility> searchUtilityMock;
         private Mock<IFileSystem> fileSystemMock;
-        private Mock<ILoggingService> loggingServiceMock;
 
         private string jsonFileName = "C14-x_Truncated.json";
 
@@ -52,7 +48,7 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
             Set set = new Set()
             {
                 Name = "Commander 2014",
-                SearchName = GetSearchValue("Commander 2014"),
+                SearchName = SearchHelper.GetSearchValue("Commander 2014"),
                 BasicLandQty = 0,
                 Block = "",
                 Code = "C14",
@@ -81,8 +77,8 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
                     MultiverseId = 389422,
                     Desc = "Flying, trample\nYou can't win the game and your opponents can't lose the game.",
                     Name = "Abyssal Persecutor",
-                    SearchName = GetSearchValue("Abyssal Persecutor"),
-                    SetSearchName = GetSearchValue("Commander 2014"),
+                    SearchName = SearchHelper.GetSearchValue("Abyssal Persecutor"),
+                    SetSearchName = SearchHelper.GetSearchValue("Commander 2014"),
                     SetId = "C14",
                     SetName = "Commander 2014",
                     Power = "6",
@@ -105,8 +101,8 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
                     Desc = "Flying, vigilance\n{T}: When target creature other than Adarkar Valkyrie dies this turn, return that card to the battlefield under your control.",
                     Name = "Adarkar Valkyrie",
                     Loyalty = "",
-                    SearchName = GetSearchValue("Adarkar Valkyrie"),
-                    SetSearchName = GetSearchValue("Commander 2014"),
+                    SearchName = SearchHelper.GetSearchValue("Adarkar Valkyrie"),
+                    SetSearchName = SearchHelper.GetSearchValue("Commander 2014"),
                     SetId = "C14",
                     SetName = "Commander 2014",
                     Power = "4",
@@ -128,14 +124,7 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            // SearchUtility Mock
-            searchUtilityMock = new Mock<SearchUtility>();
-
-            searchUtilityMock.Setup(s => s.GetSearchValue(It.IsAny<string>()))
-                .Returns((string s) => SearchHelper.GetSearchValue(s));
-
-            searchUtilityMock.Setup(s => s.GetRegexSearchValue(It.IsAny<string>()))
-                .Returns((string s) => SearchHelper.GetRegexSearchValue(s));
+            unitTestContext = new UnitTestContext();
 
             // IMtgDataMapper Mock
             Card[] cards = GetTestCards();
@@ -164,9 +153,6 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
 
             fileSystemMock.Setup(f => f.File.ReadAllText(fileName))
                 .Returns(() => GetTestData());
-
-            // ILoggingService Mock
-            loggingServiceMock = new Mock<ILoggingService>();
         }
 
         [TestFixtureTearDown]
@@ -181,7 +167,7 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
 
             reader = new MtgJsonReader(
                 dataMapperMock.Object,
-                loggingServiceMock.Object);
+                unitTestContext.LoggingServiceMock.Object);
         }
 
         [TearDown]
@@ -223,7 +209,7 @@ namespace NerdBot_DatabaseUpdater_Tests.DataReaders
             var obj = new
             {
                 Name = "Commander 2014",
-                SearchName = GetSearchValue("Commander 2014"),
+                SearchName = SearchHelper.GetSearchValue("Commander 2014"),
                 BasicLandQty = 0,
                 Block = "",
                 Code = "C14",

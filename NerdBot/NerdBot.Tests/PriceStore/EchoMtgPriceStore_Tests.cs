@@ -1,11 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Moq;
 using NerdBot.TestsHelper;
 using NerdBotCommon.Mtg.Prices;
-using NerdBotCommon.Utilities;
 using NUnit.Framework;
-using SimpleLogging.Core;
 
 namespace NerdBot.Tests.PriceStore
 {
@@ -15,28 +11,18 @@ namespace NerdBot.Tests.PriceStore
         private TestConfiguration testConfig;
 
         private ICardPriceStore priceStore;
-        private Mock<ILoggingService> loggingServiceMock;
-        private Mock<SearchUtility> searchUtilityMock;
-        
+        private UnitTestContext unitTestContext = new UnitTestContext();
+
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
             testConfig = new ConfigReader().Read();
 
-            loggingServiceMock = new Mock<ILoggingService>();
-            searchUtilityMock = new Mock<SearchUtility>();
-
-            searchUtilityMock.Setup(s => s.GetSearchValue(It.IsAny<string>()))
-                .Returns((string s) => SearchHelper.GetSearchValue(s));
-
-            searchUtilityMock.Setup(s => s.GetRegexSearchValue(It.IsAny<string>()))
-                .Returns((string s) => SearchHelper.GetRegexSearchValue(s));
-
             priceStore = new EchoMtgPriceStore(
                 testConfig.Url, 
-                testConfig.PriceDatabase, 
-                loggingServiceMock.Object, 
-                searchUtilityMock.Object);
+                testConfig.PriceDatabase,
+                unitTestContext.LoggingServiceMock.Object,
+                unitTestContext.SearchUtilityMock.Object);
         }
 
         [SetUp]

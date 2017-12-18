@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using MongoDB.Driver;
-using Moq;
 using NerdBot.TestsHelper;
 using NerdBotCommon.Mtg;
-using NerdBotCommon.Statistics;
-using NerdBotCommon.Utilities;
 using NUnit.Framework;
-using SimpleLogging.Core;
 
 namespace NerdBot.Tests
 {
@@ -18,8 +13,7 @@ namespace NerdBot.Tests
         private TestConfiguration testConfig;
 
         private IMtgStore mtgStore;
-        private Mock<ILoggingService> loggingServiceMock;
-        private Mock<SearchUtility> searchUtilityMock;
+        private UnitTestContext unitTestContext;
 
         // Test data
         private Card testCard;
@@ -334,22 +328,14 @@ namespace NerdBot.Tests
         [SetUp]
         public void SetUp()
         {
-            loggingServiceMock = new Mock<ILoggingService>();
-            searchUtilityMock = new Mock<SearchUtility>();
-            var queryStatisticsStoreMock = new Mock<IQueryStatisticsStore>();
-
-            searchUtilityMock.Setup(s => s.GetSearchValue(It.IsAny<string>()))
-                .Returns((string s) => SearchHelper.GetSearchValue(s));
-
-            searchUtilityMock.Setup(s => s.GetRegexSearchValue(It.IsAny<string>()))
-                .Returns((string s) => SearchHelper.GetRegexSearchValue(s));
+            unitTestContext = new UnitTestContext();
 
             mtgStore = new MtgStore(
                 testConfig.Url,
                 testConfig.TestDb,
-                queryStatisticsStoreMock.Object,
-                loggingServiceMock.Object, 
-                searchUtilityMock.Object);
+                unitTestContext.QueryStatisticsStoreMock.Object,
+                unitTestContext.LoggingServiceMock.Object,
+                unitTestContext.SearchUtilityMock.Object);
 
             CreateTestData();
             InsertTestData();

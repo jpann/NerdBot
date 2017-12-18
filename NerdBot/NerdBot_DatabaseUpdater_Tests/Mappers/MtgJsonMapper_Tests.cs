@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
-using Moq;
 using NerdBot.TestsHelper;
 using NerdBotCommon.Importer.Mapper;
 using NerdBotCommon.Importer.MtgData;
-using NerdBotCommon.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -17,8 +14,7 @@ namespace NerdBot_DatabaseUpdater_Tests.Mappers
     class MtgJsonMapper_Tests
     {
         private IMtgDataMapper<MtgJsonCard, MtgJsonSet> dataMapper;
-        private Mock<SearchUtility> searchUtilityMock;
-
+        private UnitTestContext unitTestContext;
         private MtgJsonSet testJsonSet; // Contains the deserialized data from the mtg json file
         private List<MtgJsonCard> testJsonCards;
         private string testJsonFileName = "C14.json";
@@ -96,14 +92,6 @@ namespace NerdBot_DatabaseUpdater_Tests.Mappers
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            searchUtilityMock = new Mock<SearchUtility>();
-
-            searchUtilityMock.Setup(s => s.GetSearchValue(It.IsAny<string>()))
-                .Returns((string s) => SearchHelper.GetSearchValue(s));
-
-            searchUtilityMock.Setup(s => s.GetRegexSearchValue(It.IsAny<string>()))
-                .Returns((string s) => SearchHelper.GetRegexSearchValue(s));
-
             // Deserialize test data
             string fileName = Path.Combine(GetTestDataPath(), testJsonFileName);
             testJsonSet = DeserailizeJsonSet(fileName);
@@ -119,7 +107,9 @@ namespace NerdBot_DatabaseUpdater_Tests.Mappers
         [SetUp]
         public void SetUp()
         {
-            dataMapper = new MtgJsonMapper(searchUtilityMock.Object);
+            unitTestContext = new UnitTestContext();
+
+            dataMapper = new MtgJsonMapper(unitTestContext.SearchUtilityMock.Object);
 
             dataMapper.ImageUrl = "http://localhost/%ID%.jpg";
             dataMapper.ImageHiResUrl = "http://localhost/%ID%.jpg";

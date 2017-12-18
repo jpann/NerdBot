@@ -1,26 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Moq;
-using NerdBot;
-using NerdBot.Parsers;
-using NerdBot.Plugin;
 using NerdBot.TestsHelper;
-using NerdBotCommon.Http;
-using NerdBotCommon.Messengers;
 using NerdBotCommon.Messengers.GroupMe;
 using NerdBotCommon.Mtg;
-using NerdBotCommon.Mtg.Prices;
 using NerdBotCommon.Parsers;
-using NerdBotCommon.Statistics;
-using NerdBotCommon.UrlShortners;
-using NerdBotCommon.Utilities;
 using NerdBotTappedOut;
 using NUnit.Framework;
-using SimpleLogging.Core;
 
 namespace NerdBotTappedOutPlugin_Tests
 {
@@ -32,16 +17,8 @@ namespace NerdBotTappedOutPlugin_Tests
         private IMtgStore mtgStore;
         private TappedOutComboDecksPlugin plugin;
 
-        private Mock<ICommandParser> commandParserMock;
-        private Mock<IHttpClient> httpClientMock;
-        private Mock<IUrlShortener> urlShortenerMock;
-        private Mock<IMessenger> messengerMock;
-        private Mock<ILoggingService> loggingServiceMock;
-        private Mock<ICardPriceStore> priceStoreMock;
-        private Mock<IBotServices> servicesMock;
-        private Mock<IQueryStatisticsStore> queryStatisticsStoreMock;
-        private Mock<SearchUtility> searchUtilityMock;
-        
+        private UnitTestContext unitTestContext;
+
         private string tappedOutJson = @"[
    {
       ""user_display"":""user1"",
@@ -76,78 +53,37 @@ namespace NerdBotTappedOutPlugin_Tests
         public void TestFixtureSetUp()
         {
             testConfig = new ConfigReader().Read();
-
-            loggingServiceMock = new Mock<ILoggingService>();
-            searchUtilityMock = new Mock<SearchUtility>();
-            queryStatisticsStoreMock = new Mock<IQueryStatisticsStore>();
-
-            searchUtilityMock.Setup(s => s.GetSearchValue(It.IsAny<string>()))
-                .Returns((string s) => SearchHelper.GetSearchValue(s));
-
-            searchUtilityMock.Setup(s => s.GetRegexSearchValue(It.IsAny<string>()))
-                .Returns((string s) => SearchHelper.GetRegexSearchValue(s));
-
-            mtgStore = new MtgStore(
-                testConfig.Url,
-                testConfig.Database,
-                queryStatisticsStoreMock.Object,
-                loggingServiceMock.Object,
-                searchUtilityMock.Object);
         }
 
         [SetUp]
         public void SetUp()
         {
-            // Setup ICardPriceStore Mocks
-            priceStoreMock = new Mock<ICardPriceStore>();
+            unitTestContext = new UnitTestContext();
 
-            // Setup ICommandParser Mocks
-            commandParserMock = new Mock<ICommandParser>();
+            mtgStore = new MtgStore(
+                testConfig.Url,
+                testConfig.Database,
+                unitTestContext.QueryStatisticsStoreMock.Object,
+                unitTestContext.LoggingServiceMock.Object,
+                unitTestContext.SearchUtilityMock.Object);
 
-            // Setup IHttpClient Mocks
-            httpClientMock = new Mock<IHttpClient>();
-
-            // Setup IUrlShortener Mocks
-            urlShortenerMock = new Mock<IUrlShortener>();
-
-            urlShortenerMock.Setup(u => u.ShortenUrl("http://tappedout.net/mtg-decks/22-01-15-deck-1/"))
-                .Returns("http://deck1");
-
-            urlShortenerMock.Setup(u => u.ShortenUrl("http://tappedout.net/mtg-decks/deck-2/"))
-                .Returns("http://deck2");
-
-            urlShortenerMock.Setup(u => u.ShortenUrl("http://tappedout.net/mtg-decks/21-01-15-deck-3-esper/"))
-                .Returns("http://deck3");
-
-            // Setup IMessenger Mocks
-            messengerMock = new Mock<IMessenger>();
-
-            // Setup IBotServices Mocks
-            servicesMock = new Mock<IBotServices>();
-
-            servicesMock.SetupGet(s => s.QueryStatisticsStore)
-                .Returns(queryStatisticsStoreMock.Object);
-
-            servicesMock.SetupGet(s => s.Store)
+            unitTestContext.BotServicesMock.SetupGet(b => b.Store)
                 .Returns(mtgStore);
 
-            servicesMock.SetupGet(s => s.PriceStore)
-                .Returns(priceStoreMock.Object);
+            unitTestContext.UrlShortenerMock.Setup(u => u.ShortenUrl("http://tappedout.net/mtg-decks/22-01-15-deck-1/"))
+                .Returns("http://deck1");
 
-            servicesMock.SetupGet(s => s.CommandParser)
-                .Returns(commandParserMock.Object);
+            unitTestContext.UrlShortenerMock.Setup(u => u.ShortenUrl("http://tappedout.net/mtg-decks/deck-2/"))
+                .Returns("http://deck2");
 
-            servicesMock.SetupGet(s => s.HttpClient)
-                .Returns(httpClientMock.Object);
-
-            servicesMock.SetupGet(s => s.UrlShortener)
-                .Returns(urlShortenerMock.Object);
-
+            unitTestContext.UrlShortenerMock.Setup(u => u.ShortenUrl("http://tappedout.net/mtg-decks/21-01-15-deck-3-esper/"))
+                .Returns("http://deck3");
+            
             plugin = new TappedOutComboDecksPlugin(
-                servicesMock.Object,
-                new BotConfig());
+                unitTestContext.BotServicesMock.Object,
+                unitTestContext.BotConfig);
 
-            plugin.LoggingService = loggingServiceMock.Object;
+            plugin.LoggingService = unitTestContext.LoggingServiceMock.Object;
         }
 
         [Test]
@@ -156,7 +92,7 @@ namespace NerdBotTappedOutPlugin_Tests
             var httpJsonTask = new TaskCompletionSource<string>();
             httpJsonTask.SetResult(tappedOutJson);
 
-            httpClientMock.Setup(h => h.GetAsJson("http://tappedout.net/api/deck/latest/combo/"))
+            unitTestContext.HttpClientMock.Setup(h => h.GetAsJson("http://tappedout.net/api/deck/latest/combo/"))
                 .Returns(httpJsonTask.Task);
 
             var cmd = new Command()
@@ -173,10 +109,10 @@ namespace NerdBotTappedOutPlugin_Tests
                 plugin.OnCommand(
                     cmd,
                     msg,
-                    messengerMock.Object
+                    unitTestContext.MessengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage(
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(
                 It.Is<string>(s => s == "Combo decks: Deck 1 [http://deck1], Deck 2 [http://deck2], Deck 3 (Esper) [http://deck3] [3/3]")));
         }
 
@@ -188,7 +124,7 @@ namespace NerdBotTappedOutPlugin_Tests
             var httpJsonTask = new TaskCompletionSource<string>();
             httpJsonTask.SetResult(tappedOutJson);
 
-            httpClientMock.Setup(h => h.GetAsJson("http://tappedout.net/api/deck/latest/combo/"))
+            unitTestContext.HttpClientMock.Setup(h => h.GetAsJson("http://tappedout.net/api/deck/latest/combo/"))
                 .Returns(httpJsonTask.Task);
 
             var cmd = new Command()
@@ -206,10 +142,10 @@ namespace NerdBotTappedOutPlugin_Tests
                 plugin.OnCommand(
                     cmd,
                     msg,
-                    messengerMock.Object
+                    unitTestContext.MessengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage(
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(
                 It.Is<string>(s => s == "Combo decks: Deck 3 (Esper) [http://deck3] [1/3]")));
         }
 
@@ -221,7 +157,7 @@ namespace NerdBotTappedOutPlugin_Tests
             var httpJsonTask = new TaskCompletionSource<string>();
             httpJsonTask.SetResult(tappedOutJson_NoData);
 
-            httpClientMock.Setup(h => h.GetAsJson("http://tappedout.net/api/deck/latest/combo/"))
+            unitTestContext.HttpClientMock.Setup(h => h.GetAsJson("http://tappedout.net/api/deck/latest/combo/"))
                 .Returns(httpJsonTask.Task);
 
             var cmd = new Command()
@@ -239,10 +175,10 @@ namespace NerdBotTappedOutPlugin_Tests
                 plugin.OnCommand(
                     cmd,
                     msg,
-                    messengerMock.Object
+                    unitTestContext.MessengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage(
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(
                 It.IsAny<string>()), Times.Never);
         }
 
@@ -254,7 +190,7 @@ namespace NerdBotTappedOutPlugin_Tests
             var httpJsonTask = new TaskCompletionSource<string>();
             httpJsonTask.SetResult(null);
 
-            httpClientMock.Setup(h => h.GetAsJson("http://tappedout.net/api/deck/latest/combo/"))
+            unitTestContext.HttpClientMock.Setup(h => h.GetAsJson("http://tappedout.net/api/deck/latest/combo/"))
                 .Returns(httpJsonTask.Task);
 
             var cmd = new Command()
@@ -272,10 +208,10 @@ namespace NerdBotTappedOutPlugin_Tests
                 plugin.OnCommand(
                     cmd,
                     msg,
-                    messengerMock.Object
+                    unitTestContext.MessengerMock.Object
                 ).Result;
 
-            messengerMock.Verify(m => m.SendMessage(
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(
                 It.IsAny<string>()), Times.Never);
         }
 
