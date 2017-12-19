@@ -67,5 +67,27 @@ namespace NerdBotRedditTopCommentResponsePlugin_Tests
 
             unitTestContext.MessengerMock.Verify(m => m.SendMessageWithMention(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.AtLeastOnce);
         }
+
+        [Test]
+        public void RoastMe_FromBot()
+        {
+            var msg = new GroupMeMessage();
+            msg.text = "hey, roast me!";
+            msg.name = unitTestContext.BotName;
+
+            bool handled =
+                plugin.OnMessage(
+                    msg,
+                    unitTestContext.MessengerMock.Object
+                ).Result;
+
+            unitTestContext.MessengerMock.Verify(m => 
+            m.SendMessageWithMention(
+                It.IsAny<string>(), 
+                It.IsAny<string>(), 
+                It.IsAny<int>(), 
+                It.IsAny<int>()), 
+                Times.Never);
+        }
     }
 }
