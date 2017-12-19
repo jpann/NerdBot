@@ -91,7 +91,7 @@ namespace NerdBotRedditTopCommentResponsePlugin
 
                     // This is lame, but check if the reply conatins url syntax. 
                     // If it does, get a new one.
-                    if (reply.Contains("["))
+                    if (reply != null && reply.Contains("["))
                     {
                         reply = await this.mFetcher.GetTopCommentFromSubreddit(cSubReddit);
                     }

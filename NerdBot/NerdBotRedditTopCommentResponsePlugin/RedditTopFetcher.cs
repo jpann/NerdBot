@@ -50,7 +50,7 @@ namespace NerdBotRedditTopCommentResponsePlugin
 
                 Console.WriteLine(msg);
 
-                throw;
+                return null;
             }
         }
     }
