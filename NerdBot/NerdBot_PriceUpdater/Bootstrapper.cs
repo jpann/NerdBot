@@ -41,7 +41,7 @@ namespace NerdBot_PriceUpdater
             // Register the instance of IQueryStatisticsStore
             var queryStatStore = new QueryStatisticsStore(
                 dbConnectionString,
-                dbConnectionString,
+                mtgDbName,
                 TinyIoCContainer.Current.Resolve<ILoggingService>()
             );
             TinyIoCContainer.Current.Register<IQueryStatisticsStore>(queryStatStore);
