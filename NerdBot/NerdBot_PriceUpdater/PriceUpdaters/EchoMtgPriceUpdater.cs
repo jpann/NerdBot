@@ -177,6 +177,14 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
 					this.mLoggingService.Warning ("foilNode is NULL");
 				}
 
+                // Skip cards that have the pattern (0-9) in the name (e.g. Plains (310)) since this are lands
+                if (Regex.IsMatch(nameNode.InnerText, "([0-9]+)"))
+                {
+                    this.mLoggingService.Warning("Skipping card '{0}' due to invalid pattern.", nameNode.InnerText);
+
+                    continue;
+                }
+
                 CardPrice price = new CardPrice();
                 price.SetCode = set.Code;
                 price.Name = nameNode.InnerText;
