@@ -10,5 +10,7 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
     public interface IPriceUpdater
     {
         void UpdatePrices(Set set);
+
+        void PurgePrices(DateTime date);
     }
 }

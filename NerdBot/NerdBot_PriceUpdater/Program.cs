@@ -73,6 +73,10 @@ namespace NerdBot_PriceUpdater
             {
                 try
                 {
+                    // Purge prices that are older than a week before updating prices. If a price has been stagnant or currently doesn't have a price,
+                    // we at least want to have the last available price from at least a week prior.
+                    priceUpdater.PurgePrices(DateTime.Now.AddDays(-7));
+
                     foreach (Set set in sets)
                     {
                         priceUpdater.UpdatePrices(set);

@@ -268,5 +268,11 @@ namespace NerdBot_PriceUpdater.PriceUpdaters
 				this.mLoggingService.Debug ("Saved price for card '{0}'.", card.Name);
             }
         }
+
+        public void PurgePrices(DateTime date)
+        {
+            int card_prices_removed = this.mPriceStore.RemoveCardPricesOnOrBefore(date);
+            int set_prices_removed = this.mPriceStore.RemoveSetPricesOnOrBefore(date);
+        }
     }
 }
