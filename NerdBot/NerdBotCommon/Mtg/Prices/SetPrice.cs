@@ -21,9 +21,17 @@ namespace NerdBotCommon.Mtg.Prices
         [BsonElement("searchName")]
         public string SearchName { get; set; }
 
+        [JsonProperty("searchNameAlternate")]
+        [BsonElement("searchNameAlternate")]
+        public string SearchNameAlternate { get; set; }
+
         [JsonProperty("setCode")]
         [BsonElement("setCode")]
         public string SetCode { get; set; }
+
+        [JsonProperty("setCodeAlternate")]
+        [BsonElement("setCodeAlternate")]
+        public string SetCodeAlternate { get; set; }
 
         [JsonProperty("totalCards")]
         [BsonElement("totalCards")]
@@ -44,5 +52,11 @@ namespace NerdBotCommon.Mtg.Prices
         [JsonProperty("lastUpdated")]
         [BsonElement("lastUpdated")]
         public DateTime LastUpdated { get; set; }
+
+        public SetPrice()
+        {
+            this.SetCodeAlternate = string.Empty;
+            this.SearchNameAlternate = string.Empty;
+        }
     }
 }

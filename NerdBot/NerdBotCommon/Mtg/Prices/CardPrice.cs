@@ -25,6 +25,10 @@ namespace NerdBotCommon.Mtg.Prices
         [BsonElement("setCode")]
         public string SetCode { get; set; }
 
+        [JsonProperty("setCodeAlternate")]
+        [BsonElement("setCodeAlternate")]
+        public string SetCodeAlternate { get; set; }
+
         public string SetAsKeyRuneIcon
         {
             get
@@ -72,5 +76,10 @@ namespace NerdBotCommon.Mtg.Prices
         [JsonProperty("imageUrl")]
         [BsonElement("imageUrl")]
         public string ImageUrl { get; set; }
+
+        public CardPrice()
+        {
+            this.SetCodeAlternate = string.Empty;
+        }
     }
 }

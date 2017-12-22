@@ -59,7 +59,11 @@ namespace NerdBotCommon.Mtg.Prices
 
             var setPriceCollection = this.mDatabase.GetCollection<SetPrice>(cSetPriceCollectionName);
 
-            var query = Query<SetPrice>.EQ(e => e.SetCode, code);
+            var query = Query.Or(
+                    Query<SetPrice>.EQ(e => e.SetCode, code),
+                    Query<SetPrice>.EQ(e => e.SetCodeAlternate, code)
+                );
+
             var sortBy = SortBy.Ascending("lastUpdated");
 
             Stopwatch watch = new Stopwatch();
@@ -89,7 +93,11 @@ namespace NerdBotCommon.Mtg.Prices
 
             var setPriceCollection = this.mDatabase.GetCollection<SetPrice>(cSetPriceCollectionName);
 
-            var query = Query<SetPrice>.Matches(c => c.SearchName, new BsonRegularExpression(searchName, "i"));
+            var query = Query.Or(
+                    Query<SetPrice>.Matches(c => c.SearchNameAlternate, new BsonRegularExpression(searchName, "i")),
+                    Query<SetPrice>.Matches(c => c.SearchName, new BsonRegularExpression(searchName, "i"))
+                );
+
             var sortBy = SortBy.Ascending("lastUpdated");
 
             Stopwatch watch = new Stopwatch();
@@ -157,8 +165,10 @@ namespace NerdBotCommon.Mtg.Prices
                 .Set("url", setPrice.Url)
                 .Set("name", setPrice.Name)
                 .Set("searchName", setPrice.SearchName)
+                .Set("searchNameAlternate", setPrice.SearchNameAlternate)
                 .Set("lastUpdated", setPrice.LastUpdated)
                 .Set("setCode", setPrice.SetCode)
+                .Set("setCodeAlternate", setPrice.SetCodeAlternate)
                 .Set("totalCards", setPrice.TotalCards)
                 .Set("setValue", setPrice.SetValue)
                 .Set("foilSetValue", setPrice.FoilSetValue);
@@ -252,7 +262,11 @@ namespace NerdBotCommon.Mtg.Prices
 
             var query = Query.And(
                 Query<CardPrice>.Matches(e => e.SearchName, new BsonRegularExpression(searchName, "i")),
-                Query<CardPrice>.Matches(e => e.SetCode, setCode));
+                Query.Or(
+                    Query<CardPrice>.Matches(e => e.SetCode, setCode),
+                    Query<CardPrice>.Matches(e => e.SetCodeAlternate, setCode)
+                    )
+                );
 
             var sortBy = SortBy.Ascending("lastUpdated");
 
@@ -322,6 +336,7 @@ namespace NerdBotCommon.Mtg.Prices
                 .Set("searchName", cardPrice.SearchName)
                 .Set("lastUpdated", cardPrice.LastUpdated)
                 .Set("setCode", cardPrice.SetCode)
+                .Set("setCodeAlternate", cardPrice.SetCodeAlternate)
                 .Set("priceDiff", cardPrice.PriceDiff)
                 .Set("priceDiffValue", cardPrice.PriceDiffValue)
                 .Set("priceMid", cardPrice.PriceMid)

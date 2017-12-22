@@ -65,6 +65,7 @@ namespace NerdBot_PriceUpdater
 
             // Register the instance of IPriceUpdater
             var priceUpdater = new EchoMtgPriceUpdater(
+                TinyIoCContainer.Current.Resolve<IMtgStore>(),
                 TinyIoCContainer.Current.Resolve<ICardPriceStore>(),
                 TinyIoCContainer.Current.Resolve<IHttpClient>(),
                 TinyIoCContainer.Current.Resolve<ILoggingService>(),

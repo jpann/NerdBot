@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using NerdBotCommon.Mtg;
 using NerdBot_PriceUpdater.PriceUpdaters;
 using SimpleLogging.Core;
 using TinyIoC;
@@ -15,7 +12,6 @@ namespace NerdBot_PriceUpdater
 {
     internal class Program
     {
-        private static IMtgStore mMtgStore;
         private static ILoggingService mLoggingService;
         private static BackgroundWorker mUpdaterBackgroundWorker;
         private static List<IPriceUpdater> mPriceUpdaters;
@@ -27,7 +23,6 @@ namespace NerdBot_PriceUpdater
 
             mStopwatch = new Stopwatch();
             mLoggingService = TinyIoCContainer.Current.Resolve<ILoggingService>();
-            mMtgStore = TinyIoCContainer.Current.Resolve<IMtgStore>();
             mPriceUpdaters = TinyIoCContainer.Current.ResolveAll<IPriceUpdater>().ToList();
 
             // Setup worker
@@ -63,11 +58,6 @@ namespace NerdBot_PriceUpdater
 
             mStopwatch.Start();
 
-            // Get sets from IMtgStore
-            mLoggingService.Debug("Getting sets...");
-            List<Set> sets = mMtgStore.GetSets().Result;
-            mLoggingService.Debug("Got {0} sets!", sets.Count);
-
             // Go through each IPriceUpdater and call the UpdatePrices method
             foreach (IPriceUpdater priceUpdater in mPriceUpdaters)
             {
@@ -77,10 +67,7 @@ namespace NerdBot_PriceUpdater
                     // we at least want to have the last available price from at least a week prior.
                     priceUpdater.PurgePrices(DateTime.Now.AddDays(-7));
 
-                    foreach (Set set in sets)
-                    {
-                        priceUpdater.UpdatePrices(set);
-                    }
+                    priceUpdater.UpdatePrices();
                 }
                 catch (Exception er)
                 {
