@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NerdBotCommon.Http;
+using NerdBotScryFallPlugin.POCO;
 using Newtonsoft.Json;
 
 namespace NerdBotScryFallPlugin
