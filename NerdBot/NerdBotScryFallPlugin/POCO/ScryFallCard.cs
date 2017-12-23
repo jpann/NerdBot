@@ -26,6 +26,12 @@ namespace NerdBotScryFallPlugin.POCO
         [JsonProperty("usd")]
         public string PriceUsd { get; set; }
 
+        [JsonProperty("set")]
+        public string SetCode { get; set; }
+
+        [JsonProperty("set_name")]
+        public string SetName { get; set; }
+
         [JsonProperty("related_uris")]
         public ScryFall_RelatedUri Related_Uris { get; set; }
 
