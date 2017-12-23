@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Net.Cache;
 using System.Net.Http;
 using System.Threading.Tasks;
 using SimpleLogging.Core;
@@ -12,6 +13,12 @@ namespace NerdBotCommon.Http
         private const int cTimeOut = 10000;
 
         private readonly ILoggingService mLogger;
+        private static HttpClient clientCached = new HttpClient(new WebRequestHandler()
+        {
+            CachePolicy = new HttpRequestCachePolicy(HttpCacheAgeControl.MaxAge, TimeSpan.FromDays(-1))
+        });
+
+        private static HttpClient client = new HttpClient();
 
         public SimpleHttpClient(ILoggingService logger)
         {
@@ -96,12 +103,9 @@ namespace NerdBotCommon.Http
         {
 	        try
 	        {
-		        using (var httpClient = new HttpClient())
-		        {
-			        var json = await httpClient.GetStringAsync(url);
+			    var json = await clientCached.GetStringAsync(url);
 
-			        return json;
-		        }
+			    return json;
 	        }
 	        catch (Exception er)
 	        {
@@ -109,6 +113,22 @@ namespace NerdBotCommon.Http
 
 		        return null;
 	        }
+        }
+
+        public async Task<string> GetAsJsonNonCached(string url)
+        {
+            try
+            {
+                var json = await client.GetStringAsync(url);
+
+                return json;
+            }
+            catch (Exception er)
+            {
+                this.mLogger.Error(er, string.Format("Error getting json result from '{0}'", url));
+
+                return null;
+            }
         }
 
         public string GetResponseAsString(string url)

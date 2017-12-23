@@ -32,7 +32,7 @@ namespace NerdBotGiphyPlugin
             {
                 keyword = Uri.EscapeDataString(keyword);
 
-                string latestJson = await this.mHttpClient.GetAsJson(string.Format(this.mUrl, keyword));
+                string latestJson = await this.mHttpClient.GetAsJsonNonCached(string.Format(this.mUrl, keyword));
 
                 if (string.IsNullOrEmpty(latestJson))
                     return null;

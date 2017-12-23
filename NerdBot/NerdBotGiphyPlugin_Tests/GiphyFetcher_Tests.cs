@@ -54,7 +54,7 @@ namespace NerdBotGiphyPlugin_Tests
             var httpJsonTask = new TaskCompletionSource<string>();
             httpJsonTask.SetResult(giphydata);
 
-            unitTestContext.HttpClientMock.Setup(h => h.GetAsJson(string.Format(url, keyword)))
+            unitTestContext.HttpClientMock.Setup(h => h.GetAsJsonNonCached(string.Format(url, keyword)))
                 .Returns(httpJsonTask.Task);
 
             string actual = fetcher.GetGiphyGif(keyword).Result;
