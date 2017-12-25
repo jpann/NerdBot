@@ -43,6 +43,11 @@ namespace NerdBot.TestsHelper
 
         public UnitTestContext()
         {
+            Setup();
+        }
+
+        public void Setup()
+        {
             BotName = "BotName";
             BotId = "BOTID";
 
