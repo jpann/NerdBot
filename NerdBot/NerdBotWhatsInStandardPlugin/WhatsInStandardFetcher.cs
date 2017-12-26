@@ -10,7 +10,11 @@ namespace NerdBotWhatsInStandardPlugin
 {
     public class WhatsInStandardData
     {
-        
+        [JsonProperty("deprecated")]
+        public bool Deprecated { get; set; }
+
+        [JsonProperty("sets")]
+        public List<WhatsInStandardSetData> Sets { get; set; }
     }
 
     public class WhatsInStandardSetData
@@ -36,7 +40,7 @@ namespace NerdBotWhatsInStandardPlugin
 
     public class WhatsInStandardFetcher
     {
-        private const string cUrl = "http://whatsinstandard.com/api/4/sets.json";
+        private const string cUrl = "http://whatsinstandard.com/api/v5/sets.json";
 
         private readonly IHttpClient mHttpClient;
 
@@ -49,7 +53,7 @@ namespace NerdBotWhatsInStandardPlugin
             this.mHttpClient = httpClient;
         }
 
-        public async Task<List<WhatsInStandardSetData>> GetData()
+        public async Task<WhatsInStandardData> GetDataAsync(bool filter = true)
         {
             try
             {
@@ -58,10 +62,19 @@ namespace NerdBotWhatsInStandardPlugin
                 if (string.IsNullOrEmpty(latestJson))
                     return null;
 
-                var def = JsonConvert.DeserializeObject<List<WhatsInStandardSetData>>(latestJson);
+                var def = JsonConvert.DeserializeObject<WhatsInStandardData>(latestJson);
 
                 if (def == null)
                     return null;
+
+                // Filter out sets that haven't entered standard yet or have already exited standard
+                if (filter)
+                {
+                    var today = DateTime.Now;
+
+                    def.Sets.RemoveAll(s =>
+                        ((s.EnterDate ?? DateTime.MaxValue) > today) || ((s.ExitDate ?? DateTime.MaxValue) < today));
+                }
 
                 return def;
             }

@@ -83,9 +83,7 @@ namespace NerdBotWhatsInStandardPlugin
 
             var whatsInStandard = new WhatsInStandardFetcher(this.Services.HttpClient);
 
-            List<WhatsInStandardSetData> data = null;
-
-            data = await whatsInStandard.GetData();
+            WhatsInStandardData data = await whatsInStandard.GetDataAsync();
 
             if (data != null)
             {
@@ -93,7 +91,7 @@ namespace NerdBotWhatsInStandardPlugin
                 string msg = "Current sets in Standard: {0}";
 
 
-                msg = string.Format(msg, string.Join(", ", data.Select(s => s.Code)));
+                msg = string.Format(msg, string.Join(", ", data.Sets.Select(s => s.Code)));
 
                 messenger.SendMessage(msg);
             }
