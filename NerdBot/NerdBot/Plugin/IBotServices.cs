@@ -1,4 +1,5 @@
 ﻿using NerdBot.Parsers;
+using NerdBotCommon.Autocomplete;
 using NerdBotCommon.Http;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
@@ -15,5 +16,6 @@ namespace NerdBot.Plugin
         IHttpClient HttpClient { get; }
         IUrlShortener UrlShortener { get; }
         IQueryStatisticsStore QueryStatisticsStore { get; }
+        IAutocompleter Autocompleter { get; }
     }
 }

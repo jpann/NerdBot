@@ -89,6 +89,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Autocomplete\IAutocompleter.cs" />
     <Compile Include="Factories\IMessengerFactory.cs" />
     <Compile Include="Factories\MessengerFactory.cs" />
     <Compile Include="Http\IHttpClient.cs" />
@@ -121,6 +122,8 @@
     <Compile Include="Statistics\CardQueryStat.cs" />
     <Compile Include="Statistics\IQueryStatisticsStore.cs" />
     <Compile Include="Statistics\QueryStatisticsStore.cs" />
+    <Compile Include="ThirdParty\ScryFall\ScryFallAutocomplete.cs" />
+    <Compile Include="ThirdParty\ScryFall\ScryFallCatalog.cs" />
     <Compile Include="UrlShortners\BitlyUrlShortener.cs" />
     <Compile Include="UrlShortners\IUrlShortener.cs" />
     <Compile Include="Utilities\SearchUtility.cs" />

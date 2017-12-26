@@ -13,6 +13,7 @@ using NerdBot.Admin;
 using NerdBot.Parsers;
 using NerdBot.Plugin;
 using NerdBot.Reporters;
+using NerdBotCommon.Autocomplete;
 using NerdBotCommon.Http;
 using NerdBotCommon.Importer;
 using NerdBotCommon.Importer.Mapper;
@@ -22,6 +23,7 @@ using NerdBotCommon.Messengers.GroupMe;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
 using NerdBotCommon.Statistics;
+using NerdBotCommon.ThirdParty.ScryFall;
 using NerdBotCommon.UrlShortners;
 using NerdBotCommon.Utilities;
 using Nini.Config;
@@ -204,6 +206,9 @@ namespace NerdBot
                 container.Resolve<ILoggingService>(),
                 container.Resolve<SearchUtility>());
             container.Register<ICardPriceStore>(priceStore);
+
+            // Register IAutocompleter
+            container.Register<IAutocompleter, ScryFallAutocomplete>();
 
             // Register the instance of IBotServices
             container.Register<IBotServices, BotServices>();

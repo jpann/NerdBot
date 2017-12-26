@@ -1,5 +1,6 @@
 ﻿using System;
 using NerdBot.Parsers;
+using NerdBotCommon.Autocomplete;
 using NerdBotCommon.Http;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
@@ -16,6 +17,7 @@ namespace NerdBot.Plugin
         private readonly IHttpClient mHttpClient;
         private readonly IUrlShortener mUrlShortener;
         private readonly IQueryStatisticsStore mQueryStatisticsStore;
+        private readonly IAutocompleter mAutocompleter;
 
         #region Properties
         public ICommandParser CommandParser
@@ -47,6 +49,11 @@ namespace NerdBot.Plugin
         {
             get { return this.mUrlShortener; }
         }
+
+        public IAutocompleter Autocompleter
+        {
+            get { return this.mAutocompleter; }
+        }
         #endregion
 
         public BotServices(
@@ -55,7 +62,8 @@ namespace NerdBot.Plugin
             ICommandParser commandParser,
             IHttpClient httpClient,
             IUrlShortener urlShortener,
-            IQueryStatisticsStore queryStatisticsStore)
+            IQueryStatisticsStore queryStatisticsStore,
+            IAutocompleter autocompleter)
         {
             if (store == null)
                 throw new ArgumentNullException("store");
@@ -75,12 +83,16 @@ namespace NerdBot.Plugin
             if (queryStatisticsStore == null)
                 throw new ArgumentNullException("queryStatisticsStore");
 
+            if (autocompleter == null)
+                throw new ArgumentNullException("autocompleter");
+
             this.mStore = store;
             this.mPriceStore = priceStore;
             this.mCommandParser = commandParser;
             this.mHttpClient = httpClient;
             this.mUrlShortener = urlShortener;
             this.mQueryStatisticsStore = queryStatisticsStore;
+            this.mAutocompleter = autocompleter;
         }
     }
 }
