@@ -68,7 +68,6 @@
     <Compile Include="RandomArtistPlugin.cs" />
     <Compile Include="RandomSetCardPlugin.cs" />
     <Compile Include="RulingPlugin.cs" />
-    <Compile Include="TappedOutFormatCheckPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NerdBotCommon\NerdBotCommon.csproj">
