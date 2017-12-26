@@ -85,6 +85,16 @@ namespace NerdBotCommon.Importer.DataReaders
             MtgJsonSet setData = JsonConvert.DeserializeObject<MtgJsonSet>(data, settings);
             this.mLoggingService.Debug("Deserialized MtgJsonSet!");
 
+            if (this.mSkipPromos)
+            {
+                if (setData.Type.ToLower() == "promo")
+                {
+                    this.mLoggingService.Warning("Set type is '{0}', skipping...", setData.Type);
+
+                    return null;
+                }
+            }
+
             // Get rarity quantities
             this.mLoggingService.Debug("Getting rarity quantities...");
             JObject cardObject = JObject.Parse(data);

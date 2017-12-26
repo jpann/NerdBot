@@ -167,7 +167,6 @@ namespace NerdBot.Modules
                 }
 
                 var set = mtgDataReader.ReadSet(data);
-                var cards = mtgDataReader.ReadCards(data);
 
                 if (set == null)
                 {
@@ -186,6 +185,8 @@ namespace NerdBot.Modules
                         Status = "Error"
                     }).StatusCode = HttpStatusCode.BadRequest;
                 }
+
+                var cards = mtgDataReader.ReadCards(data);
 
                 var status = await importer.Import(set, cards);
 

@@ -202,7 +202,6 @@ namespace NerdBot_DatabaseUpdater
             var setData = mFileSystem.File.ReadAllText(file);
 
             var set = mDataReader.ReadSet(setData);
-            var cards = mDataReader.ReadCards(setData);
 
             if (set == null)
                 throw new Exception("Set not found! Aborting.");
@@ -217,6 +216,8 @@ namespace NerdBot_DatabaseUpdater
             mLoggingService.Debug("Inserting set '{0}' [{1}]...",
                 set.Name,
                 set.Code);
+
+            var cards = mDataReader.ReadCards(setData);
 
             var status = mImporter.Import(set, cards).Result;
 
