@@ -191,3 +191,5 @@ NerdBot/NerdBot_DatabaseUpdater/DatabaseUpdater.ini
 NerdBot/NerdBot.TestsHelper/NerdBot_Tests.ini
 
 *.DotSettings
+
+NerdBot/.vs/

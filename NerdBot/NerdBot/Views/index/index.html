@@ -39,9 +39,12 @@
     <script src="@Path['~/Content/js/jquery.validate.js']"></script>
     <script src="@Path['~/Content/js/additional-methods.js']"></script>
     <script src="@Path['~/Content/js/bootstrap.min.js']"></script>
+    <script src="@Path['~/Content/js/jquery-ui.min.js']"></script>
+
     <link rel="stylesheet" href="@Path['~/Content/css/bootstrap.min.css']">
     <link rel="stylesheet" href="@Path['~/Content/css/keyrune.css']">
     <link rel="stylesheet" href="@Path['~/Content/css/mana.css']">
+    <link rel="stylesheet" href="@Path['~/Content/css/jquery-ui.min.css']">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
@@ -56,6 +59,15 @@
     @Partial['partial/header.html'];
 
 <div class="container-fluid">
+    <label for="name-search-term">Name Search</label>
+    <div class="input-group">
+        <input id="name-search-term" type="text" class="form-control search-term" placeholder="Card Name">
+        <span class="input-group-btn">
+            <button id="btn-name-search" class="btn btn-default" type="button">Search Name</button>
+        </span>
+    </div>
+    <br/>
+    <label for="search-term">Full Text Search</label>
     <div class="input-group">
         <input id="search-term" type="text" class="form-control search-term" placeholder="Term to search for in card name, rules text or sub-type. E.g. To search for the term 'vampire' appears and 'wooden' does not: Vampire -wooden ">
         <span class="input-group-btn">
@@ -141,21 +153,51 @@
 
             if (search_term) 
             {
-                timeout_id = setTimeout(() => table.ajax.url('/api/search/' + search_term).load(), 500);
+                timeout_id = setTimeout(() => performSearch(table, search_term, 'text'), 500);
             }
         });
 
-        $('#btn-search').click(function ()
+        $('#btn-name-search').click(function ()
         {
-            var search_term = $('#search-term').val();
+            var search_term = $('#name-search-term').val();
 
             if (search_term)
             {
-                table.ajax.url('/api/search/' + search_term).load();
+                performSearch(table, search_term, 'name');
             }
+        });
 
+        $('#btn-search').click(function () {
+            var search_term = $('#search-term').val();
+
+            if (search_term) {
+                performSearch(table, search_term, 'text');
+            }
+        });
+
+        $("#name-search-term").autocomplete({
+            source: function (request, response)
+            {
+                $.get('https://api.scryfall.com/cards/autocomplete', { q: request.term }, function (data) {
+                    console.log(data.data);
+                    response(data.data);
+                });
+            },
+            select: function (event, ui)
+            {
+                var search_term = ui.item.value;
+
+                if (search_term)
+                {
+                    performSearch(table, search_term, 'name');
+                }
+            }
         });
     });
+
+    function performSearch(table, term, type) {
+        table.ajax.url('/api/search/' + term + '/' + type).load();
+    }
 </script>
 @Partial['partial/footer.html'];
 </body>

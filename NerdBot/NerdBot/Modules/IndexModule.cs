@@ -30,13 +30,14 @@ namespace NerdBot.Modules
             };
 
             #region Card Search Route
-            Get["/api/search/{term?}", true] = async (parameters, ct) =>
+            Get["/api/search/{term?}/{type?text}", true] = async (parameters, ct) =>
             {
                 var sw = Stopwatch.StartNew();
 
                 int limit = 1000;
 
                 string term = parameters.term;
+                string searchType = parameters.type;
 
                 if (string.IsNullOrEmpty(term) || term.StartsWith("?"))
                 {
@@ -48,7 +49,16 @@ namespace NerdBot.Modules
                     });
                 }
 
-                var db_cards = await mtgStore.FullTextSearch(term, limit);
+                List<Card> db_cards = null;
+
+                if (searchType.ToLower() == "text")
+                {
+                    db_cards = await mtgStore.FullTextSearch(term, limit);
+                }
+                else if (searchType.ToLower() == "name")
+                {
+                    db_cards = await mtgStore.SearchCards(term, 0, limit);
+                }
 
                 if (db_cards == null)
                 {
