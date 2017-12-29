@@ -5,6 +5,7 @@ using NerdBotCommon.Messengers.GroupMe;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Parsers;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace NerdBotCardImagePlugin_Tests
 {
@@ -224,35 +225,6 @@ namespace NerdBotCardImagePlugin_Tests
         }
 
         [Test]
-        public void ImgCommand_ByNameAndSet_NameDoesntExist()
-        {
-            var cmd = new Command()
-            {
-                Cmd = "img",
-                Arguments = new string[]
-                {
-                    "Fallen Empires",
-                    "Bore Cloud"
-                }
-            };
-
-            var msg = new GroupMeMessage();
-
-
-            bool handled = imgCommandPlugin.OnCommand(
-                cmd,
-                msg,
-                unitTestContext.MessengerMock.Object
-                ).Result;
-
-            // Verify that the messenger's SendMessenger was never called 
-            //  because no message should be sent when a card was not found
-            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.AtLeastOnce);
-
-            Assert.False(handled);
-        }
-
-        [Test]
         public void ImgCommand_ByNameAndSetCode()
         {
             var cmd = new Command()
@@ -275,6 +247,152 @@ namespace NerdBotCardImagePlugin_Tests
                 ).Result;
 
             unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.EndsWith(".jpg"))));
+        }
+
+        [Test]
+        public void ImgCommand_ByName_NoCardFound_RunAutocomplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                    "Spore Frog",
+                    "Spore Burst",
+                    "Sporemound",
+                    "Spore Cloud",
+                    "Spore Flower"
+                });
+
+            var cmd = new Command()
+            {
+                Cmd = "img",
+                Arguments = new string[]
+                {
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+
+            bool handled = imgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("Did you mean Spore Frog"))));
+
+            Assert.False(handled);
+        }
+
+        [Test]
+        public void ImgCommand_ByNameAndSet_NoCardFound_RunAutocomplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                    "Spore Frog",
+                    "Spore Burst",
+                    "Sporemound",
+                    "Spore Cloud",
+                    "Spore Flower"
+                });
+
+            var cmd = new Command()
+            {
+                Cmd = "img",
+                Arguments = new string[]
+                {
+                    "Fallen Empires",
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+
+            bool handled = imgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("Did you mean Spore Frog"))));
+
+            Assert.False(handled);
+        }
+
+        [Test]
+        public void ImgCommand_ByName_NoCardFound_NoAutoComplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                });
+
+            var cmd = new Command()
+            {
+                Cmd = "img",
+                Arguments = new string[]
+                {
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+            bool handled = imgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m =>
+                    m.SendMessage(It.Is<string>(s => s.StartsWith("Try seeing if your card is here"))),
+                Times.Once);
+        }
+
+        [Test]
+        public void ImgCommand_ByNameAndSet_NoCardFound_NoAutoComplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                });
+
+            var cmd = new Command()
+            {
+                Cmd = "img",
+                Arguments = new string[]
+                {
+                    "C13",
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+            bool handled = imgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m =>
+                    m.SendMessage(It.Is<string>(s => s.StartsWith("Try seeing if your card is here"))),
+                Times.Once);
         }
     }
 }
