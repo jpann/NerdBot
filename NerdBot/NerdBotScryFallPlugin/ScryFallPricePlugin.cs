@@ -7,6 +7,7 @@ using NerdBot.Plugin;
 using NerdBotCommon.Messengers;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Parsers;
+using NerdBotCommon.Extensions;
 
 namespace NerdBotScryFallPlugin
 {
@@ -155,17 +156,35 @@ namespace NerdBotScryFallPlugin
                 {
                     this.mLoggingService.Warning("Couldn't find card using arguments.");
 
+                    // Use autocomplete to try returning a list of suggested names
                     string name = "";
                     if (command.Arguments.Length == 1)
                         name = command.Arguments[0];
                     else
                         name = command.Arguments[1];
 
-                    name = Uri.EscapeDataString(name);
+                    // Get first 5 characters of name to use with autocomplete
+                    string autocompleteName = new string(name.Take(5).ToArray());
 
-                    string url = string.Format(cSearchUrl, name);
+                    var autocompleteResults = await this.Services.Autocompleter.GetAutocompleteAsync(autocompleteName);
+                    if (autocompleteResults != null && autocompleteResults.Any())
+                    {
+                        LoggingService.Trace("Autocomplete returned '{0}' results for '{1}'...", autocompleteResults.Count(), name);
 
-                    messenger.SendMessage(string.Format("Try seeing if your card is here: {0}", url));
+                        string suggestions = autocompleteResults.Take(5).OxbridgeOr();
+
+                        string msg = string.Format("Did you mean {0}?", suggestions);
+
+                        messenger.SendMessage(msg);
+                    }
+                    else
+                    {
+                        name = Uri.EscapeDataString(name);
+
+                        string url = string.Format(cSearchUrl, name);
+
+                        messenger.SendMessage(string.Format("Try seeing if your card is here: {0}", url));
+                    }
                 }
             }
             else

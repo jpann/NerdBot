@@ -140,7 +140,7 @@ namespace NerdBotScryFallPlugin_Tests
         }
 
         [Test]
-        public void ScryCommand_ByName_NotFound()
+        public void ScryCommand_ByName_NoCardFound()
         {
             unitTestContext.HttpClientMock.Setup(h =>
                     h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard_ScryNotFound.MultiverseId))
@@ -168,7 +168,7 @@ namespace NerdBotScryFallPlugin_Tests
         }
 
         [Test]
-        public void ScryCommand_ByNameAndSet_NotFound()
+        public void ScryCommand_ByNameAndSet_NoCardFound()
         {
             unitTestContext.HttpClientMock.Setup(h =>
                     h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard_ScryNotFound.MultiverseId))
@@ -296,6 +296,150 @@ namespace NerdBotScryFallPlugin_Tests
             ).Result;
 
             unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        public void ScryCommand_ByName_NoCardFound_RunAutocomplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                    "Spore Frog",
+                    "Spore Burst",
+                    "Sporemound",
+                    "Spore Cloud",
+                    "Spore Flower"
+                });
+
+            var cmd = new Command()
+            {
+                Cmd = "scry",
+                Arguments = new string[]
+                {
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+            scryCommandPlugin.OnLoad();
+
+            bool handled = scryCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("Did you mean Spore Frog"))));
+        }
+
+        [Test]
+        public void ScryCommand_ByNameAndSet_NoCardFound_RunAutocomplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                    "Spore Frog",
+                    "Spore Burst",
+                    "Sporemound",
+                    "Spore Cloud",
+                    "Spore Flower"
+                });
+
+            unitTestContext.HttpClientMock.Setup(h =>
+                    h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard_ScryNotFound.MultiverseId))
+                .ReturnsAsync("");
+
+            var cmd = new Command()
+            {
+                Cmd = "scry",
+                Arguments = new string[]
+                {
+                    "EXP",
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+            scryCommandPlugin.OnLoad();
+
+            bool handled = scryCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("Did you mean Spore Frog"))));
+        }
+
+        [Test]
+        public void ScryCommand_ByName_NoCardFound_NoAutocomplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                });
+
+            var cmd = new Command()
+            {
+                Cmd = "scry",
+                Arguments = new string[]
+                {
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+            scryCommandPlugin.OnLoad();
+
+            bool handled = scryCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("Try seeing if your card is here"))));
+        }
+
+        [Test]
+        public void ScryCommand_ByNameSet_NoCardFound_NoAutocomplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                });
+
+            var cmd = new Command()
+            {
+                Cmd = "scry",
+                Arguments = new string[]
+                {
+                    "C13",
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+            scryCommandPlugin.OnLoad();
+
+            bool handled = scryCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("Try seeing if your card is here"))));
         }
     }
 }
