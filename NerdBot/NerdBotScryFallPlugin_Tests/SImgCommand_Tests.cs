@@ -179,7 +179,7 @@ namespace NerdBotScryFallPlugin_Tests
         }
 
         [Test]
-        public void SImgCommand_ByName_NotFound()
+        public void SImgCommand_ByName_NoCardFound()
         {
             unitTestContext.HttpClientMock.Setup(h =>
                     h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard_ScryNotFound.MultiverseId))
@@ -207,7 +207,7 @@ namespace NerdBotScryFallPlugin_Tests
         }
 
         [Test]
-        public void SImgCommand_ByNameAndSet_NotFound()
+        public void SImgCommand_ByNameAndSet_NoCardFound()
         {
             unitTestContext.HttpClientMock.Setup(h =>
                     h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard_ScryNotFound.MultiverseId))
@@ -419,6 +419,150 @@ namespace NerdBotScryFallPlugin_Tests
             ).Result;
 
             unitTestContext.MessengerMock.Verify(m => m.SendMessage(testData.TestCard.Img));
+        }
+
+        [Test]
+        public void SImgCommand_ByName_NoCardFound_RunAutocomplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                    "Spore Frog",
+                    "Spore Burst",
+                    "Sporemound",
+                    "Spore Cloud",
+                    "Spore Flower"
+                });
+
+            var cmd = new Command()
+            {
+                Cmd = "scry",
+                Arguments = new string[]
+                {
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+            simgCommandPlugin.OnLoad();
+
+            bool handled = simgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("Did you mean Spore Frog"))));
+        }
+
+        [Test]
+        public void SImgCommand_ByNameAndSet_NoCardFound_RunAutocomplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                    "Spore Frog",
+                    "Spore Burst",
+                    "Sporemound",
+                    "Spore Cloud",
+                    "Spore Flower"
+                });
+
+            unitTestContext.HttpClientMock.Setup(h =>
+                    h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard_ScryNotFound.MultiverseId))
+                .ReturnsAsync("");
+
+            var cmd = new Command()
+            {
+                Cmd = "scry",
+                Arguments = new string[]
+                {
+                    "EXP",
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+            simgCommandPlugin.OnLoad();
+
+            bool handled = simgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("Did you mean Spore Frog"))));
+        }
+
+        [Test]
+        public void SImgCommand_ByName_NoCardFound_NoAutocomplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                });
+
+            var cmd = new Command()
+            {
+                Cmd = "scry",
+                Arguments = new string[]
+                {
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+            simgCommandPlugin.OnLoad();
+
+            bool handled = simgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("Try seeing if your card is here"))));
+        }
+
+        [Test]
+        public void SImgCommand_ByNameSet_NoCardFound_NoAutocomplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                });
+
+            var cmd = new Command()
+            {
+                Cmd = "scry",
+                Arguments = new string[]
+                {
+                    "C13",
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+            simgCommandPlugin.OnLoad();
+
+            bool handled = simgCommandPlugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("Try seeing if your card is here"))));
         }
     }
 }
