@@ -109,6 +109,7 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="BotConfig.cs" />
     <Compile Include="Diagnostics\CardSearchDiagnosticsProvider.cs" />
+    <Compile Include="Extensions\IEnumerableStringExtension.cs" />
     <Compile Include="Extensions\RequestBodyExtension.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="IPluginManager.cs" />

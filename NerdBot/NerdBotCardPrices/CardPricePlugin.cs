@@ -11,6 +11,7 @@ using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
 using NerdBotCommon.Parsers;
 using NerdBotCommon.UrlShortners;
+using NerdBotCommon.Extensions;
 
 namespace NerdBotCardPrices
 {
@@ -164,21 +165,24 @@ namespace NerdBotCardPrices
                 {
                     this.mLoggingService.Warning("Couldn't find card using arguments.");
 
-                    // Try a second time, this time adding in wildcards
+                    // Use autocomplete to try returning a list of suggested names
                     string name = "";
                     if (command.Arguments.Length == 1)
                         name = command.Arguments[0];
                     else
                         name = command.Arguments[1];
 
-                    name = name.Replace(" ", "%");
+                    // Get first 5 characters of name to use with autocomplete
+                    string autocompleteName = new string(name.Take(5).ToArray());
 
-                    card = await this.Services.Store.GetCard(name);
-					if (card != null)
+                    var autocompleteResults = await this.Services.Autocompleter.GetAutocompleteAsync(autocompleteName);
+                    if (autocompleteResults != null && autocompleteResults.Any())
 					{
-						LoggingService.Trace("Second try using '{0}' returned a card. Suggesting '{0}'...", name, card.Name);
+						LoggingService.Trace("Autocomplete returned '{0}' results for '{1}'...", autocompleteResults.Count(), name);
 
-						string msg = string.Format("Did you mean '{0}'?", card.Name);
+					    string suggestions = autocompleteResults.Take(5).OxbridgeOr();
+
+                        string msg = string.Format("Did you mean {0}?", suggestions);
 
 						messenger.SendMessage(msg);
 					}

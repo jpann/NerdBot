@@ -3,6 +3,7 @@ using Moq;
 using NerdBot.Parsers;
 using NerdBot.Plugin;
 using NerdBot.Reporters;
+using NerdBotCommon.Autocomplete;
 using NerdBotCommon.Factories;
 using NerdBotCommon.Http;
 using NerdBotCommon.Importer;
@@ -41,6 +42,7 @@ namespace NerdBot.TestsHelper
         public Mock<IQueryStatisticsStore> QueryStatisticsStoreMock { get; set; }
         public Mock<IUrlShortener> UrlShortenerMock { get; set; }
 
+        public Mock<IAutocompleter> AutocompleterMock { get; set; }
         public UnitTestContext()
         {
             Setup();
@@ -126,6 +128,9 @@ namespace NerdBot.TestsHelper
             // Setup IUrlShortener Mock
             UrlShortenerMock = new Mock<IUrlShortener>();
 
+            // Setup IAutocompleter Mock
+            AutocompleterMock = new Mock<IAutocompleter>();
+
             // Setup IBotServices Mock
             BotServicesMock = new Mock<IBotServices>();
 
@@ -146,6 +151,9 @@ namespace NerdBot.TestsHelper
 
             BotServicesMock.SetupGet(s => s.UrlShortener)
                 .Returns(UrlShortenerMock.Object);
+
+            BotServicesMock.SetupGet(s => s.Autocompleter)
+                .Returns(AutocompleterMock.Object);
         }
     }
 }

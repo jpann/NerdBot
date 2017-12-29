@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using System.Collections.Generic;
+using Moq;
 using NerdBot.TestsHelper;
 using NerdBotCardPrices;
 using NerdBotCommon.Http;
@@ -258,5 +259,115 @@ namespace NerdBotCardPricesPlugin_Tests
                 Times.Once);
         }
 
+        [Test]
+        public void GetPrice_ByName_NoCardFound_RunAutocomplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                    "Spore Frog",
+                    "Spore Burst",
+                    "Sporemound",
+                    "Spore Cloud",
+                    "Spore Flower"
+                });
+
+            var cmd = new Command()
+            {
+                Cmd = "tcg",
+                Arguments = new string[]
+                {
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+            bool handled = plugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m =>
+                    m.SendMessage(It.Is<string>(s => s.StartsWith("Did you mean Spore Frog"))),
+                Times.Once);
+        }
+
+        [Test]
+        public void GetPrice_ByNameAndSet_NoCardFound_RunAutocomplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                    "Spore Frog",
+                    "Spore Burst",
+                    "Sporemound",
+                    "Spore Cloud",
+                    "Spore Flower"
+                });
+
+            var cmd = new Command()
+            {
+                Cmd = "tcg",
+                Arguments = new string[]
+                {
+                    "C13",
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+            bool handled = plugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m =>
+                    m.SendMessage(It.Is<string>(s => s.StartsWith("Did you mean Spore Frog"))),
+                Times.Once);
+        }
+
+        [Test]
+        public void GetPrice_ByNameAndSet_NoCardFound_NoAutoComplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                });
+
+            var cmd = new Command()
+            {
+                Cmd = "tcg",
+                Arguments = new string[]
+                {
+                    "C13",
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+            bool handled = plugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m =>
+                    m.SendMessage(It.Is<string>(s => s.StartsWith("Or try seeing if your card is here"))),
+                Times.Once);
+        }
     }
 }
