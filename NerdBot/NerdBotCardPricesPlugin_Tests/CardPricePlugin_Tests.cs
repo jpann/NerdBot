@@ -337,6 +337,39 @@ namespace NerdBotCardPricesPlugin_Tests
         }
 
         [Test]
+        public void GetPrice_ByName_NoCardFound_NoAutoComplete()
+        {
+            string name = "spore bloud";
+
+            // Setup IAutocompleter mock response
+            unitTestContext.AutocompleterMock.Setup(ac => ac.GetAutocompleteAsync("spore"))
+                .ReturnsAsync(() => new List<string>()
+                {
+                });
+
+            var cmd = new Command()
+            {
+                Cmd = "tcg",
+                Arguments = new string[]
+                {
+                    name
+                }
+            };
+
+            var msg = new GroupMeMessage();
+
+            bool handled = plugin.OnCommand(
+                cmd,
+                msg,
+                unitTestContext.MessengerMock.Object
+            ).Result;
+
+            unitTestContext.MessengerMock.Verify(m =>
+                    m.SendMessage(It.Is<string>(s => s.StartsWith("Or try seeing if your card is here"))),
+                Times.Once);
+        }
+
+        [Test]
         public void GetPrice_ByNameAndSet_NoCardFound_NoAutoComplete()
         {
             string name = "spore bloud";
