@@ -152,6 +152,12 @@ namespace NerdBotScryFallPlugin
                             img_url = card.Img;
                         }
 
+                        // Remove trailing ?xxxxxxxx portion from uri, if it exists
+                        if (!string.IsNullOrEmpty(img_url) && img_url.LastIndexOf('?') > 0)
+                        {
+                            img_url = img_url.Substring(0, img_url.LastIndexOf('?'));
+                        }
+
                         messenger.SendMessage(img_url);
 
                         // Get other sets card is in
