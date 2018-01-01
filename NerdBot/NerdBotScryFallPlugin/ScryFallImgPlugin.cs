@@ -139,10 +139,10 @@ namespace NerdBotScryFallPlugin
                     {
                         // Get image, starting with large
                         string img_url;
-                        if (!string.IsNullOrEmpty(scryCard.Image_Uris.Png))
-                            img_url = scryCard.Image_Uris.Png;
-                        else if (!string.IsNullOrEmpty(scryCard.Image_Uris.Large))
+                        if (!string.IsNullOrEmpty(scryCard.Image_Uris.Large))
                             img_url = scryCard.Image_Uris.Large;
+                        else if (!string.IsNullOrEmpty(scryCard.Image_Uris.Png))
+                            img_url = scryCard.Image_Uris.Png;
                         else if (!string.IsNullOrEmpty(scryCard.Image_Uris.Normal))
                             img_url = scryCard.Image_Uris.Normal;
                         else if (!string.IsNullOrEmpty(scryCard.Image_Uris.Small))
