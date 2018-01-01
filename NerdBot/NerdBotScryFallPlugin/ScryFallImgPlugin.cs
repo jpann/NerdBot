@@ -129,7 +129,7 @@ namespace NerdBotScryFallPlugin
                         card.Name,
                         card.SetName);
 
-                    this.Services.QueryStatisticsStore.InsertCardQueryStat(message.name, message.user_id,
+                    await this.Services.QueryStatisticsStore.InsertCardQueryStat(message.name, message.user_id,
                         card.MultiverseId, searchTerm);
 
                     // Get card from scryfall

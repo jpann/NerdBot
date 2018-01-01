@@ -132,7 +132,7 @@ namespace NerdBotCardImage
                         card.Name,
                         card.SetName);
 
-                    this.Services.QueryStatisticsStore.InsertCardQueryStat(message.name, message.user_id,
+                    await this.Services.QueryStatisticsStore.InsertCardQueryStat(message.name, message.user_id,
                         card.MultiverseId, searchTerm);
 
                     // Default to high resolution image.
