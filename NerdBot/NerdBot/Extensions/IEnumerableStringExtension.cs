@@ -20,6 +20,10 @@ namespace NerdBotCommon.Extensions
 
                 output = String.Concat(delimited, ", and ", list.LastOrDefault());
             }
+            else
+            {
+                output = list.FirstOrDefault();
+            }
 
             return output;
         }
@@ -35,6 +39,10 @@ namespace NerdBotCommon.Extensions
                 var delimited = String.Join(", ", list.Take(list.Count - 1));
 
                 output = String.Concat(delimited, ", or ", list.LastOrDefault());
+            }
+            else
+            {
+                output = list.FirstOrDefault();
             }
 
             return output;
