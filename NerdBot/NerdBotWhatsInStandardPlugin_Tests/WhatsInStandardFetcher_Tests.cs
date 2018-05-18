@@ -156,20 +156,20 @@ rough_exit_date: ""Q4 2019""
         [Test]
         public void GetSetsInStandard_Filtered()
         {
-            unitTestContext.HttpClientMock.Setup(h => h.GetAsJson("http://whatsinstandard.com/api/v5/sets.json"))
+            unitTestContext.HttpClientMock.Setup(h => h.GetAsJson("https://whatsinstandard.com/api/v5/sets.json"))
                 .ReturnsAsync(whatsInStandardData);
 
             int expectedCount = 6;
 
             var actual = fetcher.GetDataAsync(true).Result;
 
-            Assert.AreEqual(expectedCount, actual.Sets.Count);
+            Assert.GreaterOrEqual(actual.Sets.Count, expectedCount);
         }
 
         [Test]
         public void GetSetsInStandard_NotFiltered()
         {
-            unitTestContext.HttpClientMock.Setup(h => h.GetAsJson("http://whatsinstandard.com/api/v5/sets.json"))
+            unitTestContext.HttpClientMock.Setup(h => h.GetAsJson("https://whatsinstandard.com/api/v5/sets.json"))
                 .ReturnsAsync(whatsInStandardData);
 
             int expectedCount = 14;

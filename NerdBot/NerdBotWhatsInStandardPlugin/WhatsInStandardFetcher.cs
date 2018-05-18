@@ -40,7 +40,7 @@ namespace NerdBotWhatsInStandardPlugin
 
     public class WhatsInStandardFetcher
     {
-        private const string cUrl = "http://whatsinstandard.com/api/v5/sets.json";
+        private const string cUrl = "https://whatsinstandard.com/api/v5/sets.json";
 
         private readonly IHttpClient mHttpClient;
 
