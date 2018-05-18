@@ -103,9 +103,10 @@ namespace NerdBotCommon.Http
         {
 	        try
 	        {
-                // Added to prevent 'The request was aborted: Could not create SSL/TLS secure channel.' exceptions
-	            ServicePointManager.Expect100Continue = true;
-	            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                // Added to prevent 'The request was aborted: Could not create SSL/TLS secure channel.' exceptions on Windows 10
+                //TODO: Will need to add OS checking
+	            //ServicePointManager.Expect100Continue = true;
+	            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
 	            clientCached.Timeout = TimeSpan.FromMilliseconds(cTimeOut);
 			    var json = await clientCached.GetStringAsync(url);
@@ -124,9 +125,10 @@ namespace NerdBotCommon.Http
         {
             try
             {
-                // Added to prevent 'The request was aborted: Could not create SSL/TLS secure channel.' exceptions
-                ServicePointManager.Expect100Continue = true;
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                // Added to prevent 'The request was aborted: Could not create SSL/TLS secure channel.' exceptions on Windows 10
+                //TODO: Will need to add OS checking
+                //ServicePointManager.Expect100Continue = true;
+                //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
                 client.Timeout = TimeSpan.FromMilliseconds(cTimeOut);
                 var json = await client.GetStringAsync(url);
