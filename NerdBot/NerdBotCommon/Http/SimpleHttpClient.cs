@@ -103,6 +103,7 @@ namespace NerdBotCommon.Http
         {
 	        try
 	        {
+	            clientCached.Timeout = TimeSpan.FromMilliseconds(cTimeOut);
 			    var json = await clientCached.GetStringAsync(url);
 
 			    return json;
@@ -119,6 +120,7 @@ namespace NerdBotCommon.Http
         {
             try
             {
+                client.Timeout = TimeSpan.FromMilliseconds(cTimeOut);
                 var json = await client.GetStringAsync(url);
 
                 return json;

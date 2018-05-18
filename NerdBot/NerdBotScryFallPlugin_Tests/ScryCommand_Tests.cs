@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Moq;
 using NerdBot.TestsHelper;
 using NerdBotCommon.Messengers.GroupMe;
@@ -86,7 +87,7 @@ namespace NerdBotScryFallPlugin_Tests
         public void ScryCommand_ByName()
         {
             unitTestContext.HttpClientMock.Setup(h =>
-                    h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard.MultiverseId))
+                    h.GetAsJson("https://api.scryfall.com/cards/named?fuzzy=" + Uri.EscapeDataString(testData.TestCard.Name)))
                 .ReturnsAsync(testData.TestCardPng_Json);
 
             var cmd = new Command()
@@ -114,7 +115,7 @@ namespace NerdBotScryFallPlugin_Tests
         public void ScryCommand_ByNameAndSet()
         {
             unitTestContext.HttpClientMock.Setup(h =>
-                    h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard.MultiverseId))
+                    h.GetAsJson(string.Format("https://api.scryfall.com/cards/named?fuzzy={0}&set={1}",  Uri.EscapeDataString(testData.TestCard.Name), Uri.EscapeDataString(testData.TestCard.SetId))))
                 .ReturnsAsync(testData.TestCardPng_Json);
 
             var cmd = new Command()
@@ -274,7 +275,7 @@ namespace NerdBotScryFallPlugin_Tests
         public void ScryCommand_NoPrice()
         {
             unitTestContext.HttpClientMock.Setup(h =>
-                    h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard.MultiverseId))
+                    h.GetAsJson(string.Format("https://api.scryfall.com/cards/named?fuzzy={0}", Uri.EscapeDataString(testData.TestCard.Name))))
                 .ReturnsAsync(testData.TestCardNoUSDPrice_Json);
 
             var cmd = new Command()

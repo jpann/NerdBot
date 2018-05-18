@@ -67,6 +67,7 @@
     <Compile Include="Fetcher\ScryFallFetcher_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScryCommand_Tests.cs" />
+    <Compile Include="ScryFallFetcher_Tests.cs" />
     <Compile Include="SImgCommand_Tests.cs" />
     <Compile Include="TestData.cs" />
   </ItemGroup>

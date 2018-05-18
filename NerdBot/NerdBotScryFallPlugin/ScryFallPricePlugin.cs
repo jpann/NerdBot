@@ -8,6 +8,7 @@ using NerdBotCommon.Messengers;
 using NerdBotCommon.Mtg;
 using NerdBotCommon.Parsers;
 using NerdBotCommon.Extensions;
+using NerdBotScryFallPlugin.POCO;
 
 namespace NerdBotScryFallPlugin
 {
@@ -85,7 +86,7 @@ namespace NerdBotScryFallPlugin
 
             if (command.Arguments.Any())
             {
-                Card card = null;
+                ScryFallCard scryCard = null;
 
                 string searchTerm = null;
 
@@ -101,7 +102,7 @@ namespace NerdBotScryFallPlugin
                     searchTerm = name;
 
                     // Get card using only name
-                    card = await this.Services.Store.GetCard(name);
+                    scryCard = await fetcher.GetCard(name, true);
                 }
                 else if (command.Arguments.Length == 2)
                 {
@@ -119,35 +120,30 @@ namespace NerdBotScryFallPlugin
                     searchTerm = string.Join(" ", command.Arguments);
 
                     // Get card using name and set name or code
-                    card = await this.Services.Store.GetCard(name, set);
-
+                    scryCard = await fetcher.GetCard(name, set, true);
                 }
 
-                if (card != null)
+                if (scryCard != null)
                 {
                     this.mLoggingService.Trace("Found card '{0}' in set '{1}'.",
-                        card.Name,
-                        card.SetName);
+                        scryCard.Name,
+                        scryCard.SetName);
 
                     await this.Services.QueryStatisticsStore.InsertCardQueryStat(message.name, message.user_id,
-                        card.MultiverseId, searchTerm);
+                        scryCard.MultiverseIds.FirstOrDefault(), searchTerm);
 
-                    // Get card from scryfall
-                    var scryCard = await fetcher.GetCard(card.MultiverseId);
+                    string price = scryCard.PriceUsd;
+                    string url = scryCard.ScryFallUri;
 
-                    if (scryCard != null)
+                    url = this.Services.UrlShortener.ShortenUrl(url);
+
+                    if (!string.IsNullOrEmpty(price))
                     {
-                        string price = scryCard.PriceUsd;
-                        string url = scryCard.ScryFallUri;
+                        string msg = string.Format("{0} [{1}] - ${2}. {3}", scryCard.Name, scryCard.SetCode.ToUpper(),
+                            price, url);
 
-                        url = this.Services.UrlShortener.ShortenUrl(url);
+                        messenger.SendMessage(msg);
 
-                        if (!string.IsNullOrEmpty(price))
-                        {
-                            string msg = string.Format("{0} [{1}] - ${2}. {3}", scryCard.Name, scryCard.SetCode.ToUpper(), price, url);
-
-                            messenger.SendMessage(msg);
-                        }
                     }
 
                     return true;

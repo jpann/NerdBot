@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Moq;
 using NerdBot.TestsHelper;
 using NerdBotCommon.Messengers.GroupMe;
@@ -59,7 +60,7 @@ namespace NerdBotScryFallPlugin_Tests
         public void SImgCommand_NoArguments()
         {
             unitTestContext.HttpClientMock.Setup(h =>
-                    h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard.MultiverseId))
+                    h.GetAsJson("https://api.scryfall.com/cards/named?fuzzy=" + Uri.EscapeDataString(testData.TestCard.Name)))
                 .ReturnsAsync(testData.TestCardPng_Json);
 
             var cmd = new Command()
@@ -86,7 +87,7 @@ namespace NerdBotScryFallPlugin_Tests
         public void SImgCommand_ByName()
         {
             unitTestContext.HttpClientMock.Setup(h =>
-                    h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard.MultiverseId))
+                    h.GetAsJson(string.Format("https://api.scryfall.com/cards/named?fuzzy={0}", Uri.EscapeDataString(testData.TestCard.Name))))
                 .ReturnsAsync(testData.TestCardPng_Json);
             
             var cmd = new Command()
@@ -107,53 +108,14 @@ namespace NerdBotScryFallPlugin_Tests
                 unitTestContext.MessengerMock.Object
             ).Result;
 
-            unitTestContext.MessengerMock.Verify(m => m.SendMessage("https://img.scryfall.com/cards/png/en/exp/43.png?1509690533"));
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("https://img.scryfall.com/cards/large/en"))));
         }
-
-        [Test]
-        public void SImgCommand_ByName_OtherSets()
-        {
-            unitTestContext.HttpClientMock.Setup(h =>
-                    h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard.MultiverseId))
-                .ReturnsAsync(testData.TestCardPng_Json);
-
-            unitTestContext.StoreMock.Setup(s => s.GetCardOtherSets(testData.TestCard.MultiverseId))
-                .ReturnsAsync(new List<Set>()
-                {
-                    new Set()
-                    {
-                        Name = "Unstable",
-                        Code = "UST"
-                    }
-                });
-
-            var cmd = new Command()
-            {
-                Cmd = "simg",
-                Arguments = new string[]
-                {
-                    "Strip Mine"
-                }
-            };
-
-            var msg = new GroupMeMessage();
-            simgCommandPlugin.OnLoad();
-
-            bool handled = simgCommandPlugin.OnCommand(
-                cmd,
-                msg,
-                unitTestContext.MessengerMock.Object
-            ).Result;
-
-            unitTestContext.MessengerMock.Verify(m => m.SendMessage("https://img.scryfall.com/cards/png/en/exp/43.png?1509690533"));
-            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("Also in sets: UST"))));
-        }
-
+        
         [Test]
         public void SImgCommand_ByNameAndSet()
         {
             unitTestContext.HttpClientMock.Setup(h =>
-                    h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard.MultiverseId))
+                    h.GetAsJson(string.Format("https://api.scryfall.com/cards/named?fuzzy={0}&set={1}",  Uri.EscapeDataString(testData.TestCard.Name), Uri.EscapeDataString(testData.TestCard.SetId))))
                 .ReturnsAsync(testData.TestCardPng_Json);
 
             var cmd = new Command()
@@ -175,14 +137,14 @@ namespace NerdBotScryFallPlugin_Tests
                 unitTestContext.MessengerMock.Object
             ).Result;
 
-            unitTestContext.MessengerMock.Verify(m => m.SendMessage("https://img.scryfall.com/cards/png/en/exp/43.png?1509690533"));
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("https://img.scryfall.com/cards/large/en/"))));
         }
 
         [Test]
         public void SImgCommand_ByName_NoCardFound()
         {
             unitTestContext.HttpClientMock.Setup(h =>
-                    h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard_ScryNotFound.MultiverseId))
+                    h.GetAsJson(string.Format("https://api.scryfall.com/cards/named?fuzzy={0}", Uri.EscapeDataString(testData.TestCard_ScryNotFound.Name))))
                 .ReturnsAsync("");
 
             var cmd = new Command()
@@ -210,7 +172,7 @@ namespace NerdBotScryFallPlugin_Tests
         public void SImgCommand_ByNameAndSet_NoCardFound()
         {
             unitTestContext.HttpClientMock.Setup(h =>
-                    h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard_ScryNotFound.MultiverseId))
+                    h.GetAsJson("https://api.scryfall.com/cards/named?fuzzy=" + Uri.EscapeDataString(testData.TestCard_ScryNotFound.Name)  + "&set=" + Uri.EscapeDataString(testData.TestCard_ScryNotFound.SetId)))
                 .ReturnsAsync("");
 
             var cmd = new Command()
@@ -313,7 +275,7 @@ namespace NerdBotScryFallPlugin_Tests
         public void SImgCommand_LargeImg()
         {
             unitTestContext.HttpClientMock.Setup(h =>
-                    h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard.MultiverseId))
+                    h.GetAsJson(string.Format("https://api.scryfall.com/cards/named?fuzzy={0}", Uri.EscapeDataString(testData.TestCard.Name))))
                 .ReturnsAsync(testData.TestCardLarge_Json);
 
             var cmd = new Command()
@@ -334,14 +296,14 @@ namespace NerdBotScryFallPlugin_Tests
                 unitTestContext.MessengerMock.Object
             ).Result;
 
-            unitTestContext.MessengerMock.Verify(m => m.SendMessage("https://img.scryfall.com/cards/large/en/exp/43.jpg?1509690533"));
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("https://img.scryfall.com/cards/large/en"))));
         }
 
         [Test]
         public void SImgCommand_NormalImg()
         {
             unitTestContext.HttpClientMock.Setup(h =>
-                    h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard.MultiverseId))
+                    h.GetAsJson(string.Format("https://api.scryfall.com/cards/named?fuzzy={0}", Uri.EscapeDataString(testData.TestCard.Name))))
                 .ReturnsAsync(testData.TestCardNormal_Json);
 
             var cmd = new Command()
@@ -362,14 +324,14 @@ namespace NerdBotScryFallPlugin_Tests
                 unitTestContext.MessengerMock.Object
             ).Result;
 
-            unitTestContext.MessengerMock.Verify(m => m.SendMessage("https://img.scryfall.com/cards/normal/en/exp/43.jpg?1509690533"));
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("https://img.scryfall.com/cards/normal/en"))));
         }
 
         [Test]
         public void SImgCommand_SmallImg()
         {
             unitTestContext.HttpClientMock.Setup(h =>
-                    h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard.MultiverseId))
+                    h.GetAsJson(string.Format("https://api.scryfall.com/cards/named?fuzzy={0}", Uri.EscapeDataString(testData.TestCard.Name))))
                 .ReturnsAsync(testData.TestCardSmall_Json);
 
             var cmd = new Command()
@@ -390,14 +352,14 @@ namespace NerdBotScryFallPlugin_Tests
                 unitTestContext.MessengerMock.Object
             ).Result;
 
-            unitTestContext.MessengerMock.Verify(m => m.SendMessage("https://img.scryfall.com/cards/small/en/exp/43.jpg?1509690533"));
+            unitTestContext.MessengerMock.Verify(m => m.SendMessage(It.Is<string>(s => s.StartsWith("https://img.scryfall.com/cards/small/en"))));
         }
 
         [Test]
         public void SImgCommand_NoImg()
         {
             unitTestContext.HttpClientMock.Setup(h =>
-                    h.GetAsJson("https://api.scryfall.com/cards/multiverse/" + testData.TestCard.MultiverseId))
+                    h.GetAsJson(string.Format("https://api.scryfall.com/cards/named?fuzzy={0}", Uri.EscapeDataString(testData.TestCard.Name))))
                 .ReturnsAsync(testData.TestCardNoImage_Json);
 
             var cmd = new Command()

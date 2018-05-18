@@ -50,5 +50,93 @@ namespace NerdBotScryFallPlugin
                 throw;
             }
         }
+
+        public async Task<ScryFallCard> GetCard(string name, bool fuzzy = false)
+        {
+            try
+            {
+                string cardApi = "/cards/named?{0}={1}";
+
+                string encodedName = Uri.EscapeDataString(name);
+
+                string parameter = "exact";
+
+                if (fuzzy)
+                {
+                    parameter = "fuzzy";
+                }
+                else
+                {
+                    parameter = "exact";
+                }
+
+                string latestJson = await this.mHttpClient.GetAsJson(string.Format(cApiUrl + cardApi, parameter, encodedName));
+
+                if (string.IsNullOrEmpty(latestJson))
+                    return null;
+
+                var def = JsonConvert.DeserializeObject<ScryFallCard>(latestJson);
+
+                if (def == null)
+                    return null;
+
+                return def;
+            }
+            catch (Exception er)
+            {
+                string msg = string.Format("ERROR getting ScryFall Card for '{0}': {1}",
+                    name,
+                    er.Message);
+
+                Console.WriteLine(msg);
+
+                throw;
+            }
+        }
+
+        public async Task<ScryFallCard> GetCard(string name, string setCode, bool fuzzy = false)
+        {
+            try
+            {
+                string cardApi = "/cards/named?{0}={1}&set={2}";
+
+                string encodedName = Uri.EscapeDataString(name);
+                string encodedSetCode = Uri.EscapeDataString(setCode);
+
+                string parameter = "exact";
+
+                if (fuzzy)
+                {
+                    parameter = "fuzzy";
+                }
+                else
+                {
+                    parameter = "exact";
+                }
+
+                string latestJson = await this.mHttpClient.GetAsJson(string.Format(cApiUrl + cardApi, parameter, encodedName, encodedSetCode));
+
+                if (string.IsNullOrEmpty(latestJson))
+                    return null;
+
+                var def = JsonConvert.DeserializeObject<ScryFallCard>(latestJson);
+
+                if (def == null)
+                    return null;
+
+                return def;
+            }
+            catch (Exception er)
+            {
+                string msg = string.Format("ERROR getting ScryFall Card for '{0}' in set '{1}': {2}",
+                    name,
+                    setCode,
+                    er.Message);
+
+                Console.WriteLine(msg);
+
+                throw;
+            }
+        }
     }
 }

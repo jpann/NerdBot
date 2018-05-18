@@ -86,7 +86,7 @@ namespace NerdBotScryFallPlugin
 
             if (command.Arguments.Any())
             {
-                Card card = null;
+                ScryFallCard scryCard = null;
 
                 string searchTerm = null;
 
@@ -102,7 +102,7 @@ namespace NerdBotScryFallPlugin
                     searchTerm = name;
 
                     // Get card using only name
-                    card = await this.Services.Store.GetCard(name);
+                    scryCard = await fetcher.GetCard(name, true);
                 }
                 else if (command.Arguments.Length == 2)
                 {
@@ -120,43 +120,45 @@ namespace NerdBotScryFallPlugin
                     searchTerm = string.Join(" ", command.Arguments);
 
                     // Get card using name and set name or code
-                    card = await this.Services.Store.GetCard(name, set);
+                    scryCard = await fetcher.GetCard(name, set, true);
 
                 }
 
-                if (card != null)
+                if (scryCard != null)
                 {
                     this.mLoggingService.Trace("Found card '{0}' in set '{1}'.",
-                        card.Name,
-                        card.SetName);
+                        scryCard.Name,
+                        scryCard.SetName);
 
                     await this.Services.QueryStatisticsStore.InsertCardQueryStat(message.name, message.user_id,
-                        card.MultiverseId, searchTerm);
+                        scryCard.MultiverseIds.FirstOrDefault(), searchTerm);
 
-                    // Get card from scryfall
-                    var scryCard = await fetcher.GetCard(card.MultiverseId);
-
-                    if (scryCard != null)
+                    // If Image_Uris is not null, get image
+                    if (scryCard.Image_Uris != null)
                     {
-                        // If Image_Uris is not null, get image
-                        if (scryCard.Image_Uris != null)
-                        {
-                            string img_url = string.Empty;
+                        string img_url = string.Empty;
 
-                            // Get image, starting with large
-                            if (!string.IsNullOrEmpty(scryCard.Image_Uris.Large))
-                                img_url = scryCard.Image_Uris.Large;
-                            else if (!string.IsNullOrEmpty(scryCard.Image_Uris.Png))
-                                img_url = scryCard.Image_Uris.Png;
-                            else if (!string.IsNullOrEmpty(scryCard.Image_Uris.Normal))
-                                img_url = scryCard.Image_Uris.Normal;
-                            else if (!string.IsNullOrEmpty(scryCard.Image_Uris.Small))
-                                img_url = scryCard.Image_Uris.Small;
-                            else
+                        // Get image, starting with large
+                        if (!string.IsNullOrEmpty(scryCard.Image_Uris.Large))
+                            img_url = scryCard.Image_Uris.Large;
+                        else if (!string.IsNullOrEmpty(scryCard.Image_Uris.Png))
+                            img_url = scryCard.Image_Uris.Png;
+                        else if (!string.IsNullOrEmpty(scryCard.Image_Uris.Normal))
+                            img_url = scryCard.Image_Uris.Normal;
+                        else if (!string.IsNullOrEmpty(scryCard.Image_Uris.Small))
+                            img_url = scryCard.Image_Uris.Small;
+                        else
+                        {
+                            var card = await this.Services.Store.GetCard(scryCard.Name);
+
+                            if (card != null)
                             {
                                 img_url = card.Img;
                             }
+                        }
 
+                        if (!string.IsNullOrEmpty(img_url))
+                        {
                             // Remove trailing ?xxxxxxxx portion from uri, if it exists
                             if (!string.IsNullOrEmpty(img_url) && img_url.LastIndexOf('?') > 0)
                             {
@@ -167,45 +169,57 @@ namespace NerdBotScryFallPlugin
                         }
                         else
                         {
-                            // This card likely has two sides, get both sides and send them
-
-                            if (scryCard.Card_Faces != null)
+                            messenger.SendMessage("Unable to find image.");
+                        }
+                        
+                    }
+                    else
+                    {
+                        // This card likely has two sides, get both sides and send them
+                        if (scryCard.Card_Faces != null)
+                        {
+                            foreach (ScryFall_CardFace face in scryCard.Card_Faces)
                             {
-                                foreach (ScryFall_CardFace face in scryCard.Card_Faces)
-                                {
-                                    string img_url = string.Empty;
+                                string img_url = string.Empty;
 
-                                    // Get image, starting with large
-                                    if (!string.IsNullOrEmpty(face.Image_Uris.Large))
-                                        img_url = face.Image_Uris.Large;
-                                    else if (!string.IsNullOrEmpty(face.Image_Uris.Png))
-                                        img_url = face.Image_Uris.Png;
-                                    else if (!string.IsNullOrEmpty(face.Image_Uris.Normal))
-                                        img_url = face.Image_Uris.Normal;
-                                    else if (!string.IsNullOrEmpty(face.Image_Uris.Small))
-                                        img_url = face.Image_Uris.Small;
-                                    else
+                                // Get image, starting with large
+                                if (!string.IsNullOrEmpty(face.Image_Uris.Large))
+                                    img_url = face.Image_Uris.Large;
+                                else if (!string.IsNullOrEmpty(face.Image_Uris.Png))
+                                    img_url = face.Image_Uris.Png;
+                                else if (!string.IsNullOrEmpty(face.Image_Uris.Normal))
+                                    img_url = face.Image_Uris.Normal;
+                                else if (!string.IsNullOrEmpty(face.Image_Uris.Small))
+                                    img_url = face.Image_Uris.Small;
+                                else
+                                {
+                                    var card = await this.Services.Store.GetCard(scryCard.Name);
+
+                                    if (card != null)
                                     {
                                         img_url = card.Img;
+                                    }
+                                }
+
+                                if (!string.IsNullOrEmpty(img_url))
+                                {
+                                    // Remove trailing ?xxxxxxxx portion from uri, if it exists
+                                    if (!string.IsNullOrEmpty(img_url) && img_url.LastIndexOf('?') > 0)
+                                    {
+                                        img_url = img_url.Substring(0, img_url.LastIndexOf('?'));
                                     }
 
                                     messenger.SendMessage(img_url);
                                 }
-                            }
-                            else
-                            {
-                                messenger.SendMessage("No image found on ScryFal");
+                                else
+                                {
+                                    messenger.SendMessage("Unable to find image.");
+                                }
                             }
                         }
-
-                        // Get other sets card is in
-                        List<Set> otherSets = await this.Services.Store.GetCardOtherSets(card.MultiverseId);
-                        if (otherSets.Any())
+                        else
                         {
-                            string msg = string.Format("Also in sets: {0}",
-                                string.Join(", ", otherSets.Select(s => s.Code).Take(10).ToArray()));
-
-                            messenger.SendMessage(msg);
+                            messenger.SendMessage("No image found on ScryFal");
                         }
                     }
 
