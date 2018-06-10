@@ -53,18 +53,24 @@ namespace NerdBotCommon.Http
                 httpWebRequest.ContentType = "text/json";
                 httpWebRequest.Method = "POST";
 
-                using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                using (var requestStream = httpWebRequest.GetRequestStream())
                 {
-                    streamWriter.Write(json);
-                    streamWriter.Flush();
-                    streamWriter.Close();
-
-                    using (var httpResponse = (HttpWebResponse) httpWebRequest.GetResponse())
+                    using (var streamWriter = new StreamWriter(requestStream))
                     {
-                        using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                        streamWriter.Write(json);
+                        streamWriter.Flush();
+                        streamWriter.Close();
+
+                        using (var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse())
                         {
-                            var result = streamReader.ReadToEnd();
-                            return result;
+                            using (var responseStream = httpResponse.GetResponseStream())
+                            {
+                                using (var streamReader = new StreamReader(responseStream))
+                                {
+                                    var result = streamReader.ReadToEnd();
+                                    return result;
+                                }
+                            }
                         }
                     }
                 }
@@ -152,14 +158,17 @@ namespace NerdBotCommon.Http
                 request.UserAgent = "NerdBot/1.0";
                 //request.Timeout = 20;
 
-                var response = request.GetResponse();
-                var stream = response.GetResponseStream();
+                using (var response = request.GetResponse())
+                {
+                    using (var stream = response.GetResponseStream())
+                    {
+                        var data = new StreamReader(stream).ReadToEnd();
+                        stream.Close();
 
-                var data = new StreamReader(stream).ReadToEnd();
-                stream.Close();
 
-
-                return data;
+                        return data;
+                    }
+                }
             }
             catch (Exception er)
             {
