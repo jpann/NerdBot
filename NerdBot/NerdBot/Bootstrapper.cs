@@ -62,6 +62,11 @@ namespace NerdBot
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
             JsonSettings.MaxJsonLength = Int32.MaxValue;
+
+            this.Conventions.ViewLocationConventions.Add((viewName, model, context) =>
+            {
+                return string.Concat("Views/", context.ModulePath, "/", viewName);
+            });
         }
 
         protected override void RequestStartup(TinyIoCContainer requestContainer, IPipelines pipelines, NancyContext context)
@@ -86,11 +91,6 @@ namespace NerdBot
         {
             base.ConfigureApplicationContainer(container);
 
-            // Get configuration data
-            string configFile = Path.Combine(Environment.CurrentDirectory, "NerdBot.ini");
-            if (!File.Exists(configFile))
-                throw new Exception("Configuration file 'NerdBot.ini' does not exist.");
-
             string dbConnectionString;
             string dbName;
             string priceDbName;
@@ -109,26 +109,56 @@ namespace NerdBot
             string imgUrl = null;
             string imgHiResUrl = null;
 
-            this.LoadConfiguration(
-                configFile,
-                out dbConnectionString,
-                out dbName,
-                out priceDbName,
-                out msgrBotId,
-                out msgrBotName,
-                out msgrEndPointUrl,
-                out msgrIgnoreNames,
-                out botRouteToken,
-                out urlUser,
-                out urlKey,
-                out reporterBotId,
-                out reporterBotName,
-                out hostUrl,
-                out adminUser,
-                out adminPassword,
-                out imgUrl, 
-                out imgHiResUrl
+            if (!RuntimeUtility.IsRunningOnMono())
+            {
+                // Get configuration data
+                string configFile = Path.Combine(Environment.CurrentDirectory, "NerdBot.ini");
+                if (!File.Exists(configFile))
+                    throw new Exception(string.Format("Configuration file 'NerdBot.ini' does not exist in '{0}'.", Environment.CurrentDirectory));
+
+                this.LoadConfiguration(
+                    configFile,
+                    out dbConnectionString,
+                    out dbName,
+                    out priceDbName,
+                    out msgrBotId,
+                    out msgrBotName,
+                    out msgrEndPointUrl,
+                    out msgrIgnoreNames,
+                    out botRouteToken,
+                    out urlUser,
+                    out urlKey,
+                    out reporterBotId,
+                    out reporterBotName,
+                    out hostUrl,
+                    out adminUser,
+                    out adminPassword,
+                    out imgUrl, 
+                    out imgHiResUrl
                 );
+            }
+            else
+            {
+                LoadConfigurationFromEnvironmentVariables(
+                    out dbConnectionString,
+                    out dbName,
+                    out priceDbName,
+                    out msgrBotId,
+                    out msgrBotName,
+                    out msgrEndPointUrl,
+                    out msgrIgnoreNames,
+                    out botRouteToken,
+                    out urlUser,
+                    out urlKey,
+                    out reporterBotId,
+                    out reporterBotName,
+                    out hostUrl,
+                    out adminUser,
+                    out adminPassword,
+                    out imgUrl,
+                    out imgHiResUrl
+                );
+            }
 
             // Register the instance of ILoggingService
             container.Register<ILoggingService>((c, p) => new NLogLoggingService());
@@ -227,8 +257,11 @@ namespace NerdBot
 
             // Register the instance of IPluginManager
             //string pluginDirectory = Environment.CurrentDirectory;
-            string pluginDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
-                "plugins");
+            //string pluginDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
+            //    "plugins");
+            string pluginDirectory = Environment.GetEnvironmentVariable("PLUGIN_DIR") ??
+                                     Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
+                                         "plugins");
 
             var pluginManager = new PluginManager(
                 msgrBotName,
@@ -351,6 +384,54 @@ namespace NerdBot
             imgHiResUrl = source.Configs["DataMapper"].Get("imghires_url");
             if (string.IsNullOrEmpty(imgHiResUrl))
                 throw new Exception("Configuration file is missing 'imghires_url' setting in section 'DataMapper'.");
+        }
+
+        private void LoadConfigurationFromEnvironmentVariables(
+            out string dbConnectionString,
+            out string dbName,
+            out string priceDbName,
+            out string[] msgrBotId,
+            out string msgrBotName,
+            out string msgrEndPointUrl,
+            out string[] msgrIgnoreNames,
+            out string[] botRouteToken,
+            out string urlUser,
+            out string urlKey,
+            out string reporterBotId,
+            out string reporterBotName,
+            out string hostUrl,
+            out string adminUser,
+            out string adminPassword,
+            out string imgUrl,
+            out string imgHiResUrl)
+        {
+            string dbServer = Environment.GetEnvironmentVariable("DB_SERVER") ?? "localhost";
+            dbConnectionString = "mongodb://" + dbServer;
+
+            dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "mtgdb";
+            priceDbName  = Environment.GetEnvironmentVariable("DB_PRICE") ?? "mtgdb";
+            msgrBotId = Environment.GetEnvironmentVariable("MSGR_BOTID").Split('|');
+            msgrBotName = Environment.GetEnvironmentVariable("MSGR_BOTNAME") ?? "NerdBot";
+            msgrEndPointUrl = "https://api.groupme.com/v3/bots/post";
+
+            string ignoreNames = Environment.GetEnvironmentVariable("MSGR_IGNORENAMES");
+            msgrIgnoreNames = new string[] { };
+            if (!string.IsNullOrEmpty(ignoreNames))
+            {
+                if (ignoreNames.Contains("|"))
+                    msgrIgnoreNames = ignoreNames.Split('|').ToArray();
+            }
+
+            botRouteToken = Environment.GetEnvironmentVariable("TOKEN").Split('|');
+            urlUser = Environment.GetEnvironmentVariable("URL_USER");
+            urlKey = Environment.GetEnvironmentVariable("URL_KEY");
+            reporterBotId = Environment.GetEnvironmentVariable("REPORTER_ID");
+            reporterBotName = Environment.GetEnvironmentVariable("REPORTER_NAME");
+            hostUrl = Environment.GetEnvironmentVariable("HOST_URL") ?? "http://localhost:3579";
+            adminUser = Environment.GetEnvironmentVariable("ADMIN_USER");
+            adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASS");
+            imgUrl = Environment.GetEnvironmentVariable("IMG_URL");
+            imgHiResUrl = Environment.GetEnvironmentVariable("IMG_HIRES_URL");
         }
     }
 }

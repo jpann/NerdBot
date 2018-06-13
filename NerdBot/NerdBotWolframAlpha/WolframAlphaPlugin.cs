@@ -12,6 +12,7 @@ using NerdBotCommon.Mtg;
 using NerdBotCommon.Mtg.Prices;
 using NerdBotCommon.Parsers;
 using NerdBotCommon.UrlShortners;
+using NerdBotCommon.Utilities;
 using Nini.Config;
 using WolframAlphaNET;
 using WolframAlphaNET.Misc;
@@ -63,9 +64,18 @@ namespace NerdBotWolframAlpha
                 services,
                 config)
         {
-            string configFile = Path.Combine(Environment.CurrentDirectory, "Wolfram.ini");
+            string appId = string.Empty;
 
-            string appId = LoadConfig(configFile);
+            if (!RuntimeUtility.IsRunningOnMono())
+            {
+                string configFile = Path.Combine(Environment.CurrentDirectory, "Wolfram.ini");
+
+                appId = LoadConfig(configFile);
+            }
+            else
+            {
+                appId = Environment.GetEnvironmentVariable("WOLFFRAM_APPID");
+            }
 
             this.mWolframAlpha = new WolframAlpha(appId);
             this.mWolframAlpha.ScanTimeout = cScanTimeout;

@@ -1,4 +1,7 @@
 ﻿using System.IO;
+using Mono.Unix;
+using Mono.Unix.Native;
+using NerdBotCommon.Utilities;
 using Nini.Config;
 
 namespace NerdBot
@@ -19,11 +22,22 @@ namespace NerdBot
 
             using (var host = new NancyHost(uri))
             {
+                Console.WriteLine("Your application is running on " + uri);
+
                 host.Start();
 
-                Console.WriteLine("Your application is running on " + uri);
-                Console.WriteLine("Press any [Enter] to close the host.");
-                Console.ReadLine();
+                if (RuntimeUtility.IsRunningOnMono())
+                {
+                    var terminationSignals = RuntimeUtility.GetUnixTerminationSignals();
+                    UnixSignal.WaitAny(terminationSignals);
+                }
+                else
+                {
+                    Console.WriteLine("Press any [Enter] to close the host.");
+                    Console.ReadLine();
+                }
+
+                host.Stop();
             }
         }
 
@@ -31,23 +45,34 @@ namespace NerdBot
         {
             try
             {
-                // Get configuration data
-                string configFile = Path.Combine(Environment.CurrentDirectory, "NerdBot.ini");
-                if (!File.Exists(configFile))
-                    throw new Exception("Configuration file 'NerdBot.ini' does not exist.");
+                if (!RuntimeUtility.IsRunningOnMono())
+                {
+                    // Get configuration data
+                    string configFile = Path.Combine(Environment.CurrentDirectory, "NerdBot.ini");
+                    if (!File.Exists(configFile))
+                        throw new Exception("Configuration file 'NerdBot.ini' does not exist.");
 
-                IConfigSource source = new IniConfigSource(configFile);
+                    IConfigSource source = new IniConfigSource(configFile);
 
-                string hostname = source.Configs["App"].Get("hostname");
-                if (!string.IsNullOrEmpty(hostname))
-                    mHostname = hostname;
+                    string hostname = source.Configs["App"].Get("hostname");
+                    if (!string.IsNullOrEmpty(hostname))
+                        mHostname = hostname;
 
-                int port = source.Configs["App"].GetInt("port");
-                mPort = port;
+                    int port = source.Configs["App"].GetInt("port");
+                    mPort = port;
+                }
+                else
+                {
+                    mHostname = "localhost";
+                    mPort = 3579;
+                }
+
             }
-            catch (Exception)
+            catch (Exception er)
             {
                 // Use defaults
+                Console.WriteLine(er.Message);
+                Console.WriteLine(er.StackTrace);
             }
         }
     }

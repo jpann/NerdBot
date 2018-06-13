@@ -15,7 +15,8 @@ namespace NerdBotCommon.Http
         private readonly ILoggingService mLogger;
         private static HttpClient clientCached = new HttpClient(new WebRequestHandler()
         {
-            CachePolicy = new HttpRequestCachePolicy(HttpCacheAgeControl.MaxAge, TimeSpan.FromDays(-1))
+            CachePolicy = new HttpRequestCachePolicy(HttpCacheAgeControl.MaxAge, TimeSpan.FromDays(-1)),
+            ReadWriteTimeout = cTimeOut
         });
 
         private static HttpClient client = new HttpClient();
@@ -114,7 +115,7 @@ namespace NerdBotCommon.Http
 	            //ServicePointManager.Expect100Continue = true;
 	            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-	            clientCached.Timeout = TimeSpan.FromMilliseconds(cTimeOut);
+	            //clientCached.Timeout = TimeSpan.FromMilliseconds(cTimeOut);
 			    var json = await clientCached.GetStringAsync(url);
 
 			    return json;
@@ -136,7 +137,7 @@ namespace NerdBotCommon.Http
                 //ServicePointManager.Expect100Continue = true;
                 //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-                client.Timeout = TimeSpan.FromMilliseconds(cTimeOut);
+                //client.Timeout = TimeSpan.FromMilliseconds(cTimeOut);
                 var json = await client.GetStringAsync(url);
 
                 return json;
