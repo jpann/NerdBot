@@ -64,7 +64,7 @@ namespace NerdBot
                 else
                 {
                     mHostname = "localhost";
-                    mPort = 3579;
+                    mPort = Convert.ToInt32(Environment.GetEnvironmentVariable("PORT") ?? "3579");
                 }
 
             }
