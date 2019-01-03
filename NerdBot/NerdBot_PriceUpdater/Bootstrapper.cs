@@ -21,16 +21,23 @@ namespace NerdBot_PriceUpdater
     {
         public static void Register()
         {
-            // Get configuration data
-            string configFile = Path.Combine(Environment.CurrentDirectory, "NerdBotPriceUpdater.ini");
-            if (!File.Exists(configFile))
-                throw new Exception("Configuration file 'NerdBotPriceUpdater.ini' does not exist.");
-
             string dbConnectionString = null;
             string mtgDbName = null;
             string priceDbName = null;
 
-            LoadConfiguration(configFile, out dbConnectionString, out mtgDbName, out priceDbName);
+            if (!RuntimeUtility.IsRunningOnMono())
+            {
+                // Get configuration data
+                string configFile = Path.Combine(Environment.CurrentDirectory, "NerdBotPriceUpdater.ini");
+                if (!File.Exists(configFile))
+                    throw new Exception("Configuration file 'NerdBotPriceUpdater.ini' does not exist.");
+
+                LoadConfiguration(configFile, out dbConnectionString, out mtgDbName, out priceDbName);
+            }
+            else
+            {
+                LoadConfigurationFromEnvironmentVariables(out dbConnectionString, out mtgDbName, out priceDbName);
+            }
 
             // Register the instance of ILoggingService
             TinyIoCContainer.Current.Register<ILoggingService>((c, p) => new NLogLoggingService());
@@ -92,6 +99,18 @@ namespace NerdBot_PriceUpdater
             priceDbName = source.Configs["Database"].Get("priceDbName");
             if (string.IsNullOrEmpty(priceDbName))
                 throw new Exception("Configuration file is missing 'priceDbName' setting in section 'Database'.");
+        }
+
+        private static void LoadConfigurationFromEnvironmentVariables(
+            out string dbConnectionString,
+            out string mtgDbName,
+            out string priceDbName)
+        {
+            string dbServer = Environment.GetEnvironmentVariable("DB_SERVER") ?? "localhost";
+            dbConnectionString = "mongodb://" + dbServer;
+
+            mtgDbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "mtgdb";
+            priceDbName = mtgDbName;
         }
     }
 }
